@@ -2,27 +2,34 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Bell, Calendar } from 'lucide-react';
-import { collection, addDoc, getDocs, query, orderBy, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { useRouter } from 'next/navigation';
+import { collection, addDoc, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '@/lib/firebase';
 
 interface Notice {
   id: string;
   title: string;
   content: string;
-  date: string;
-  important: boolean;
+  category: string;
+  imageUrl?: string;
+  isPinned: boolean;
   createdAt: any;
 }
 
-const ADMIN_PASSWORD = 'maple2026'; // 관리자 비밀번호 (나중에 환경 변수로 변경)
+const ADMIN_PASSWORD = 'rlfwns55';
 
 export default function NoticePage() {
+  const router = useRouter();
   const [notices, setNotices] = useState<Notice[]>([]);
+  const [activeTab, setActiveTab] = useState('전체');
   const [showAdminForm, setShowAdminForm] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [form, setForm] = useState({ title: '', content: '', important: false });
+  const [form, setForm] = useState({ title: '', content: '', category: '공지사항', isPinned: false });
+  const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const categories = ['전체', '공지사항', '메이플 패치', '이벤트', '업데이트'];
 
   useEffect(() => {
     fetchNotices();
@@ -32,11 +39,17 @@ export default function NoticePage() {
     try {
       const q = query(collection(db, 'notices'), orderBy('createdAt', 'desc'));
       const querySnapshot = await getDocs(q);
-      const noticesData = querySnapshot.docs.map(doc => ({
+      let noticesData = querySnapshot.docs.map(doc => ({
         id: doc.id,
-        ...doc.data(),
-        date: doc.data().createdAt ? new Date(doc.data().createdAt.seconds * 1000).toLocaleDateString('ko-KR') : ''
+        ...doc.data()
       })) as Notice[];
+
+      // 고정된 공지를 맨 위로
+      noticesData.sort((a, b) => {
+        if (a.isPinned === b.isPinned) return 0;
+        return a.isPinned ? -1 : 1;
+      });
+
       setNotices(noticesData);
     } catch (error) {
       console.error('공지사항 불러오기 실패:', error);
@@ -53,6 +66,13 @@ export default function NoticePage() {
     }
   };
 
+  const uploadImage = async (file: File): Promise<string> => {
+    const timestamp = Date.now();
+    const storageRef = ref(storage, `notices/${timestamp}_${file.name}`);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title || !form.content) {
@@ -61,16 +81,24 @@ export default function NoticePage() {
 
     setLoading(true);
     try {
+      let imageUrl = '';
+      if (image) {
+        imageUrl = await uploadImage(image);
+      }
+
       await addDoc(collection(db, 'notices'), {
         title: form.title,
         content: form.content,
-        important: form.important,
+        category: form.category,
+        imageUrl,
+        isPinned: form.isPinned,
         createdAt: new Date()
       });
 
       alert('공지사항이 등록되었습니다!');
       setShowAdminForm(false);
-      setForm({ title: '', content: '', important: false });
+      setForm({ title: '', content: '', category: '공지사항', isPinned: false });
+      setImage(null);
       fetchNotices();
     } catch (error) {
       console.error('공지사항 등록 실패:', error);
@@ -101,145 +129,205 @@ export default function NoticePage() {
     }
   };
 
-  return (
-    <div style={{ backgroundColor: '#0F172A', minHeight: '100vh', padding: '32px 0', fontFamily: "'Noto Sans KR', sans-serif" }}>
-      <div style={{ maxWidth: '1024px', margin: '0 auto', padding: '0 16px' }}>
+  const filteredNotices = activeTab === '전체' ? notices : notices.filter(n => n.category === activeTab);
 
-        {/* Header */}
-        <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#F1F5F9', marginBottom: '8px' }}>공지사항 & 소식</h1>
-            <p style={{ fontSize: '14px', color: '#94A3B8' }}>MAPLE HUB의 최신 소식을 확인하세요</p>
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <Link
-              href="/"
-              style={{
-                padding: '10px 20px',
-                backgroundColor: '#334155',
-                color: '#F1F5F9',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                fontSize: '14px',
-                fontWeight: '600'
-              }}
-            >
-              홈으로
-            </Link>
-            <button
-              onClick={handleAdminLogin}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: '#667eea',
-                color: '#FFF',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '600'
-              }}
-            >
-              관리자
-            </button>
+  const extractFirstImg = (content: string) => {
+    if (!content) return null;
+    const imgReg = /<img[^>]+src=["']([^"']+)["']/;
+    const match = imgReg.exec(content);
+    return match ? match[1] : null;
+  };
+
+  return (
+    <div style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', fontFamily: "'Noto Sans KR', sans-serif", color: '#1E293B' }}>
+      {/* 네비게이션 */}
+      <nav style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: '15px 5%',
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        borderBottom: '1px solid #E2E8F0',
+        alignItems: 'center',
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
+      }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', textDecoration: 'none' }}>
+          <div style={{ fontWeight: '900', color: '#667eea', fontSize: '20px' }}>🍁 메이플 허브</div>
+        </Link>
+        <div style={{ display: 'flex', gap: '25px', fontSize: '15px', fontWeight: '600' }}>
+          <Link href="/" style={{ color: '#64748B', textDecoration: 'none', cursor: 'pointer' }}>홈</Link>
+          <Link href="/items" style={{ color: '#64748B', textDecoration: 'none', cursor: 'pointer' }}>급처템</Link>
+          <Link href="/meso" style={{ color: '#64748B', textDecoration: 'none', cursor: 'pointer' }}>메소거래</Link>
+          <Link href="/discord" style={{ color: '#64748B', textDecoration: 'none', cursor: 'pointer' }}>디스코드</Link>
+          <Link href="/reviews" style={{ color: '#64748B', textDecoration: 'none', cursor: 'pointer' }}>이용후기</Link>
+          <span style={{ color: '#667eea', cursor: 'pointer' }}>공지사항</span>
+        </div>
+      </nav>
+
+      {/* 배너 */}
+      <div style={{ width: '100%', backgroundColor: '#E2E8F0', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ width: '100%', maxWidth: '1200px', aspectRatio: '4/1', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'white' }}>
+            <h1 style={{ fontSize: '32px', fontWeight: 'bold', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>공지사항</h1>
+            <p style={{ fontSize: '16px', marginTop: '10px', color: 'rgba(255,255,255,0.9)' }}>새로운 소식과 이벤트를 확인하세요.</p>
           </div>
         </div>
+      </div>
 
-        {/* Notice List */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {notices.length === 0 ? (
-            <div style={{
-              backgroundColor: 'rgba(30, 41, 59, 0.3)',
-              border: '1px solid rgba(71, 85, 105, 0.5)',
-              borderRadius: '12px',
-              padding: '80px 20px',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '48px', marginBottom: '20px' }}>📢</div>
-              <p style={{ fontSize: '18px', color: '#94A3B8', fontWeight: '600', marginBottom: '12px' }}>
-                등록된 공지사항이 없습니다
-              </p>
-            </div>
-          ) : (
-            notices.map((notice) => (
-              <div
-                key={notice.id}
+      {/* 메인 콘텐츠 */}
+      <div style={{ padding: '60px 5%', maxWidth: '1200px', margin: '0 auto' }}>
+
+        {/* 카테고리 탭 + 관리자 버튼 */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', flexWrap: 'wrap', gap: '15px' }}>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            {categories.map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
                 style={{
-                  backgroundColor: 'rgba(30, 41, 59, 0.3)',
-                  border: '1px solid rgba(71, 85, 105, 0.5)',
-                  borderRadius: '12px',
-                  overflow: 'hidden',
-                  transition: 'all 0.2s'
+                  padding: '10px 20px',
+                  borderRadius: '30px',
+                  border: activeTab === tab ? '1px solid #667eea' : '1px solid #E2E8F0',
+                  backgroundColor: activeTab === tab ? '#667eea' : '#FFFFFF',
+                  color: activeTab === tab ? '#FFF' : '#64748B',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  transition: '0.3s',
+                  boxShadow: activeTab === tab ? '0 2px 8px rgba(102,126,234,0.3)' : 'none'
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(30, 41, 59, 0.4)'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(30, 41, 59, 0.3)'}
               >
-                <div style={{ padding: '24px' }}>
-                  {/* Header */}
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '12px' }}>
+                {tab}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={handleAdminLogin}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#667eea',
+              color: '#FFF',
+              border: 'none',
+              borderRadius: '30px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              fontSize: '14px',
+              boxShadow: '0 2px 8px rgba(102,126,234,0.3)'
+            }}
+          >
+            관리자
+          </button>
+        </div>
+
+        {/* 공지사항 카드 그리드 */}
+        {filteredNotices.length === 0 ? (
+          <div style={{
+            padding: '80px 20px',
+            textAlign: 'center',
+            backgroundColor: '#FFFFFF',
+            borderRadius: '20px',
+            border: '1px solid #E2E8F0'
+          }}>
+            <div style={{ fontSize: '48px', marginBottom: '20px' }}>📢</div>
+            <p style={{ fontSize: '18px', color: '#64748B', fontWeight: '600', marginBottom: '12px' }}>
+              등록된 공지사항이 없습니다
+            </p>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '30px' }}>
+            {filteredNotices.map((notice) => {
+              const thumbnail = notice.imageUrl || extractFirstImg(notice.content);
+              return (
+                <div
+                  key={notice.id}
+                  onClick={() => router.push(`/notice/${notice.id}`)}
+                  style={{
+                    display: 'block',
+                    textDecoration: 'none',
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: '20px',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    border: notice.isPinned ? '2px solid #667eea' : '1px solid #E2E8F0',
+                    boxShadow: notice.isPinned ? '0 4px 20px rgba(102, 126, 234, 0.15)' : '0 2px 8px rgba(0,0,0,0.06)',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = notice.isPinned ? '0 4px 20px rgba(102, 126, 234, 0.15)' : '0 2px 8px rgba(0,0,0,0.06)';
+                  }}
+                >
+                  <div style={{ position: 'relative', width: '100%', height: '180px', backgroundColor: '#F1F5F9' }}>
+                    {thumbnail ? (
+                      <img src={thumbnail} alt={notice.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#94A3B8', fontSize: '13px' }}>
+                        이미지 없음
+                      </div>
+                    )}
+                    {notice.isPinned && (
+                      <div style={{ position: 'absolute', top: '15px', right: '15px', fontSize: '24px' }}>📌</div>
+                    )}
                     <div style={{
-                      flexShrink: 0,
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '8px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: notice.important ? 'rgba(251, 191, 36, 0.2)' : 'rgba(71, 85, 105, 0.5)'
+                      position: 'absolute',
+                      top: '15px',
+                      left: '15px',
+                      backgroundColor: '#667eea',
+                      color: '#FFF',
+                      fontSize: '11px',
+                      fontWeight: 'bold',
+                      padding: '4px 10px',
+                      borderRadius: '5px'
                     }}>
-                      <Bell style={{ width: '20px', height: '20px', color: notice.important ? '#FBBF24' : '#94A3B8' }} />
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        {notice.important && (
-                          <span style={{
-                            padding: '2px 8px',
-                            backgroundColor: 'rgba(251, 191, 36, 0.2)',
-                            color: '#FBBF24',
-                            fontSize: '12px',
-                            fontWeight: '600',
-                            borderRadius: '4px'
-                          }}>
-                            중요
-                          </span>
-                        )}
-                        <h2 style={{ fontSize: '18px', fontWeight: '600', color: '#F1F5F9' }}>{notice.title}</h2>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#64748B' }}>
-                        <Calendar style={{ width: '12px', height: '12px' }} />
-                        <span>{notice.date}</span>
-                      </div>
+                      {notice.category || '공지'}
                     </div>
                     {isAdmin && (
                       <button
-                        onClick={() => handleDelete(notice.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(notice.id);
+                        }}
                         style={{
+                          position: 'absolute',
+                          bottom: '10px',
+                          right: '10px',
                           padding: '6px 12px',
                           backgroundColor: '#EF4444',
                           color: '#FFF',
                           border: 'none',
                           borderRadius: '6px',
                           cursor: 'pointer',
-                          fontSize: '12px',
-                          fontWeight: '600'
+                          fontSize: '11px',
+                          fontWeight: '700'
                         }}
                       >
                         삭제
                       </button>
                     )}
                   </div>
-
-                  {/* Content */}
-                  <p style={{ fontSize: '14px', color: '#CBD5E1', lineHeight: '1.8', paddingLeft: '52px', whiteSpace: 'pre-wrap' }}>
-                    {notice.content}
-                  </p>
+                  <div style={{ padding: '20px' }}>
+                    <h3 style={{ fontSize: '17px', fontWeight: 'bold', margin: '0 0 10px 0', color: '#1E293B' }}>
+                      {notice.title}
+                    </h3>
+                    <div style={{ fontSize: '12px', color: '#94A3B8', display: 'flex', justifyContent: 'space-between' }}>
+                      <span>{notice.createdAt?.toDate ? notice.createdAt.toDate().toLocaleDateString() : ''}</span>
+                      <span style={{ color: '#667eea', fontWeight: 'bold' }}>자세히 →</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
-      {/* Admin Form Modal */}
+      {/* 관리자 작성 모달 */}
       {showAdminForm && (
         <div style={{
           position: 'fixed',
@@ -247,7 +335,7 @@ export default function NoticePage() {
           left: 0,
           width: '100%',
           height: '100%',
-          backgroundColor: 'rgba(0,0,0,0.7)',
+          backgroundColor: 'rgba(0,0,0,0.5)',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -255,55 +343,84 @@ export default function NoticePage() {
           backdropFilter: 'blur(4px)'
         }}>
           <div style={{
-            backgroundColor: '#1E293B',
+            backgroundColor: '#FFFFFF',
             padding: '30px',
             borderRadius: '16px',
             width: '90%',
             maxWidth: '600px',
-            border: '1px solid #334155',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            border: '1px solid #E2E8F0',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+            color: '#1E293B'
           }}>
             <h3 style={{
               marginBottom: '20px',
               fontWeight: 'bold',
               fontSize: '20px',
-              borderBottom: '1px solid #334155',
+              borderBottom: '1px solid #F1F5F9',
               paddingBottom: '10px',
-              color: '#F1F5F9'
+              color: '#667eea'
             }}>
               공지사항 작성 (관리자)
             </h3>
 
             <form onSubmit={handleSubmit}>
               <div style={{ marginBottom: '15px' }}>
-                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#94A3B8' }}>제목 *</p>
+                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>제목 *</p>
                 <input
                   value={form.title}
                   onChange={e => setForm({ ...form, title: e.target.value })}
-                  style={darkInputStyle}
+                  style={inputStyle}
                   placeholder="제목을 입력하세요"
                 />
               </div>
 
               <div style={{ marginBottom: '15px' }}>
-                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#94A3B8' }}>내용 *</p>
+                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>카테고리 *</p>
+                <select
+                  value={form.category}
+                  onChange={e => setForm({ ...form, category: e.target.value })}
+                  style={inputStyle}
+                >
+                  {categories.filter(c => c !== '전체').map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ marginBottom: '15px' }}>
+                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>내용 *</p>
                 <textarea
                   value={form.content}
                   onChange={e => setForm({ ...form, content: e.target.value })}
-                  style={{ ...darkInputStyle, height: '200px', resize: 'none' }}
+                  style={{ ...inputStyle, height: '200px', resize: 'none' }}
                   placeholder="내용을 입력하세요"
                 />
               </div>
 
+              <div style={{ marginBottom: '15px' }}>
+                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>이미지 첨부</p>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={e => setImage(e.target.files?.[0] || null)}
+                  style={{ color: '#475569' }}
+                />
+                {image && (
+                  <p style={{ fontSize: '12px', color: '#10b981', marginTop: '5px' }}>✓ {image.name}</p>
+                )}
+              </div>
+
               <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#94A3B8', cursor: 'pointer' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748B', cursor: 'pointer' }}>
                   <input
                     type="checkbox"
-                    checked={form.important}
-                    onChange={e => setForm({ ...form, important: e.target.checked })}
+                    checked={form.isPinned}
+                    onChange={e => setForm({ ...form, isPinned: e.target.checked })}
                     style={{ width: '16px', height: '16px', cursor: 'pointer' }}
                   />
-                  <span style={{ fontSize: '14px', fontWeight: '600' }}>중요 공지로 표시</span>
+                  <span style={{ fontSize: '14px', fontWeight: '600' }}>상단 고정</span>
                 </label>
               </div>
 
@@ -314,13 +431,12 @@ export default function NoticePage() {
                   style={{
                     flex: 1,
                     padding: '15px',
-                    backgroundColor: loading ? '#475569' : '#667eea',
+                    backgroundColor: loading ? '#94A3B8' : '#667eea',
                     color: '#FFF',
                     border: 'none',
                     borderRadius: '8px',
                     cursor: loading ? 'not-allowed' : 'pointer',
-                    fontWeight: 'bold',
-                    fontSize: '14px'
+                    fontWeight: 'bold'
                   }}
                 >
                   {loading ? '등록 중...' : '등록'}
@@ -329,19 +445,19 @@ export default function NoticePage() {
                   type="button"
                   onClick={() => {
                     setShowAdminForm(false);
-                    setForm({ title: '', content: '', important: false });
+                    setForm({ title: '', content: '', category: '공지사항', isPinned: false });
+                    setImage(null);
                   }}
                   disabled={loading}
                   style={{
                     flex: 1,
                     padding: '15px',
-                    backgroundColor: '#334155',
-                    color: '#94A3B8',
+                    backgroundColor: '#F1F5F9',
+                    color: '#64748B',
                     border: 'none',
                     borderRadius: '8px',
                     cursor: loading ? 'not-allowed' : 'pointer',
-                    fontWeight: 'bold',
-                    fontSize: '14px'
+                    fontWeight: 'bold'
                   }}
                 >
                   취소
@@ -355,13 +471,13 @@ export default function NoticePage() {
   );
 }
 
-const darkInputStyle: React.CSSProperties = {
+const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '12px',
-  border: '1px solid #334155',
+  border: '1px solid #E2E8F0',
   borderRadius: '8px',
   fontSize: '14px',
-  backgroundColor: '#0F172A',
-  color: '#F1F5F9',
+  backgroundColor: '#F8FAFC',
+  color: '#1E293B',
   outline: 'none'
 };

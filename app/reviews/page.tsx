@@ -161,11 +161,13 @@ export default function ReviewsPage() {
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', textDecoration: 'none' }}>
           <div style={{ fontWeight: '900', color: '#667eea', fontSize: '20px' }}>🍁 메이플 허브</div>
         </Link>
-        <div style={{ display: 'flex', gap: '20px', fontWeight: '600', fontSize: '15px', color: '#64748B' }}>
+        <div style={{ display: 'flex', gap: '25px', fontWeight: '600', fontSize: '15px' }}>
           <Link href="/" style={{ cursor: 'pointer', textDecoration: 'none', color: '#64748B' }}>홈</Link>
-          <Link href="/notice" style={{ cursor: 'pointer', textDecoration: 'none', color: '#64748B' }}>공지사항</Link>
-          <Link href="/items" style={{ cursor: 'pointer', textDecoration: 'none', color: '#64748B' }}>거래방법</Link>
+          <Link href="/items" style={{ cursor: 'pointer', textDecoration: 'none', color: '#64748B' }}>급처템</Link>
+          <Link href="/meso" style={{ cursor: 'pointer', textDecoration: 'none', color: '#64748B' }}>메소거래</Link>
+          <Link href="/discord" style={{ cursor: 'pointer', textDecoration: 'none', color: '#64748B' }}>디스코드</Link>
           <span style={{ color: '#667eea', cursor: 'pointer' }}>이용후기</span>
+          <Link href="/notice" style={{ cursor: 'pointer', textDecoration: 'none', color: '#64748B' }}>공지사항</Link>
         </div>
       </nav>
 
