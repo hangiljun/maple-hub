@@ -64,9 +64,12 @@ export default function ReviewsPage() {
     try {
       let imageUrl = '';
       if (image) {
+        console.log('이미지 업로드 시작:', image.name);
         imageUrl = await uploadImage(image);
+        console.log('이미지 업로드 완료:', imageUrl);
       }
 
+      console.log('Firestore에 데이터 저장 시작');
       await addDoc(collection(db, 'reviews'), {
         title: form.title,
         nickname: form.nickname,
@@ -76,15 +79,16 @@ export default function ReviewsPage() {
         views: 0,
         createdAt: new Date()
       });
+      console.log('Firestore 저장 완료');
 
       alert('후기가 등록되었습니다!');
       setShowForm(false);
       setForm({ title: '', nickname: '', password: '', content: '' });
       setImage(null);
       fetchReviews();
-    } catch (error) {
+    } catch (error: any) {
       console.error('후기 등록 실패:', error);
-      alert('후기 등록에 실패했습니다.');
+      alert(`후기 등록에 실패했습니다.\n에러: ${error.message || error}`);
     } finally {
       setLoading(false);
     }

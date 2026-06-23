@@ -83,9 +83,12 @@ export default function NoticePage() {
     try {
       let imageUrl = '';
       if (image) {
+        console.log('이미지 업로드 시작:', image.name);
         imageUrl = await uploadImage(image);
+        console.log('이미지 업로드 완료:', imageUrl);
       }
 
+      console.log('Firestore에 데이터 저장 시작');
       await addDoc(collection(db, 'notices'), {
         title: form.title,
         content: form.content,
@@ -94,15 +97,16 @@ export default function NoticePage() {
         isPinned: form.isPinned,
         createdAt: new Date()
       });
+      console.log('Firestore 저장 완료');
 
       alert('공지사항이 등록되었습니다!');
       setShowAdminForm(false);
       setForm({ title: '', content: '', category: '공지사항', isPinned: false });
       setImage(null);
       fetchNotices();
-    } catch (error) {
+    } catch (error: any) {
       console.error('공지사항 등록 실패:', error);
-      alert('공지사항 등록에 실패했습니다.');
+      alert(`공지사항 등록에 실패했습니다.\n에러: ${error.message || error}`);
     } finally {
       setLoading(false);
     }

@@ -76,9 +76,12 @@ export default function ItemsPage() {
     try {
       let imageUrl = '';
       if (image) {
+        console.log('이미지 업로드 시작:', image.name);
         imageUrl = await uploadImage(image);
+        console.log('이미지 업로드 완료:', imageUrl);
       }
 
+      console.log('Firestore에 데이터 저장 시작');
       await addDoc(collection(db, 'items'), {
         server: form.server,
         itemName: form.itemName,
@@ -91,6 +94,7 @@ export default function ItemsPage() {
         password: form.password,
         createdAt: new Date()
       });
+      console.log('Firestore 저장 완료');
 
       alert('거래글이 등록되었습니다!');
       setShowForm(false);
@@ -106,9 +110,9 @@ export default function ItemsPage() {
       });
       setImage(null);
       fetchItems();
-    } catch (error) {
+    } catch (error: any) {
       console.error('등록 실패:', error);
-      alert('등록에 실패했습니다.');
+      alert(`등록에 실패했습니다.\n에러: ${error.message || error}`);
     } finally {
       setLoading(false);
     }
