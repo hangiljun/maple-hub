@@ -1,27 +1,153 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { collection, addDoc, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '@/lib/firebase';
+
+interface Item {
+  id: string;
+  server: string;
+  itemName: string;
+  price: string;
+  seller: string;
+  contact: string;
+  contactId: string;
+  description: string;
+  imageUrl?: string;
+  createdAt: any;
+  password: string;
+}
 
 export default function ItemsPage() {
+  const [items, setItems] = useState<Item[]>([]);
   const [selectedServer, setSelectedServer] = useState('전체');
-  const [selectedType, setSelectedType] = useState('전체');
+  const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    server: '스카니아',
+    itemName: '',
+    price: '',
+    seller: '',
+    contact: '카카오톡',
+    contactId: '',
+    description: '',
+    password: ''
+  });
+  const [image, setImage] = useState<File | null>(null);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
-  const items = [
-    { id: 1, server: '스카니아', type: '팝니다', itemName: '22성 앱솔 완판 세트', price: '80억', seller: '메이플마스터', contact: '카톡' },
-    { id: 2, server: '리부트', type: '팝니다', itemName: '에테르넬 플레임 1셋', price: '협의', seller: '불독123', contact: '디코' },
-    { id: 3, server: '루나', type: '팝니다', itemName: '3줄큐브 300개 일괄', price: '개당 3천만', seller: '큐브왕', contact: '카톡' },
-    { id: 4, server: '크로아', type: '팝니다', itemName: '18성 아케인 무기', price: '120억', seller: '크로아유저', contact: '카톡' },
-    { id: 5, server: '메이플랜드', type: '팝니다', itemName: '공격의징표 50개', price: '협의', seller: '랜드마스터', contact: '디코' }
-  ];
+  const servers = ['전체', '스카니아', '루나', '크로아', '리부트', '메이플랜드', '기타'];
+  const contacts = ['카카오톡', '디스코드', '문자', '게임내'];
 
-  const servers = ['전체', '스카니아', '루나', '크로아', '리부트', '메이플랜드'];
-  const types = ['전체', '팝니다'];
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  const fetchItems = async () => {
+    try {
+      const q = query(collection(db, 'items'), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const itemsData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Item[];
+      setItems(itemsData);
+    } catch (error) {
+      console.error('아이템 불러오기 실패:', error);
+    }
+  };
+
+  const uploadImage = async (file: File): Promise<string> => {
+    const timestamp = Date.now();
+    const storageRef = ref(storage, `items/${timestamp}_${file.name}`);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.itemName || !form.price || !form.seller || !form.contactId || !form.password) {
+      return alert('필수 항목을 모두 입력하세요.');
+    }
+
+    setLoading(true);
+    try {
+      let imageUrl = '';
+      if (image) {
+        imageUrl = await uploadImage(image);
+      }
+
+      await addDoc(collection(db, 'items'), {
+        server: form.server,
+        itemName: form.itemName,
+        price: form.price,
+        seller: form.seller,
+        contact: form.contact,
+        contactId: form.contactId,
+        description: form.description,
+        imageUrl,
+        password: form.password,
+        createdAt: new Date()
+      });
+
+      alert('거래글이 등록되었습니다!');
+      setShowForm(false);
+      setForm({
+        server: '스카니아',
+        itemName: '',
+        price: '',
+        seller: '',
+        contact: '카카오톡',
+        contactId: '',
+        description: '',
+        password: ''
+      });
+      setImage(null);
+      fetchItems();
+    } catch (error) {
+      console.error('등록 실패:', error);
+      alert('등록에 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (itemId: string) => {
+    const password = prompt('비밀번호를 입력하세요:');
+    if (!password) return;
+
+    const item = items.find(i => i.id === itemId);
+    if (!item) return;
+
+    if (item.password !== password) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+
+    try {
+      await deleteDoc(doc(db, 'items', itemId));
+      alert('삭제되었습니다.');
+      setSelectedItem(null);
+      fetchItems();
+    } catch (error) {
+      console.error('삭제 실패:', error);
+      alert('삭제에 실패했습니다.');
+    }
+  };
 
   const filteredItems = items.filter(item =>
-    (selectedServer === '전체' || item.server === selectedServer) &&
-    (selectedType === '전체' || item.type === selectedType)
+    selectedServer === '전체' || item.server === selectedServer
   );
+
+  const formatDate = (date: any) => {
+    if (!date) return '';
+    const d = date.toDate ? date.toDate() : new Date(date);
+    return d.toLocaleDateString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit' });
+  };
 
   return (
     <div style={{ backgroundColor: '#FAFBFC', minHeight: '100vh' }}>
@@ -53,13 +179,31 @@ export default function ItemsPage() {
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 20px' }}>
 
         {/* 페이지 제목 */}
-        <div style={{ marginBottom: '40px' }}>
-          <h1 style={{ fontSize: '36px', fontWeight: '900', color: '#1E293B', marginBottom: '12px' }}>
-            ⚡ 급처템 구매
-          </h1>
-          <p style={{ fontSize: '16px', color: '#64748B' }}>
-            판매자들이 올린 급처템을 확인하고 구매하세요
-          </p>
+        <div style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h1 style={{ fontSize: '36px', fontWeight: '900', color: '#1E293B', marginBottom: '12px' }}>
+              ⚡ 급처템 거래
+            </h1>
+            <p style={{ fontSize: '16px', color: '#64748B' }}>
+              판매하고 싶은 아이템을 등록하거나 급처템을 구매하세요 ({items.length}개)
+            </p>
+          </div>
+          <button
+            onClick={() => setShowForm(true)}
+            style={{
+              padding: '12px 24px',
+              backgroundColor: '#667eea',
+              color: '#FFF',
+              border: 'none',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              fontSize: '16px',
+              fontWeight: '700',
+              boxShadow: '0 4px 12px rgba(102,126,234,0.3)'
+            }}
+          >
+            + 판매글 등록
+          </button>
         </div>
 
         {/* 거래 방법 안내 */}
@@ -71,7 +215,7 @@ export default function ItemsPage() {
           color: 'white'
         }}>
           <h2 style={{ fontSize: '24px', fontWeight: '900', marginBottom: '24px' }}>
-            💡 급처템 구매 방법
+            💡 안전 거래 방법
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px' }}>
             <div>
@@ -81,18 +225,18 @@ export default function ItemsPage() {
             </div>
             <div>
               <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '12px' }}>2</div>
-              <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>가격 확인</h3>
-              <p style={{ fontSize: '14px', opacity: 0.9 }}>게시글의 가격을 확인하고 협의 여부를 체크합니다</p>
-            </div>
-            <div>
-              <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '12px' }}>3</div>
               <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>판매자 연락</h3>
               <p style={{ fontSize: '14px', opacity: 0.9 }}>카톡 또는 디스코드로 판매자에게 연락합니다</p>
             </div>
             <div>
+              <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '12px' }}>3</div>
+              <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>가격 협의</h3>
+              <p style={{ fontSize: '14px', opacity: 0.9 }}>판매자와 가격 및 거래 방법을 협의합니다</p>
+            </div>
+            <div>
               <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '12px' }}>4</div>
               <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>게임 내 거래</h3>
-              <p style={{ fontSize: '14px', opacity: 0.9 }}>약속한 시간에 게임 접속 후 안전하게 구매합니다</p>
+              <p style={{ fontSize: '14px', opacity: 0.9 }}>약속한 시간에 게임 접속 후 안전하게 거래합니다</p>
             </div>
           </div>
 
@@ -104,7 +248,7 @@ export default function ItemsPage() {
             fontSize: '14px',
             lineHeight: 1.8
           }}>
-            <strong>⚠️ 안전 구매 팁:</strong><br />
+            <strong>⚠️ 안전 거래 팁:</strong><br />
             • 선입금은 절대 하지 마세요<br />
             • 게임 내에서 직접 거래하세요<br />
             • 거래 전 판매자 캐릭터를 확인하세요<br />
@@ -113,126 +257,462 @@ export default function ItemsPage() {
         </div>
 
         {/* 필터 */}
-        <div style={{ marginBottom: '32px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-          <div>
-            <div style={{ fontSize: '13px', fontWeight: '700', color: '#64748B', marginBottom: '8px' }}>서버 선택</div>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {servers.map(server => (
-                <button
-                  key={server}
-                  onClick={() => setSelectedServer(server)}
-                  style={{
-                    padding: '10px 20px',
-                    borderRadius: '10px',
-                    border: selectedServer === server ? '2px solid #667eea' : '2px solid #E5E7EB',
-                    background: selectedServer === server ? '#667eea' : 'white',
-                    color: selectedServer === server ? 'white' : '#64748B',
-                    fontSize: '14px',
-                    fontWeight: '700',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s'
-                  }}
-                >
-                  {server}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* 거래글 목록 */}
-        <div style={{ background: 'white', borderRadius: '20px', border: '1px solid #E5E7EB', overflow: 'hidden' }}>
-          {/* 테이블 헤더 */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '100px 80px 1fr 120px 120px 120px',
-            padding: '20px',
-            background: '#F9FAFB',
-            borderBottom: '1px solid #E5E7EB',
-            fontSize: '14px',
-            fontWeight: '700',
-            color: '#64748B'
-          }}>
-            <div>서버</div>
-            <div>구분</div>
-            <div>아이템명</div>
-            <div>판매자</div>
-            <div>가격</div>
-            <div>연락하기</div>
-          </div>
-
-          {/* 거래글 */}
-          {filteredItems.map(item => (
-            <div
-              key={item.id}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '100px 80px 1fr 120px 120px 120px',
-                padding: '20px',
-                borderBottom: '1px solid #F1F5F9',
-                alignItems: 'center',
-                transition: 'background 0.2s',
-                cursor: 'pointer'
-              }}
-            >
-              <div>
-                <span style={{
-                  padding: '6px 12px',
-                  background: '#E0E7FF',
-                  color: '#667eea',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  fontWeight: '700'
-                }}>
-                  {item.server}
-                </span>
-              </div>
-              <div>
-                <span style={{
-                  padding: '6px 12px',
-                  background: '#FEF3C7',
-                  color: '#F59E0B',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  fontWeight: '700'
-                }}>
-                  {item.type}
-                </span>
-              </div>
-              <div style={{ fontSize: '15px', fontWeight: '600', color: '#1E293B' }}>
-                {item.itemName}
-              </div>
-              <div style={{ fontSize: '14px', fontWeight: '600', color: '#64748B' }}>
-                {item.seller}
-              </div>
-              <div style={{ fontSize: '15px', fontWeight: '700', color: '#F59E0B' }}>
-                {item.price}
-              </div>
-              <div>
-                <button style={{
+        <div style={{ marginBottom: '32px' }}>
+          <div style={{ fontSize: '13px', fontWeight: '700', color: '#64748B', marginBottom: '12px' }}>서버 선택</div>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            {servers.map(server => (
+              <button
+                key={server}
+                onClick={() => setSelectedServer(server)}
+                style={{
                   padding: '10px 20px',
-                  background: item.contact === '카톡' ? '#FEE500' : '#5865F2',
-                  color: item.contact === '카톡' ? '#000' : '#fff',
-                  border: 'none',
-                  borderRadius: '8px',
+                  borderRadius: '10px',
+                  border: selectedServer === server ? '2px solid #667eea' : '2px solid #E5E7EB',
+                  background: selectedServer === server ? '#667eea' : 'white',
+                  color: selectedServer === server ? 'white' : '#64748B',
                   fontSize: '14px',
                   fontWeight: '700',
-                  cursor: 'pointer'
-                }}>
-                  {item.contact}
-                </button>
-              </div>
-            </div>
-          ))}
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {server}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {filteredItems.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '60px 20px', color: '#94A3B8' }}>
-            해당 서버의 거래글이 없습니다.
+        {/* 아이템 목록 */}
+        {filteredItems.length === 0 ? (
+          <div style={{
+            padding: '80px 20px',
+            textAlign: 'center',
+            backgroundColor: '#FFFFFF',
+            borderRadius: '20px',
+            border: '1px solid #E5E7EB'
+          }}>
+            <div style={{ fontSize: '48px', marginBottom: '20px' }}>🎁</div>
+            <p style={{ fontSize: '18px', color: '#64748B', fontWeight: '600', marginBottom: '12px' }}>
+              등록된 거래글이 없습니다
+            </p>
+            <p style={{ fontSize: '14px', color: '#94A3B8' }}>
+              첫 번째 거래글을 등록해보세요!
+            </p>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
+            {filteredItems.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => setSelectedItem(item)}
+                style={{
+                  background: 'white',
+                  borderRadius: '16px',
+                  overflow: 'hidden',
+                  border: '1px solid #E5E7EB',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
+                }}
+              >
+                {item.imageUrl && (
+                  <div style={{ width: '100%', height: '200px', overflow: 'hidden', backgroundColor: '#F8FAFC' }}>
+                    <img
+                      src={item.imageUrl}
+                      alt={item.itemName}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  </div>
+                )}
+                <div style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                    <span style={{
+                      padding: '4px 12px',
+                      backgroundColor: '#667eea',
+                      color: 'white',
+                      borderRadius: '6px',
+                      fontSize: '12px',
+                      fontWeight: '700'
+                    }}>
+                      {item.server}
+                    </span>
+                    <span style={{ fontSize: '12px', color: '#94A3B8' }}>
+                      {formatDate(item.createdAt)}
+                    </span>
+                  </div>
+                  <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1E293B', marginBottom: '8px' }}>
+                    {item.itemName}
+                  </h3>
+                  <p style={{ fontSize: '20px', fontWeight: '900', color: '#667eea', marginBottom: '12px' }}>
+                    {item.price}
+                  </p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#64748B' }}>
+                    <span>판매자: {item.seller}</span>
+                    <span>{item.contact}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
-
       </div>
+
+      {/* 판매글 등록 모달 */}
+      {showForm && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000,
+          backdropFilter: 'blur(4px)',
+          overflowY: 'auto',
+          padding: '20px'
+        }}>
+          <div style={{
+            backgroundColor: '#FFFFFF',
+            padding: '30px',
+            borderRadius: '16px',
+            width: '90%',
+            maxWidth: '600px',
+            border: '1px solid #E2E8F0',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+            color: '#1E293B',
+            maxHeight: '90vh',
+            overflowY: 'auto'
+          }}>
+            <h3 style={{
+              marginBottom: '20px',
+              fontWeight: 'bold',
+              fontSize: '20px',
+              borderBottom: '1px solid #F1F5F9',
+              paddingBottom: '10px',
+              color: '#667eea'
+            }}>
+              판매글 등록
+            </h3>
+
+            <form onSubmit={handleSubmit}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                <div>
+                  <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>서버 *</p>
+                  <select
+                    value={form.server}
+                    onChange={e => setForm({ ...form, server: e.target.value })}
+                    style={inputStyle}
+                  >
+                    {servers.filter(s => s !== '전체').map(server => (
+                      <option key={server} value={server}>{server}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>가격 *</p>
+                  <input
+                    value={form.price}
+                    onChange={e => setForm({ ...form, price: e.target.value })}
+                    style={inputStyle}
+                    placeholder="예: 50억 / 협의"
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '15px' }}>
+                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>아이템명 *</p>
+                <input
+                  value={form.itemName}
+                  onChange={e => setForm({ ...form, itemName: e.target.value })}
+                  style={inputStyle}
+                  placeholder="예: 22성 앱솔 무기"
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                <div>
+                  <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>판매자 *</p>
+                  <input
+                    value={form.seller}
+                    onChange={e => setForm({ ...form, seller: e.target.value })}
+                    style={inputStyle}
+                    placeholder="닉네임"
+                  />
+                </div>
+                <div>
+                  <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>비밀번호 *</p>
+                  <input
+                    type="password"
+                    value={form.password}
+                    onChange={e => setForm({ ...form, password: e.target.value })}
+                    style={inputStyle}
+                    placeholder="삭제용"
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                <div>
+                  <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>연락 방법 *</p>
+                  <select
+                    value={form.contact}
+                    onChange={e => setForm({ ...form, contact: e.target.value })}
+                    style={inputStyle}
+                  >
+                    {contacts.map(contact => (
+                      <option key={contact} value={contact}>{contact}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>연락처 ID *</p>
+                  <input
+                    value={form.contactId}
+                    onChange={e => setForm({ ...form, contactId: e.target.value })}
+                    style={inputStyle}
+                    placeholder="카톡ID/디코ID"
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '15px' }}>
+                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>상세 설명</p>
+                <textarea
+                  value={form.description}
+                  onChange={e => setForm({ ...form, description: e.target.value })}
+                  style={{ ...inputStyle, height: '100px', resize: 'none' }}
+                  placeholder="아이템에 대한 자세한 설명을 입력하세요"
+                />
+              </div>
+
+              <div style={{ marginBottom: '20px' }}>
+                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>이미지 첨부</p>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={e => setImage(e.target.files?.[0] || null)}
+                  style={{ color: '#475569' }}
+                />
+                {image && (
+                  <p style={{ fontSize: '12px', color: '#10b981', marginTop: '5px' }}>✓ {image.name}</p>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    flex: 1,
+                    padding: '15px',
+                    backgroundColor: loading ? '#94A3B8' : '#667eea',
+                    color: '#FFF',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  {loading ? '등록 중...' : '등록하기'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowForm(false);
+                    setForm({
+                      server: '스카니아',
+                      itemName: '',
+                      price: '',
+                      seller: '',
+                      contact: '카카오톡',
+                      contactId: '',
+                      description: '',
+                      password: ''
+                    });
+                    setImage(null);
+                  }}
+                  disabled={loading}
+                  style={{
+                    flex: 1,
+                    padding: '15px',
+                    backgroundColor: '#F1F5F9',
+                    color: '#64748B',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  취소
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 상세보기 모달 */}
+      {selectedItem && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000,
+          backdropFilter: 'blur(4px)',
+          padding: '20px'
+        }}>
+          <div style={{
+            backgroundColor: '#FFFFFF',
+            padding: '30px',
+            borderRadius: '16px',
+            width: '90%',
+            maxWidth: '600px',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            border: '1px solid #E2E8F0',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+            color: '#1E293B'
+          }}>
+            {selectedItem.imageUrl && (
+              <div style={{ marginBottom: '20px', borderRadius: '12px', overflow: 'hidden' }}>
+                <img
+                  src={selectedItem.imageUrl}
+                  alt={selectedItem.itemName}
+                  style={{ width: '100%', maxHeight: '400px', objectFit: 'contain' }}
+                />
+              </div>
+            )}
+
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                <span style={{
+                  padding: '6px 16px',
+                  backgroundColor: '#667eea',
+                  color: 'white',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '700'
+                }}>
+                  {selectedItem.server}
+                </span>
+                <span style={{ fontSize: '13px', color: '#94A3B8' }}>
+                  {formatDate(selectedItem.createdAt)}
+                </span>
+              </div>
+
+              <h3 style={{ fontSize: '24px', fontWeight: '900', color: '#1E293B', marginBottom: '12px' }}>
+                {selectedItem.itemName}
+              </h3>
+              <p style={{ fontSize: '28px', fontWeight: '900', color: '#667eea', marginBottom: '20px' }}>
+                {selectedItem.price}
+              </p>
+
+              {selectedItem.description && (
+                <div style={{
+                  padding: '20px',
+                  backgroundColor: '#F8FAFC',
+                  borderRadius: '12px',
+                  marginBottom: '20px',
+                  whiteSpace: 'pre-wrap',
+                  fontSize: '14px',
+                  lineHeight: '1.8',
+                  color: '#475569'
+                }}>
+                  {selectedItem.description}
+                </div>
+              )}
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                <div style={{ padding: '16px', backgroundColor: '#F8FAFC', borderRadius: '12px' }}>
+                  <p style={{ fontSize: '12px', color: '#64748B', marginBottom: '4px' }}>판매자</p>
+                  <p style={{ fontSize: '16px', fontWeight: '700', color: '#1E293B' }}>{selectedItem.seller}</p>
+                </div>
+                <div style={{ padding: '16px', backgroundColor: '#F8FAFC', borderRadius: '12px' }}>
+                  <p style={{ fontSize: '12px', color: '#64748B', marginBottom: '4px' }}>연락 방법</p>
+                  <p style={{ fontSize: '16px', fontWeight: '700', color: '#1E293B' }}>{selectedItem.contact}</p>
+                </div>
+              </div>
+
+              <div style={{
+                padding: '20px',
+                backgroundColor: '#FEF3C7',
+                border: '1px solid #FDE68A',
+                borderRadius: '12px',
+                marginBottom: '20px'
+              }}>
+                <p style={{ fontSize: '14px', color: '#92400E', fontWeight: '600', marginBottom: '8px' }}>
+                  📞 연락처
+                </p>
+                <p style={{ fontSize: '18px', fontWeight: '900', color: '#78350F' }}>
+                  {selectedItem.contactId}
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                onClick={() => handleDelete(selectedItem.id)}
+                style={{
+                  padding: '12px 24px',
+                  backgroundColor: '#EF4444',
+                  color: '#FFF',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  fontSize: '14px'
+                }}
+              >
+                삭제
+              </button>
+              <button
+                onClick={() => setSelectedItem(null)}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  backgroundColor: '#F1F5F9',
+                  color: '#64748B',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  fontSize: '14px'
+                }}
+              >
+                닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  padding: '12px',
+  border: '1px solid #E2E8F0',
+  borderRadius: '8px',
+  fontSize: '14px',
+  backgroundColor: '#F8FAFC',
+  color: '#1E293B',
+  outline: 'none'
+};

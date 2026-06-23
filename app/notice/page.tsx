@@ -1,110 +1,367 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Bell, Calendar } from 'lucide-react';
+import { collection, addDoc, getDocs, query, orderBy, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 interface Notice {
-  id: number;
+  id: string;
   title: string;
   content: string;
   date: string;
   important: boolean;
+  createdAt: any;
 }
 
-const mockNotices: Notice[] = [
-  {
-    id: 1,
-    title: '사이트 리뉴얼 안내',
-    content: 'MAPLE HUB가 더욱 편리한 UI/UX로 새롭게 단장했습니다. 모바일 환경에서도 최적화된 환경으로 거래하실 수 있습니다. 앞으로도 유저 여러분의 편의를 위해 지속적으로 개선해나가겠습니다.',
-    date: '2026-06-20',
-    important: true,
-  },
-  {
-    id: 2,
-    title: '여름 이벤트 홍보글 작성 가이드',
-    content: '여름 시즌을 맞이하여 많은 유저분들이 거래를 진행하고 계십니다. 효과적인 홍보글 작성을 위해서는 정확한 아이템 정보와 가격, 그리고 신뢰할 수 있는 연락처를 명시해주세요. 사진 첨부 시 거래 성사율이 약 40% 증가합니다.',
-    date: '2026-06-18',
-    important: false,
-  },
-  {
-    id: 3,
-    title: '안전거래 체크리스트 업데이트',
-    content: '안전한 거래를 위한 체크리스트가 업데이트되었습니다. 1) 거래 전 상대방 프로필 확인, 2) 소액 분할 거래 진행, 3) 게임 내 거래 스크린샷 저장, 4) 의심스러운 거래는 즉시 중단. 여러분의 안전한 거래를 위해 꼭 숙지해주세요.',
-    date: '2026-06-15',
-    important: true,
-  },
-  {
-    id: 4,
-    title: '신규 서버 카테고리 추가',
-    content: '많은 요청에 따라 메이플랜드 서버 카테고리가 신규 추가되었습니다. 메이플랜드 유저분들도 이제 더욱 편리하게 거래하실 수 있습니다.',
-    date: '2026-06-10',
-    important: false,
-  },
-  {
-    id: 5,
-    title: '디스코드 홍보 카테고리 오픈',
-    content: '커뮤니티의 요청으로 디스코드 채널 홍보 카테고리가 새롭게 오픈했습니다. 길드 모집, 보스런 파티, 거래 커뮤니티 등 다양한 디스코드를 자유롭게 홍보해보세요.',
-    date: '2026-06-05',
-    important: false,
-  },
-  {
-    id: 6,
-    title: '사기 신고 시스템 도입 예정',
-    content: '유저 여러분의 안전한 거래 환경 조성을 위해 사기 신고 시스템이 7월 중 도입될 예정입니다. 신고된 유저는 검증 후 서비스 이용이 제한될 수 있습니다.',
-    date: '2026-06-01',
-    important: true,
-  },
-];
+const ADMIN_PASSWORD = 'maple2026'; // 관리자 비밀번호 (나중에 환경 변수로 변경)
 
 export default function NoticePage() {
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const [showAdminForm, setShowAdminForm] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [form, setForm] = useState({ title: '', content: '', important: false });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchNotices();
+  }, []);
+
+  const fetchNotices = async () => {
+    try {
+      const q = query(collection(db, 'notices'), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const noticesData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        date: doc.data().createdAt ? new Date(doc.data().createdAt.seconds * 1000).toLocaleDateString('ko-KR') : ''
+      })) as Notice[];
+      setNotices(noticesData);
+    } catch (error) {
+      console.error('공지사항 불러오기 실패:', error);
+    }
+  };
+
+  const handleAdminLogin = () => {
+    const password = prompt('관리자 비밀번호를 입력하세요:');
+    if (password === ADMIN_PASSWORD) {
+      setIsAdmin(true);
+      setShowAdminForm(true);
+    } else if (password) {
+      alert('비밀번호가 일치하지 않습니다.');
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.title || !form.content) {
+      return alert('제목과 내용을 입력하세요.');
+    }
+
+    setLoading(true);
+    try {
+      await addDoc(collection(db, 'notices'), {
+        title: form.title,
+        content: form.content,
+        important: form.important,
+        createdAt: new Date()
+      });
+
+      alert('공지사항이 등록되었습니다!');
+      setShowAdminForm(false);
+      setForm({ title: '', content: '', important: false });
+      fetchNotices();
+    } catch (error) {
+      console.error('공지사항 등록 실패:', error);
+      alert('공지사항 등록에 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (noticeId: string) => {
+    if (!isAdmin) {
+      const password = prompt('관리자 비밀번호를 입력하세요:');
+      if (password !== ADMIN_PASSWORD) {
+        alert('비밀번호가 일치하지 않습니다.');
+        return;
+      }
+    }
+
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+
+    try {
+      await deleteDoc(doc(db, 'notices', noticeId));
+      alert('삭제되었습니다.');
+      fetchNotices();
+    } catch (error) {
+      console.error('삭제 실패:', error);
+      alert('삭제에 실패했습니다.');
+    }
+  };
+
   return (
-    <div className="bg-slate-900 min-h-screen py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div style={{ backgroundColor: '#0F172A', minHeight: '100vh', padding: '32px 0', fontFamily: "'Noto Sans KR', sans-serif" }}>
+      <div style={{ maxWidth: '1024px', margin: '0 auto', padding: '0 16px' }}>
+
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-slate-100 mb-2">공지사항 & 소식</h1>
-          <p className="text-sm text-slate-400">MAPLE HUB의 최신 소식을 확인하세요</p>
+        <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#F1F5F9', marginBottom: '8px' }}>공지사항 & 소식</h1>
+            <p style={{ fontSize: '14px', color: '#94A3B8' }}>MAPLE HUB의 최신 소식을 확인하세요</p>
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <Link
+              href="/"
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#334155',
+                color: '#F1F5F9',
+                borderRadius: '8px',
+                textDecoration: 'none',
+                fontSize: '14px',
+                fontWeight: '600'
+              }}
+            >
+              홈으로
+            </Link>
+            <button
+              onClick={handleAdminLogin}
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#667eea',
+                color: '#FFF',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: '600'
+              }}
+            >
+              관리자
+            </button>
+          </div>
         </div>
 
         {/* Notice List */}
-        <div className="space-y-4">
-          {mockNotices.map((notice) => (
-            <div
-              key={notice.id}
-              className="bg-slate-800/30 border border-slate-700/50 rounded-lg overflow-hidden hover:bg-slate-800/40 transition-all duration-200"
-            >
-              <div className="p-6">
-                {/* Header */}
-                <div className="flex items-start gap-3 mb-3">
-                  <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
-                    notice.important ? 'bg-amber-500/20' : 'bg-slate-700/50'
-                  }`}>
-                    <Bell className={`w-5 h-5 ${notice.important ? 'text-amber-500' : 'text-slate-400'}`} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      {notice.important && (
-                        <span className="px-2 py-0.5 bg-amber-500/20 text-amber-500 text-xs font-semibold rounded">
-                          중요
-                        </span>
-                      )}
-                      <h2 className="text-lg font-semibold text-slate-100">{notice.title}</h2>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-slate-500">
-                      <Calendar className="w-3 h-3" />
-                      <span>{notice.date}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <p className="text-sm text-slate-300 leading-relaxed pl-13">
-                  {notice.content}
-                </p>
-              </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {notices.length === 0 ? (
+            <div style={{
+              backgroundColor: 'rgba(30, 41, 59, 0.3)',
+              border: '1px solid rgba(71, 85, 105, 0.5)',
+              borderRadius: '12px',
+              padding: '80px 20px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '48px', marginBottom: '20px' }}>📢</div>
+              <p style={{ fontSize: '18px', color: '#94A3B8', fontWeight: '600', marginBottom: '12px' }}>
+                등록된 공지사항이 없습니다
+              </p>
             </div>
-          ))}
+          ) : (
+            notices.map((notice) => (
+              <div
+                key={notice.id}
+                style={{
+                  backgroundColor: 'rgba(30, 41, 59, 0.3)',
+                  border: '1px solid rgba(71, 85, 105, 0.5)',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(30, 41, 59, 0.4)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(30, 41, 59, 0.3)'}
+              >
+                <div style={{ padding: '24px' }}>
+                  {/* Header */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '12px' }}>
+                    <div style={{
+                      flexShrink: 0,
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: notice.important ? 'rgba(251, 191, 36, 0.2)' : 'rgba(71, 85, 105, 0.5)'
+                    }}>
+                      <Bell style={{ width: '20px', height: '20px', color: notice.important ? '#FBBF24' : '#94A3B8' }} />
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        {notice.important && (
+                          <span style={{
+                            padding: '2px 8px',
+                            backgroundColor: 'rgba(251, 191, 36, 0.2)',
+                            color: '#FBBF24',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            borderRadius: '4px'
+                          }}>
+                            중요
+                          </span>
+                        )}
+                        <h2 style={{ fontSize: '18px', fontWeight: '600', color: '#F1F5F9' }}>{notice.title}</h2>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#64748B' }}>
+                        <Calendar style={{ width: '12px', height: '12px' }} />
+                        <span>{notice.date}</span>
+                      </div>
+                    </div>
+                    {isAdmin && (
+                      <button
+                        onClick={() => handleDelete(notice.id)}
+                        style={{
+                          padding: '6px 12px',
+                          backgroundColor: '#EF4444',
+                          color: '#FFF',
+                          border: 'none',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontSize: '12px',
+                          fontWeight: '600'
+                        }}
+                      >
+                        삭제
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Content */}
+                  <p style={{ fontSize: '14px', color: '#CBD5E1', lineHeight: '1.8', paddingLeft: '52px', whiteSpace: 'pre-wrap' }}>
+                    {notice.content}
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
+
+      {/* Admin Form Modal */}
+      {showAdminForm && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0,0,0,0.7)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000,
+          backdropFilter: 'blur(4px)'
+        }}>
+          <div style={{
+            backgroundColor: '#1E293B',
+            padding: '30px',
+            borderRadius: '16px',
+            width: '90%',
+            maxWidth: '600px',
+            border: '1px solid #334155',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+          }}>
+            <h3 style={{
+              marginBottom: '20px',
+              fontWeight: 'bold',
+              fontSize: '20px',
+              borderBottom: '1px solid #334155',
+              paddingBottom: '10px',
+              color: '#F1F5F9'
+            }}>
+              공지사항 작성 (관리자)
+            </h3>
+
+            <form onSubmit={handleSubmit}>
+              <div style={{ marginBottom: '15px' }}>
+                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#94A3B8' }}>제목 *</p>
+                <input
+                  value={form.title}
+                  onChange={e => setForm({ ...form, title: e.target.value })}
+                  style={darkInputStyle}
+                  placeholder="제목을 입력하세요"
+                />
+              </div>
+
+              <div style={{ marginBottom: '15px' }}>
+                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#94A3B8' }}>내용 *</p>
+                <textarea
+                  value={form.content}
+                  onChange={e => setForm({ ...form, content: e.target.value })}
+                  style={{ ...darkInputStyle, height: '200px', resize: 'none' }}
+                  placeholder="내용을 입력하세요"
+                />
+              </div>
+
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#94A3B8', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={form.important}
+                    onChange={e => setForm({ ...form, important: e.target.checked })}
+                    style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                  />
+                  <span style={{ fontSize: '14px', fontWeight: '600' }}>중요 공지로 표시</span>
+                </label>
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    flex: 1,
+                    padding: '15px',
+                    backgroundColor: loading ? '#475569' : '#667eea',
+                    color: '#FFF',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    fontWeight: 'bold',
+                    fontSize: '14px'
+                  }}
+                >
+                  {loading ? '등록 중...' : '등록'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAdminForm(false);
+                    setForm({ title: '', content: '', important: false });
+                  }}
+                  disabled={loading}
+                  style={{
+                    flex: 1,
+                    padding: '15px',
+                    backgroundColor: '#334155',
+                    color: '#94A3B8',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    fontWeight: 'bold',
+                    fontSize: '14px'
+                  }}
+                >
+                  취소
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+const darkInputStyle: React.CSSProperties = {
+  width: '100%',
+  padding: '12px',
+  border: '1px solid #334155',
+  borderRadius: '8px',
+  fontSize: '14px',
+  backgroundColor: '#0F172A',
+  color: '#F1F5F9',
+  outline: 'none'
+};

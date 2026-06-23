@@ -1,30 +1,144 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { collection, addDoc, getDocs, query, orderBy, updateDoc, doc, increment, deleteDoc, where } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '@/lib/firebase';
+
+interface Review {
+  id: string;
+  title: string;
+  nickname: string;
+  content: string;
+  imageUrl?: string;
+  views: number;
+  createdAt: any;
+  password: string;
+}
 
 export default function ReviewsPage() {
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [form, setForm] = useState({ title: '', nickname: '', password: '', content: '' });
   const [image, setImage] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [selectedReview, setSelectedReview] = useState<Review | null>(null);
 
-  // 구글 연동 전까지는 빈 배열
-  const reviews: any[] = [];
+  // 리뷰 목록 불러오기
+  useEffect(() => {
+    fetchReviews();
+  }, []);
 
-  const filteredReviews = reviews.filter(r =>
-    r.title.includes(searchTerm) || r.nickname.includes(searchTerm)
-  );
+  const fetchReviews = async () => {
+    try {
+      const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const reviewsData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Review[];
+      setReviews(reviewsData);
+    } catch (error) {
+      console.error('리뷰 불러오기 실패:', error);
+    }
+  };
 
-  const handleUpload = (e: React.FormEvent) => {
+  // 이미지 업로드
+  const uploadImage = async (file: File): Promise<string> => {
+    const timestamp = Date.now();
+    const storageRef = ref(storage, `reviews/${timestamp}_${file.name}`);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
+  };
+
+  // 리뷰 작성
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title || !form.nickname || !form.password || !form.content) {
       return alert('모든 항목을 입력하세요.');
     }
-    alert('후기 등록 완료! (구글 연동 후 실제 저장됩니다)');
-    setShowForm(false);
-    setForm({ title: '', nickname: '', password: '', content: '' });
-    setImage(null);
+
+    setLoading(true);
+    try {
+      let imageUrl = '';
+      if (image) {
+        imageUrl = await uploadImage(image);
+      }
+
+      await addDoc(collection(db, 'reviews'), {
+        title: form.title,
+        nickname: form.nickname,
+        password: form.password,
+        content: form.content,
+        imageUrl,
+        views: 0,
+        createdAt: new Date()
+      });
+
+      alert('후기가 등록되었습니다!');
+      setShowForm(false);
+      setForm({ title: '', nickname: '', password: '', content: '' });
+      setImage(null);
+      fetchReviews();
+    } catch (error) {
+      console.error('후기 등록 실패:', error);
+      alert('후기 등록에 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 리뷰 클릭 (조회수 증가)
+  const handleReviewClick = async (review: Review) => {
+    try {
+      const reviewRef = doc(db, 'reviews', review.id);
+      await updateDoc(reviewRef, {
+        views: increment(1)
+      });
+      setSelectedReview({ ...review, views: review.views + 1 });
+    } catch (error) {
+      console.error('조회수 증가 실패:', error);
+      setSelectedReview(review);
+    }
+  };
+
+  // 리뷰 삭제
+  const handleDelete = async (reviewId: string) => {
+    const password = prompt('비밀번호를 입력하세요:');
+    if (!password) return;
+
+    const review = reviews.find(r => r.id === reviewId);
+    if (!review) return;
+
+    if (review.password !== password) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+
+    try {
+      await deleteDoc(doc(db, 'reviews', reviewId));
+      alert('삭제되었습니다.');
+      setSelectedReview(null);
+      fetchReviews();
+    } catch (error) {
+      console.error('삭제 실패:', error);
+      alert('삭제에 실패했습니다.');
+    }
+  };
+
+  const filteredReviews = reviews.filter(r =>
+    r.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    r.nickname.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const formatDate = (date: any) => {
+    if (!date) return '';
+    const d = date.toDate ? date.toDate() : new Date(date);
+    return d.toLocaleDateString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit' });
   };
 
   return (
@@ -89,7 +203,7 @@ export default function ReviewsPage() {
 
         {/* 헤더 */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
-          <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#1E293B', margin: 0 }}>이용후기</h2>
+          <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#1E293B', margin: 0 }}>이용후기 ({reviews.length})</h2>
           <button
             onClick={() => setShowForm(true)}
             style={{
@@ -105,20 +219,6 @@ export default function ReviewsPage() {
           >
             + 후기 쓰기
           </button>
-        </div>
-
-        {/* 안내 메시지 */}
-        <div style={{
-          background: '#FEF3C7',
-          border: '1px solid #FDE68A',
-          padding: '20px',
-          borderRadius: '12px',
-          marginBottom: '32px',
-          textAlign: 'center'
-        }}>
-          <p style={{ fontSize: '15px', color: '#92400E', fontWeight: '600' }}>
-            💡 이용후기는 구글 연동 후 실제로 저장됩니다. 현재는 테스트 모드입니다.
-          </p>
         </div>
 
         {/* 테이블 헤더 */}
@@ -140,8 +240,8 @@ export default function ReviewsPage() {
           <div style={{ width: '10%' }}>조회</div>
         </div>
 
-        {/* 빈 상태 */}
-        {filteredReviews.length === 0 && (
+        {/* 리뷰 목록 */}
+        {filteredReviews.length === 0 ? (
           <div style={{
             padding: '80px 20px',
             textAlign: 'center',
@@ -157,12 +257,39 @@ export default function ReviewsPage() {
               첫 번째 후기를 남겨주세요!
             </p>
           </div>
+        ) : (
+          filteredReviews.map((review, index) => (
+            <div
+              key={review.id}
+              onClick={() => handleReviewClick(review)}
+              style={{
+                display: 'flex',
+                padding: '18px 0',
+                borderBottom: '1px solid #E2E8F0',
+                cursor: 'pointer',
+                backgroundColor: '#FFFFFF',
+                textAlign: 'center',
+                fontSize: '14px',
+                transition: 'background-color 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F8FAFC'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FFFFFF'}
+            >
+              <div style={{ width: '10%', color: '#94A3B8' }}>{reviews.length - index}</div>
+              <div style={{ width: '55%', textAlign: 'left', paddingLeft: '20px', color: '#1E293B', fontWeight: '500' }}>
+                {review.imageUrl && '📷 '}{review.title}
+              </div>
+              <div style={{ width: '15%', color: '#64748B' }}>{review.nickname}</div>
+              <div style={{ width: '10%', color: '#94A3B8' }}>{formatDate(review.createdAt)}</div>
+              <div style={{ width: '10%', color: '#94A3B8' }}>{review.views}</div>
+            </div>
+          ))
         )}
 
         {/* 검색 영역 */}
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '40px', gap: '10px' }}>
           <input
-            placeholder="제목 및 내용 검색"
+            placeholder="제목 및 작성자 검색"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{
@@ -176,20 +303,6 @@ export default function ReviewsPage() {
               fontSize: '14px'
             }}
           />
-          <button
-            style={{
-              padding: '10px 25px',
-              backgroundColor: '#667eea',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              color: '#FFF',
-              boxShadow: '0 2px 8px rgba(102,126,234,0.3)'
-            }}
-          >
-            검색
-          </button>
         </div>
       </div>
 
@@ -231,7 +344,7 @@ export default function ReviewsPage() {
               후기 작성
             </h3>
 
-            <form onSubmit={handleUpload}>
+            <form onSubmit={handleSubmit}>
               <div style={{ marginBottom: '15px' }}>
                 <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>제목 *</p>
                 <input
@@ -278,31 +391,41 @@ export default function ReviewsPage() {
                 <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>사진 첨부</p>
                 <input
                   type="file"
+                  accept="image/*"
                   onChange={e => setImage(e.target.files?.[0] || null)}
                   style={{ color: '#475569' }}
                 />
+                {image && (
+                  <p style={{ fontSize: '12px', color: '#10b981', marginTop: '5px' }}>✓ {image.name}</p>
+                )}
               </div>
 
               <div style={{ display: 'flex', gap: '10px' }}>
                 <button
                   type="submit"
+                  disabled={loading}
                   style={{
                     flex: 1,
                     padding: '15px',
-                    backgroundColor: '#667eea',
+                    backgroundColor: loading ? '#94A3B8' : '#667eea',
                     color: '#FFF',
                     border: 'none',
                     borderRadius: '8px',
-                    cursor: 'pointer',
+                    cursor: loading ? 'not-allowed' : 'pointer',
                     fontWeight: 'bold',
                     boxShadow: '0 2px 8px rgba(102,126,234,0.3)'
                   }}
                 >
-                  작성 완료
+                  {loading ? '등록 중...' : '작성 완료'}
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowForm(false)}
+                  onClick={() => {
+                    setShowForm(false);
+                    setForm({ title: '', nickname: '', password: '', content: '' });
+                    setImage(null);
+                  }}
+                  disabled={loading}
                   style={{
                     flex: 1,
                     padding: '15px',
@@ -310,7 +433,7 @@ export default function ReviewsPage() {
                     color: '#64748B',
                     border: 'none',
                     borderRadius: '8px',
-                    cursor: 'pointer',
+                    cursor: loading ? 'not-allowed' : 'pointer',
                     fontWeight: 'bold'
                   }}
                 >
@@ -318,6 +441,107 @@ export default function ReviewsPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* 리뷰 상세보기 모달 */}
+      {selectedReview && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000,
+          backdropFilter: 'blur(4px)'
+        }}>
+          <div style={{
+            backgroundColor: '#FFFFFF',
+            padding: '30px',
+            borderRadius: '16px',
+            width: '90%',
+            maxWidth: '800px',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            border: '1px solid #E2E8F0',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+            color: '#1E293B'
+          }}>
+            <div style={{ borderBottom: '2px solid #667eea', paddingBottom: '20px', marginBottom: '20px' }}>
+              <h3 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '15px', color: '#1E293B' }}>
+                {selectedReview.title}
+              </h3>
+              <div style={{ display: 'flex', gap: '15px', fontSize: '14px', color: '#64748B' }}>
+                <span>작성자: {selectedReview.nickname}</span>
+                <span>|</span>
+                <span>작성일: {formatDate(selectedReview.createdAt)}</span>
+                <span>|</span>
+                <span>조회: {selectedReview.views}</span>
+              </div>
+            </div>
+
+            {selectedReview.imageUrl && (
+              <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+                <img
+                  src={selectedReview.imageUrl}
+                  alt="리뷰 이미지"
+                  style={{ maxWidth: '100%', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                />
+              </div>
+            )}
+
+            <div style={{
+              padding: '20px',
+              backgroundColor: '#F8FAFC',
+              borderRadius: '12px',
+              minHeight: '200px',
+              fontSize: '15px',
+              lineHeight: '1.8',
+              color: '#1E293B',
+              whiteSpace: 'pre-wrap',
+              marginBottom: '20px'
+            }}>
+              {selectedReview.content}
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                onClick={() => handleDelete(selectedReview.id)}
+                style={{
+                  padding: '12px 24px',
+                  backgroundColor: '#EF4444',
+                  color: '#FFF',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  fontSize: '14px'
+                }}
+              >
+                삭제
+              </button>
+              <button
+                onClick={() => setSelectedReview(null)}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  backgroundColor: '#F1F5F9',
+                  color: '#64748B',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  fontSize: '14px'
+                }}
+              >
+                닫기
+              </button>
+            </div>
           </div>
         </div>
       )}
