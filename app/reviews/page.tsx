@@ -58,41 +58,81 @@ export default function ReviewsPage() {
   // 리뷰 작성
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // 입력값 검증
     if (!form.title || !form.nickname || !form.password || !form.content) {
-      return alert('모든 항목을 입력하세요.');
+      alert('모든 항목을 입력하세요.');
+      return;
+    }
+
+    // 이미 로딩 중이면 중복 실행 방지
+    if (loading) {
+      console.log('이미 처리 중입니다.');
+      return;
     }
 
     setLoading(true);
+    console.log('=== 후기 등록 시작 ===');
+
     try {
       let imageUrl = '';
+
+      // 이미지 업로드
       if (image) {
-        console.log('이미지 업로드 시작:', image.name);
-        imageUrl = await uploadImage(image);
-        console.log('이미지 업로드 완료:', imageUrl);
+        console.log('1. 이미지 업로드 시작:', image.name);
+        try {
+          imageUrl = await uploadImage(image);
+          console.log('1. 이미지 업로드 완료:', imageUrl);
+        } catch (imgError: any) {
+          console.error('이미지 업로드 실패:', imgError);
+          throw new Error(`이미지 업로드 실패: ${imgError.message}`);
+        }
       }
 
-      console.log('Firestore에 데이터 저장 시작');
-      await addDoc(collection(db, 'reviews'), {
+      // Firestore에 저장
+      console.log('2. Firestore에 데이터 저장 시작');
+      const docRef = await addDoc(collection(db, 'reviews'), {
         title: form.title,
         nickname: form.nickname,
         password: form.password,
         content: form.content,
-        imageUrl,
+        imageUrl: imageUrl || '',
         views: 0,
         createdAt: new Date()
       });
-      console.log('Firestore 저장 완료');
+      console.log('2. Firestore 저장 완료, ID:', docRef.id);
 
+      // 성공 처리
       alert('후기가 등록되었습니다!');
       setShowForm(false);
       setForm({ title: '', nickname: '', password: '', content: '' });
       setImage(null);
-      fetchReviews();
+
+      // 목록 새로고침
+      console.log('3. 목록 새로고침 시작');
+      await fetchReviews();
+      console.log('=== 후기 등록 완료 ===');
+
     } catch (error: any) {
-      console.error('후기 등록 실패:', error);
-      alert(`후기 등록에 실패했습니다.\n에러: ${error.message || error}`);
+      console.error('❌ 후기 등록 실패:', error);
+      console.error('에러 상세:', {
+        message: error.message,
+        code: error.code,
+        stack: error.stack
+      });
+
+      let errorMessage = '후기 등록에 실패했습니다.';
+
+      if (error.code === 'permission-denied') {
+        errorMessage += '\nFirebase 권한 오류입니다. 관리자에게 문의하세요.';
+      } else if (error.message) {
+        errorMessage += `\n오류: ${error.message}`;
+      }
+
+      alert(errorMessage);
     } finally {
       setLoading(false);
+      console.log('로딩 상태 해제');
     }
   };
 
