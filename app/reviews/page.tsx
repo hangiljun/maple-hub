@@ -186,10 +186,6 @@ export default function ReviewsPage() {
         stack: error.stack
       });
 
-      // Firebase 연결 상태 확인
-      console.log('Firebase 앱 이름:', app?.name);
-      console.log('Firestore 인스턴스:', db ? '존재함' : '없음');
-
       let errorMessage = '후기 등록에 실패했습니다.';
 
       if (error.code === 'permission-denied') {
