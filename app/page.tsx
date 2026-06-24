@@ -194,198 +194,130 @@ export default function Home() {
           </p>
         </div>
 
-        {/* 메소 거래 배너 */}
-        <Link href="/meso" style={{ textDecoration: 'none', display: 'block', marginBottom: '60px' }}>
-          <div className="card-hover" style={{
-            position: 'relative',
-            borderRadius: '24px',
-            overflow: 'hidden',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
-            border: '1px solid rgba(255, 255, 255, 0.8)'
-          }}>
-            {/* 배경 이미지 */}
-            <img
-              src="/메소.png"
-              alt="메소 거래"
-              style={{
-                width: '100%',
-                height: 'auto',
-                display: 'block'
-              }}
-            />
-
-            {/* 하단 텍스트 영역 */}
-            <div style={{
-              background: 'white',
-              padding: '24px 32px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
-              <div>
-                <h3 style={{
-                  fontSize: '20px',
-                  fontWeight: '900',
-                  color: '#1E293B',
-                  marginBottom: '8px'
-                }}>메이플 메소 거래</h3>
-                <p style={{
-                  fontSize: '14px',
-                  color: '#64748B',
-                  lineHeight: 1.6
-                }}>
-                  안전한 메소 거래 • 실시간 시세 확인
-                </p>
-              </div>
-              <button style={{
-                padding: '12px 24px',
-                background: '#f59e0b',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                fontSize: '14px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                whiteSpace: 'nowrap',
-                boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#d97706';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#f59e0b';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}>
-                바로가기 →
-              </button>
-            </div>
-          </div>
-        </Link>
-
-        {/* 메인 카드 그리드 */}
+        {/* 배너 그리드 (급처템, 메소, 디스코드) */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))',
           gap: '24px',
-          marginBottom: '60px',
-          perspective: '1000px'
+          marginBottom: '60px'
         }}>
 
-          {/* 급처템 홍보 카드 */}
+          {/* 급처템 홍보 배너 */}
           <Link href="/items" style={{ textDecoration: 'none' }}>
             <div className="card-hover" style={{
-              background: 'linear-gradient(135deg, #E0E7FF 0%, #C7D2FE 100%)',
-              padding: '48px 32px',
-              borderRadius: '24px',
-              minHeight: '280px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
               position: 'relative',
+              borderRadius: '16px',
               overflow: 'hidden',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
               border: '1px solid rgba(255, 255, 255, 0.8)',
-              boxShadow: '0 20px 60px rgba(102, 126, 234, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6)'
+              transition: 'all 0.3s'
             }}>
-              {/* 배경 장식 */}
+              <img
+                src="/급처템.png"
+                alt="급처템 홍보"
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  display: 'block'
+                }}
+              />
               <div style={{
-                position: 'absolute',
-                top: '-50px',
-                right: '-50px',
-                width: '200px',
-                height: '200px',
-                background: 'radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)',
-                borderRadius: '50%'
-              }}></div>
-
-              <div>
-                <div className="float-animation" style={{
-                  fontSize: '72px',
-                  marginBottom: '20px',
-                  filter: 'drop-shadow(0 4px 12px rgba(102, 126, 234, 0.3))'
-                }}>⚡</div>
+                background: 'white',
+                padding: '16px 20px',
+                textAlign: 'center'
+              }}>
                 <h3 style={{
-                  fontSize: '28px',
-                  fontWeight: '900',
-                  marginBottom: '16px',
-                  color: '#4C1D95'
+                  fontSize: '16px',
+                  fontWeight: '700',
+                  color: '#1E293B',
+                  marginBottom: '4px'
                 }}>급처템 홍보</h3>
                 <p style={{
-                  fontSize: '15px',
-                  color: '#5B21B6',
-                  lineHeight: 1.7,
-                  opacity: 0.9
+                  fontSize: '13px',
+                  color: '#64748B'
                 }}>
-                  아이템을 빠르게 판매하거나<br />구매할 수 있습니다
+                  빠른 아이템 거래
                 </p>
-              </div>
-              <div style={{
-                fontSize: '14px',
-                color: '#667eea',
-                fontWeight: '700',
-                marginTop: '24px'
-              }}>
-                → 거래 방법 보러가기
               </div>
             </div>
           </Link>
 
-          {/* 디스코드 홍보 카드 */}
-          <Link href="/discord" style={{ textDecoration: 'none' }}>
+          {/* 메소 거래 배너 */}
+          <Link href="/meso" style={{ textDecoration: 'none' }}>
             <div className="card-hover" style={{
-              background: 'linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%)',
-              padding: '48px 32px',
-              borderRadius: '24px',
-              minHeight: '280px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
               position: 'relative',
+              borderRadius: '16px',
               overflow: 'hidden',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
               border: '1px solid rgba(255, 255, 255, 0.8)',
-              boxShadow: '0 20px 60px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6)'
+              transition: 'all 0.3s'
             }}>
-              {/* 배경 장식 */}
+              <img
+                src="/메소.png"
+                alt="메소 거래"
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  display: 'block'
+                }}
+              />
               <div style={{
-                position: 'absolute',
-                top: '-30px',
-                left: '-30px',
-                width: '150px',
-                height: '150px',
-                background: 'radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)',
-                borderRadius: '50%'
-              }}></div>
-
-              <div>
-                <div className="float-animation" style={{
-                  fontSize: '72px',
-                  marginBottom: '20px',
-                  filter: 'drop-shadow(0 4px 12px rgba(59, 130, 246, 0.3))',
-                  animationDelay: '2s'
-                }}>💬</div>
+                background: 'white',
+                padding: '16px 20px',
+                textAlign: 'center'
+              }}>
                 <h3 style={{
-                  fontSize: '28px',
-                  fontWeight: '900',
-                  marginBottom: '16px',
-                  color: '#1E3A8A'
-                }}>디스코드 홍보</h3>
+                  fontSize: '16px',
+                  fontWeight: '700',
+                  color: '#1E293B',
+                  marginBottom: '4px'
+                }}>메이플 메소 거래</h3>
                 <p style={{
-                  fontSize: '15px',
-                  color: '#1E40AF',
-                  lineHeight: 1.7,
-                  opacity: 0.9
+                  fontSize: '13px',
+                  color: '#64748B'
                 }}>
-                  길드, 파티 모집<br />커뮤니티 홍보
+                  실시간 시세 확인
                 </p>
               </div>
+            </div>
+          </Link>
+
+          {/* 디스코드 홍보 배너 */}
+          <Link href="/discord" style={{ textDecoration: 'none' }}>
+            <div className="card-hover" style={{
+              position: 'relative',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+              border: '1px solid rgba(255, 255, 255, 0.8)',
+              transition: 'all 0.3s'
+            }}>
+              <img
+                src="/discord.png"
+                alt="디스코드 홍보"
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  display: 'block'
+                }}
+              />
               <div style={{
-                fontSize: '14px',
-                color: '#3b82f6',
-                fontWeight: '700',
-                marginTop: '24px'
+                background: 'white',
+                padding: '16px 20px',
+                textAlign: 'center'
               }}>
-                → 디스코드 보러가기
+                <h3 style={{
+                  fontSize: '16px',
+                  fontWeight: '700',
+                  color: '#1E293B',
+                  marginBottom: '4px'
+                }}>디스코드 홍보</h3>
+                <p style={{
+                  fontSize: '13px',
+                  color: '#64748B'
+                }}>
+                  길드 • 파티 모집
+                </p>
               </div>
             </div>
           </Link>
