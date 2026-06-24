@@ -271,6 +271,130 @@ export default function Home() {
 
         </div>
 
+        {/* 왜 메이플허브 인가요? */}
+        <div style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          padding: '60px 48px',
+          borderRadius: '28px',
+          marginBottom: '80px',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {/* 배경 장식 */}
+          <div style={{
+            position: 'absolute',
+            top: '-100px',
+            right: '-100px',
+            width: '400px',
+            height: '400px',
+            background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+            borderRadius: '50%'
+          }}></div>
+          <div style={{
+            position: 'absolute',
+            bottom: '-50px',
+            left: '-50px',
+            width: '300px',
+            height: '300px',
+            background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%)',
+            borderRadius: '50%'
+          }}></div>
+
+          <h2 style={{
+            fontSize: '36px',
+            fontWeight: '900',
+            color: 'white',
+            marginBottom: '16px',
+            textAlign: 'center',
+            position: 'relative',
+            zIndex: 1
+          }}>
+            왜 메이플허브 인가요?
+          </h2>
+          <p style={{
+            fontSize: '16px',
+            color: 'rgba(255, 255, 255, 0.9)',
+            textAlign: 'center',
+            marginBottom: '48px',
+            position: 'relative',
+            zIndex: 1
+          }}>
+            다른 서비스와 차별화된 메이플허브만의 장점
+          </p>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 1fr))',
+            gap: '24px',
+            position: 'relative',
+            zIndex: 1
+          }}>
+            {[
+              {
+                icon: '⚡',
+                title: '빠른 응답',
+                desc: '평균 5분 이내 카카오톡 응답으로 신속한 거래 진행'
+              },
+              {
+                icon: '🛡️',
+                title: '안전한 거래',
+                desc: '검증된 거래자들과 안전하고 믿을 수 있는 거래 환경'
+              },
+              {
+                icon: '💯',
+                title: '실시간 시세',
+                desc: '메소 시세를 실시간으로 확인하고 합리적인 가격에 거래'
+              },
+              {
+                icon: '🌙',
+                title: '24시간 운영',
+                desc: '언제든지 편한 시간에 거래 문의 및 상담 가능'
+              }
+            ].map((feature, i) => (
+              <div key={i} style={{
+                background: 'rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(10px)',
+                padding: '32px 24px',
+                borderRadius: '20px',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                textAlign: 'center',
+                transition: 'all 0.3s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+                e.currentTarget.style.transform = 'translateY(-4px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}>
+                <div style={{
+                  fontSize: '48px',
+                  marginBottom: '16px',
+                  filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))'
+                }}>
+                  {feature.icon}
+                </div>
+                <h3 style={{
+                  fontSize: '20px',
+                  fontWeight: '700',
+                  color: 'white',
+                  marginBottom: '12px'
+                }}>
+                  {feature.title}
+                </h3>
+                <p style={{
+                  fontSize: '14px',
+                  color: 'rgba(255, 255, 255, 0.85)',
+                  lineHeight: 1.6
+                }}>
+                  {feature.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* 이용후기 섹션 */}
         <div style={{ marginBottom: '60px' }}>
           <div style={{
