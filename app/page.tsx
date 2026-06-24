@@ -397,13 +397,9 @@ export default function Home() {
                 }}
                 >
                   <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
                     marginBottom: '12px'
                   }}>
                     <span style={{ fontSize: '16px', fontWeight: '700', color: '#1E293B' }}>{review.nickname}</span>
-                    <span style={{ fontSize: '18px' }}>⭐⭐⭐⭐⭐</span>
                   </div>
                   {review.imageUrl && (
                     <div style={{
