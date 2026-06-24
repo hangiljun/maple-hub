@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/firebase';
+import { firebaseConfig } from '@/lib/firebase-config';
 import Navigation from '@/components/Navigation';
 import FAB from '@/components/FAB';
 
@@ -35,14 +36,7 @@ export default function ReviewsPage() {
   const fetchReviews = async () => {
     try {
       console.log('🔍 REST API로 후기 불러오기 시작...');
-      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-      const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
-
-      if (!projectId || !apiKey) {
-        console.error('❌ Firebase 환경 변수 없음:', { projectId, apiKey: apiKey ? '존재' : '없음' });
-        return;
-      }
-
+      const { projectId, apiKey } = firebaseConfig;
       const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/reviews?key=${apiKey}`;
       console.log('📡 요청 URL:', url.replace(apiKey, 'API_KEY_HIDDEN'));
 
@@ -113,7 +107,7 @@ export default function ReviewsPage() {
 
     setLoading(true);
     console.log('=== 후기 등록 시작 ===');
-    console.log('Firebase 프로젝트 ID:', process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID);
+    console.log('Firebase 프로젝트 ID:', firebaseConfig.projectId);
 
     try {
       let imageUrl = '';
@@ -139,13 +133,7 @@ export default function ReviewsPage() {
         imageUrl: imageUrl || '없음',
       });
 
-      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-      const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
-
-      if (!projectId || !apiKey) {
-        throw new Error('Firebase 환경 변수가 설정되지 않았습니다. Vercel 대시보드에서 환경 변수를 설정해주세요.');
-      }
-
+      const { projectId, apiKey } = firebaseConfig;
       const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/reviews?key=${apiKey}`;
       console.log('📡 요청 URL:', url.replace(apiKey, 'API_KEY_HIDDEN'));
 
@@ -219,8 +207,7 @@ export default function ReviewsPage() {
   // 리뷰 클릭 (조회수 증가)
   const handleReviewClick = async (review: Review) => {
     try {
-      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-      const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+      const { projectId, apiKey } = firebaseConfig;
       const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/reviews/${review.id}?key=${apiKey}&updateMask.fieldPaths=views`;
 
       const newViews = review.views + 1;
@@ -260,8 +247,7 @@ export default function ReviewsPage() {
     if (!confirm('정말 삭제하시겠습니까?')) return;
 
     try {
-      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-      const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+      const { projectId, apiKey } = firebaseConfig;
       const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/reviews/${reviewId}?key=${apiKey}`;
 
       const response = await fetch(url, {
