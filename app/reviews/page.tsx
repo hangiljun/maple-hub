@@ -553,42 +553,74 @@ export default function ReviewsPage() {
       )}
 
       {/* 고정 카카오톡 문의 버튼 */}
-      <a
-        href="https://open.kakao.com/o/sfxfJyAi"
-        target="_blank"
-        rel="noopener noreferrer"
+      <div
         style={{
           position: 'fixed',
           bottom: '32px',
           right: '32px',
-          padding: '16px 32px',
-          background: 'linear-gradient(135deg, #FEE500 0%, #FFD400 100%)',
-          color: '#3C1E1E',
-          borderRadius: '50px',
-          fontSize: '16px',
-          fontWeight: '900',
-          textDecoration: 'none',
-          boxShadow: '0 8px 32px rgba(254, 229, 0, 0.4)',
           zIndex: 1000,
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
-          transition: 'all 0.3s ease',
-          cursor: 'pointer',
-          border: 'none'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'translateY(-4px) scale(1.05)';
-          e.currentTarget.style.boxShadow = '0 12px 40px rgba(254, 229, 0, 0.6)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'translateY(0) scale(1)';
-          e.currentTarget.style.boxShadow = '0 8px 32px rgba(254, 229, 0, 0.4)';
+          gap: '12px'
         }}
       >
-        <span style={{ fontSize: '20px' }}>💬</span>
-        <span>han8246 카톡</span>
-      </a>
+        <div
+          className="kakao-label"
+          style={{
+            background: '#3C3C3C',
+            color: 'white',
+            padding: '10px 16px',
+            borderRadius: '20px',
+            fontSize: '14px',
+            fontWeight: '500',
+            whiteSpace: 'nowrap',
+            opacity: 0,
+            transform: 'translateX(10px)',
+            transition: 'all 0.3s ease',
+            pointerEvents: 'none'
+          }}
+        >
+          카카오톡 ID : han8246
+        </div>
+        <a
+          href="https://open.kakao.com/o/sfxfJyAi"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            width: '60px',
+            height: '60px',
+            background: 'linear-gradient(135deg, #FEE500 0%, #FFD400 100%)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 8px 32px rgba(254, 229, 0, 0.4)',
+            textDecoration: 'none',
+            transition: 'all 0.3s ease',
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-4px) scale(1.1)';
+            e.currentTarget.style.boxShadow = '0 12px 40px rgba(254, 229, 0, 0.6)';
+            const label = e.currentTarget.previousElementSibling as HTMLElement;
+            if (label) {
+              label.style.opacity = '1';
+              label.style.transform = 'translateX(0)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0) scale(1)';
+            e.currentTarget.style.boxShadow = '0 8px 32px rgba(254, 229, 0, 0.4)';
+            const label = e.currentTarget.previousElementSibling as HTMLElement;
+            if (label) {
+              label.style.opacity = '0';
+              label.style.transform = 'translateX(10px)';
+            }
+          }}
+        >
+          <span style={{ fontSize: '28px' }}>💬</span>
+        </a>
+      </div>
     </div>
   );
 }
