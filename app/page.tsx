@@ -409,7 +409,7 @@ export default function Home() {
                     }}>
                       <img
                         src={review.imageUrl}
-                        alt={review.content}
+                        alt={review.title}
                         style={{
                           width: '100%',
                           height: '200px',
@@ -418,6 +418,17 @@ export default function Home() {
                       />
                     </div>
                   )}
+                  <h3 style={{
+                    fontSize: '15px',
+                    fontWeight: '600',
+                    color: '#1E293B',
+                    marginBottom: '8px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {review.title}
+                  </h3>
                   <p style={{
                     fontSize: '14px',
                     color: '#64748B',
