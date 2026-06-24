@@ -706,6 +706,44 @@ export default function ItemsPage() {
           </div>
         </div>
       )}
+
+      {/* 고정 카카오톡 문의 버튼 */}
+      <a
+        href="https://open.kakao.com/o/sfxfJyAi"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          position: 'fixed',
+          bottom: '32px',
+          right: '32px',
+          padding: '16px 32px',
+          background: 'linear-gradient(135deg, #FEE500 0%, #FFD400 100%)',
+          color: '#3C1E1E',
+          borderRadius: '50px',
+          fontSize: '16px',
+          fontWeight: '900',
+          textDecoration: 'none',
+          boxShadow: '0 8px 32px rgba(254, 229, 0, 0.4)',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          transition: 'all 0.3s ease',
+          cursor: 'pointer',
+          border: 'none'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-4px) scale(1.05)';
+          e.currentTarget.style.boxShadow = '0 12px 40px rgba(254, 229, 0, 0.6)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0) scale(1)';
+          e.currentTarget.style.boxShadow = '0 8px 32px rgba(254, 229, 0, 0.4)';
+        }}
+      >
+        <span style={{ fontSize: '20px' }}>💬</span>
+        <span>카톡 문의하기</span>
+      </a>
     </div>
   );
 }
