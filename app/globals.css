@@ -10,3 +10,73 @@ body {
   background: #F8FAFC;
   color: #1E293B;
 }
+
+/* 모바일 최적화 */
+@media (max-width: 768px) {
+  /* 네비게이션 메뉴 스크롤 */
+  nav > div > div:last-child {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    white-space: nowrap;
+    gap: 20px !important;
+  }
+
+  nav > div > div:last-child::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 네비게이션 메뉴 아이템 */
+  nav > div > div:last-child > * {
+    flex-shrink: 0;
+  }
+
+  /* 네비게이션 로고 */
+  nav a:first-child {
+    font-size: 18px !important;
+  }
+
+  /* 카드 패딩 */
+  .card-hover {
+    padding: 32px 24px !important;
+    min-height: 240px !important;
+  }
+
+  /* 공지사항 섹션 */
+  footer, .notice-section, .guide-section {
+    padding: 32px 20px !important;
+  }
+
+  /* 텍스트 크기 */
+  h1 {
+    font-size: clamp(28px, 8vw, 48px) !important;
+  }
+
+  h2 {
+    font-size: clamp(24px, 6vw, 32px) !important;
+  }
+
+  h3 {
+    font-size: clamp(20px, 5vw, 28px) !important;
+  }
+
+  /* 버튼/링크 터치 영역 */
+  a, button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* 터치 디바이스 최적화 */
+@media (hover: none) {
+  .card-hover:hover {
+    transform: none !important;
+  }
+
+  .card-hover:active {
+    transform: scale(0.98) !important;
+  }
+}

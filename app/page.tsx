@@ -85,7 +85,7 @@ export default function Home() {
       </nav>
 
       {/* 메인 콘텐츠 */}
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '80px 20px' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'clamp(40px, 8vw, 80px) clamp(16px, 4vw, 20px)' }}>
 
         {/* 상단 상태 바 */}
         <div style={{
@@ -130,9 +130,9 @@ export default function Home() {
         {/* 메인 카드 그리드 */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '32px',
-          marginBottom: '80px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))',
+          gap: '24px',
+          marginBottom: '60px',
           perspective: '1000px'
         }}>
 
@@ -439,8 +439,8 @@ export default function Home() {
           </h2>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '32px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))',
+            gap: '24px'
           }}>
             {[
               { num: '1', title: '원하는 메뉴 선택', desc: '급처템/메소/디스코드' },
