@@ -37,7 +37,14 @@ export default function ReviewsPage() {
       console.log('🔍 REST API로 후기 불러오기 시작...');
       const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
       const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+
+      if (!projectId || !apiKey) {
+        console.error('❌ Firebase 환경 변수 없음:', { projectId, apiKey: apiKey ? '존재' : '없음' });
+        return;
+      }
+
       const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/reviews?key=${apiKey}`;
+      console.log('📡 요청 URL:', url.replace(apiKey, 'API_KEY_HIDDEN'));
 
       const response = await fetch(url);
 
@@ -134,7 +141,13 @@ export default function ReviewsPage() {
 
       const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
       const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+
+      if (!projectId || !apiKey) {
+        throw new Error('Firebase 환경 변수가 설정되지 않았습니다. Vercel 대시보드에서 환경 변수를 설정해주세요.');
+      }
+
       const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/reviews?key=${apiKey}`;
+      console.log('📡 요청 URL:', url.replace(apiKey, 'API_KEY_HIDDEN'));
 
       const body = {
         fields: {
