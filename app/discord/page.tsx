@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import FAB from '@/components/FAB';
 
 export default function DiscordPage() {
   const [members, setMembers] = useState(47529);
@@ -434,43 +435,7 @@ export default function DiscordPage() {
 
       </div>
 
-      {/* 고정 참가하기 버튼 */}
-      <a
-        href="https://discord.gg/2UwBw8dnSv"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          position: 'fixed',
-          bottom: '32px',
-          right: '32px',
-          padding: '16px 32px',
-          background: 'linear-gradient(135deg, #5865F2 0%, #7289DA 100%)',
-          color: 'white',
-          borderRadius: '50px',
-          fontSize: '16px',
-          fontWeight: '900',
-          textDecoration: 'none',
-          boxShadow: '0 8px 32px rgba(88, 101, 242, 0.4)',
-          zIndex: 1000,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          transition: 'all 0.3s ease',
-          cursor: 'pointer',
-          border: 'none'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'translateY(-4px) scale(1.05)';
-          e.currentTarget.style.boxShadow = '0 12px 40px rgba(88, 101, 242, 0.6)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'translateY(0) scale(1)';
-          e.currentTarget.style.boxShadow = '0 8px 32px rgba(88, 101, 242, 0.4)';
-        }}
-      >
-        <span style={{ fontSize: '20px' }}>💬</span>
-        <span>디스코드 참가하기</span>
-      </a>
+      <FAB type="discord" />
     </div>
   );
 }
