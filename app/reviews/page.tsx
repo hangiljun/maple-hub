@@ -89,9 +89,10 @@ export default function ReviewsPage() {
         }
       }
 
-      // Firestore에 저장
+      // Firestore에 저장 (타임아웃 추가)
       console.log('2. Firestore에 데이터 저장 시작');
-      const docRef = await addDoc(collection(db, 'reviews'), {
+
+      const savePromise = addDoc(collection(db, 'reviews'), {
         title: form.title,
         nickname: form.nickname,
         password: form.password,
@@ -100,6 +101,12 @@ export default function ReviewsPage() {
         views: 0,
         createdAt: new Date()
       });
+
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('저장 시간 초과 (30초). Firebase 연결을 확인하세요.')), 30000)
+      );
+
+      const docRef = await Promise.race([savePromise, timeoutPromise]) as any;
       console.log('2. Firestore 저장 완료, ID:', docRef.id);
 
       // 성공 처리
