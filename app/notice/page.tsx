@@ -3,9 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { collection, addDoc, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '@/lib/firebase';
+import { getDocs, query, orderBy, collection } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import Navigation from '@/components/Navigation';
 import FAB from '@/components/FAB';
 
@@ -25,11 +24,6 @@ export default function NoticePage() {
   const router = useRouter();
   const [notices, setNotices] = useState<Notice[]>([]);
   const [activeTab, setActiveTab] = useState('전체');
-  const [showAdminForm, setShowAdminForm] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [form, setForm] = useState({ title: '', content: '', category: '공지사항', isPinned: false });
-  const [image, setImage] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
 
   const categories = ['전체', '공지사항'];
 
@@ -58,111 +52,6 @@ export default function NoticePage() {
     }
   };
 
-  const handleAdminLogin = async () => {
-    const password = prompt('관리자 비밀번호를 입력하세요:');
-    if (!password) return;
-
-    try {
-      const response = await fetch('/api/admin-auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setIsAdmin(true);
-        setShowAdminForm(true);
-      } else {
-        alert(data.error || '비밀번호가 일치하지 않습니다.');
-      }
-    } catch (error) {
-      alert('로그인 중 오류가 발생했습니다.');
-    }
-  };
-
-  const uploadImage = async (file: File): Promise<string> => {
-    const timestamp = Date.now();
-    const storageRef = ref(storage, `notices/${timestamp}_${file.name}`);
-    await uploadBytes(storageRef, file);
-    return await getDownloadURL(storageRef);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.title || !form.content) {
-      return alert('제목과 내용을 입력하세요.');
-    }
-
-    setLoading(true);
-    try {
-      let imageUrl = '';
-      if (image) {
-        console.log('이미지 업로드 시작:', image.name);
-        imageUrl = await uploadImage(image);
-        console.log('이미지 업로드 완료:', imageUrl);
-      }
-
-      console.log('Firestore에 데이터 저장 시작');
-      await addDoc(collection(db, 'notices'), {
-        title: form.title,
-        content: form.content,
-        category: form.category,
-        imageUrl,
-        isPinned: form.isPinned,
-        createdAt: new Date()
-      });
-      console.log('Firestore 저장 완료');
-
-      alert('공지사항이 등록되었습니다!');
-      setShowAdminForm(false);
-      setForm({ title: '', content: '', category: '공지사항', isPinned: false });
-      setImage(null);
-      fetchNotices();
-    } catch (error: any) {
-      console.error('공지사항 등록 실패:', error);
-      alert(`공지사항 등록에 실패했습니다.\n에러: ${error.message || error}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async (noticeId: string) => {
-    if (!isAdmin) {
-      const password = prompt('관리자 비밀번호를 입력하세요:');
-      if (!password) return;
-
-      try {
-        const response = await fetch('/api/admin-auth', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password })
-        });
-
-        const data = await response.json();
-
-        if (!data.success) {
-          alert(data.error || '비밀번호가 일치하지 않습니다.');
-          return;
-        }
-      } catch (error) {
-        alert('인증 중 오류가 발생했습니다.');
-        return;
-      }
-    }
-
-    if (!confirm('정말 삭제하시겠습니까?')) return;
-
-    try {
-      await deleteDoc(doc(db, 'notices', noticeId));
-      alert('삭제되었습니다.');
-      fetchNotices();
-    } catch (error) {
-      console.error('삭제 실패:', error);
-      alert('삭제에 실패했습니다.');
-    }
-  };
 
   const filteredNotices = activeTab === '전체' ? notices : notices.filter(n => n.category === activeTab);
 
@@ -214,7 +103,7 @@ export default function NoticePage() {
             ))}
           </div>
           <button
-            onClick={handleAdminLogin}
+            onClick={() => router.push('/admin')}
             style={{
               padding: '10px 20px',
               backgroundColor: '#667eea',
@@ -227,7 +116,7 @@ export default function NoticePage() {
               boxShadow: '0 2px 8px rgba(102,126,234,0.3)'
             }}
           >
-            + 공지 쓰기
+            🔧 관리자
           </button>
         </div>
 
@@ -297,29 +186,6 @@ export default function NoticePage() {
                     }}>
                       {notice.category || '공지'}
                     </div>
-                    {isAdmin && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(notice.id);
-                        }}
-                        style={{
-                          position: 'absolute',
-                          bottom: '10px',
-                          right: '10px',
-                          padding: '6px 12px',
-                          backgroundColor: '#EF4444',
-                          color: '#FFF',
-                          border: 'none',
-                          borderRadius: '6px',
-                          cursor: 'pointer',
-                          fontSize: '11px',
-                          fontWeight: '700'
-                        }}
-                      >
-                        삭제
-                      </button>
-                    )}
                   </div>
                   <div style={{ padding: '20px' }}>
                     <h3 style={{ fontSize: '17px', fontWeight: 'bold', margin: '0 0 10px 0', color: '#1E293B' }}>
@@ -338,158 +204,8 @@ export default function NoticePage() {
       </div>
 
       {/* 관리자 작성 모달 */}
-      {showAdminForm && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000,
-          backdropFilter: 'blur(4px)'
-        }}>
-          <div style={{
-            backgroundColor: '#FFFFFF',
-            padding: '30px',
-            borderRadius: '16px',
-            width: '90%',
-            maxWidth: '600px',
-            maxHeight: '90vh',
-            overflowY: 'auto',
-            border: '1px solid #E2E8F0',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
-            color: '#1E293B'
-          }}>
-            <h3 style={{
-              marginBottom: '20px',
-              fontWeight: 'bold',
-              fontSize: '20px',
-              borderBottom: '1px solid #F1F5F9',
-              paddingBottom: '10px',
-              color: '#667eea'
-            }}>
-              공지사항 작성 (관리자)
-            </h3>
-
-            <form onSubmit={handleSubmit}>
-              <div style={{ marginBottom: '15px' }}>
-                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>제목 *</p>
-                <input
-                  value={form.title}
-                  onChange={e => setForm({ ...form, title: e.target.value })}
-                  style={inputStyle}
-                  placeholder="제목을 입력하세요"
-                />
-              </div>
-
-              <div style={{ marginBottom: '15px' }}>
-                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>카테고리 *</p>
-                <select
-                  value={form.category}
-                  onChange={e => setForm({ ...form, category: e.target.value })}
-                  style={inputStyle}
-                >
-                  {categories.filter(c => c !== '전체').map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div style={{ marginBottom: '15px' }}>
-                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>내용 *</p>
-                <textarea
-                  value={form.content}
-                  onChange={e => setForm({ ...form, content: e.target.value })}
-                  style={{ ...inputStyle, height: '200px', resize: 'none' }}
-                  placeholder="내용을 입력하세요"
-                />
-              </div>
-
-              <div style={{ marginBottom: '15px' }}>
-                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>이미지 첨부</p>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={e => setImage(e.target.files?.[0] || null)}
-                  style={{ color: '#475569' }}
-                />
-                {image && (
-                  <p style={{ fontSize: '12px', color: '#10b981', marginTop: '5px' }}>✓ {image.name}</p>
-                )}
-              </div>
-
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748B', cursor: 'pointer' }}>
-                  <input
-                    type="checkbox"
-                    checked={form.isPinned}
-                    onChange={e => setForm({ ...form, isPinned: e.target.checked })}
-                    style={{ width: '16px', height: '16px', cursor: 'pointer' }}
-                  />
-                  <span style={{ fontSize: '14px', fontWeight: '600' }}>상단 고정</span>
-                </label>
-              </div>
-
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  style={{
-                    flex: 1,
-                    padding: '15px',
-                    backgroundColor: loading ? '#94A3B8' : '#667eea',
-                    color: '#FFF',
-                    border: 'none',
-                    borderRadius: '8px',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  {loading ? '등록 중...' : '등록'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowAdminForm(false);
-                    setForm({ title: '', content: '', category: '공지사항', isPinned: false });
-                    setImage(null);
-                  }}
-                  disabled={loading}
-                  style={{
-                    flex: 1,
-                    padding: '15px',
-                    backgroundColor: '#F1F5F9',
-                    color: '#64748B',
-                    border: 'none',
-                    borderRadius: '8px',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  취소
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
       <FAB type="kakao" />
     </div>
   );
 }
 
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  padding: '12px',
-  border: '1px solid #E2E8F0',
-  borderRadius: '8px',
-  fontSize: '14px',
-  backgroundColor: '#F8FAFC',
-  color: '#1E293B',
-  outline: 'none'
-};
