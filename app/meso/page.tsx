@@ -468,13 +468,13 @@ export default function MesoPage() {
             {/* 연락처 */}
             <div style={{ marginBottom: '20px' }}>
               <label style={{ fontSize: '14px', fontWeight: '700', color: '#1a1a1a', marginBottom: '8px', display: 'block' }}>
-                연락처 (카톡ID 또는 전화번호)
+                연락처 (전화번호)
               </label>
               <input
                 type="text"
                 value={contact}
                 onChange={(e) => setContact(e.target.value)}
-                placeholder="예: kakao123 또는 010-1234-5678"
+                placeholder="예: 010-1234-5678"
                 style={{
                   width: '100%',
                   padding: '14px',
