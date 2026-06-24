@@ -197,87 +197,68 @@ export default function Home() {
         {/* 메소 거래 배너 */}
         <Link href="/meso" style={{ textDecoration: 'none', display: 'block', marginBottom: '60px' }}>
           <div className="card-hover" style={{
-            background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
-            padding: '60px 40px',
-            borderRadius: '24px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
             position: 'relative',
+            borderRadius: '24px',
             overflow: 'hidden',
-            border: '1px solid rgba(255, 255, 255, 0.8)',
-            boxShadow: '0 20px 60px rgba(245, 158, 11, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
-            gap: '40px'
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
+            border: '1px solid rgba(255, 255, 255, 0.8)'
           }}>
-            {/* 배경 장식 */}
-            <div style={{
-              position: 'absolute',
-              bottom: '-100px',
-              left: '-100px',
-              width: '300px',
-              height: '300px',
-              background: 'radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)',
-              borderRadius: '50%'
-            }}></div>
-            <div style={{
-              position: 'absolute',
-              top: '-80px',
-              right: '-80px',
-              width: '250px',
-              height: '250px',
-              background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)',
-              borderRadius: '50%'
-            }}></div>
+            {/* 배경 이미지 */}
+            <img
+              src="/메소.png"
+              alt="메소 거래"
+              style={{
+                width: '100%',
+                height: 'auto',
+                display: 'block'
+              }}
+            />
 
-            <div className="float-animation" style={{
-              width: '180px',
-              height: '180px',
-              flexShrink: 0,
-              filter: 'drop-shadow(0 8px 24px rgba(245, 158, 11, 0.4))',
-              animationDelay: '0.5s'
+            {/* 하단 텍스트 영역 */}
+            <div style={{
+              background: 'white',
+              padding: '24px 32px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
             }}>
-              <img src="/메소.png" alt="메소" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-            </div>
-
-            <div style={{ flex: 1 }}>
-              <h3 style={{
-                fontSize: '36px',
-                fontWeight: '900',
-                marginBottom: '16px',
-                color: '#92400E'
-              }}>메이플 메소 거래</h3>
-              <p style={{
-                fontSize: '18px',
-                color: '#B45309',
-                lineHeight: 1.7,
-                opacity: 0.9,
-                marginBottom: '24px'
-              }}>
-                안전한 메소 거래 • 실시간 시세 확인
-              </p>
+              <div>
+                <h3 style={{
+                  fontSize: '20px',
+                  fontWeight: '900',
+                  color: '#1E293B',
+                  marginBottom: '8px'
+                }}>메이플 메소 거래</h3>
+                <p style={{
+                  fontSize: '14px',
+                  color: '#64748B',
+                  lineHeight: 1.6
+                }}>
+                  안전한 메소 거래 • 실시간 시세 확인
+                </p>
+              </div>
               <button style={{
-                padding: '16px 32px',
+                padding: '12px 24px',
                 background: '#f59e0b',
                 color: 'white',
                 border: 'none',
-                borderRadius: '12px',
-                fontSize: '16px',
+                borderRadius: '8px',
+                fontSize: '14px',
                 fontWeight: '700',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
-                boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)'
+                whiteSpace: 'nowrap',
+                boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = '#d97706';
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 8px 20px rgba(245, 158, 11, 0.5)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = '#f59e0b';
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.4)';
               }}>
-                → 바로가기
+                바로가기 →
               </button>
             </div>
           </div>
