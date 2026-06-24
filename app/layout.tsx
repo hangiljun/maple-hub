@@ -13,6 +13,28 @@ export const metadata: Metadata = {
   title: '메이플급처 & 메이플스토리 아이템 - 전 서버 최고가 매입 및 시세 비교 | MAPLE HUB',
   description: '메이플급처, 메이플스토리 급처템, 메소, 아이템 전 서버 최고가 매입. 24시간 상담 및 검증된 업체 리스트를 통해 안전하게 메이플급처 거래하세요.',
   keywords: '메이플급처, 메이플스토리급처, 메이플 급처, 메이플스토리, 메이플, 메이플스토리 급처, 급처템, 아이템 매입, 메소 거래, 메이플 시세',
+  openGraph: {
+    type: 'website',
+    locale: 'ko_KR',
+    url: 'https://www.maplehub.co.kr',
+    siteName: 'MAPLE HUB',
+    title: '메이플급처 & 메이플스토리 아이템 - MAPLE HUB',
+    description: '메이플급처, 메이플스토리 급처템, 메소, 아이템 전 서버 최고가 매입. 24시간 상담 및 검증된 업체 리스트를 통해 안전하게 메이플급처 거래하세요.',
+    images: [
+      {
+        url: '/kakao.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'MAPLE HUB - 메이플급처 & 메이플스토리 아이템 거래',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '메이플급처 & 메이플스토리 아이템 - MAPLE HUB',
+    description: '메이플급처, 메이플스토리 급처템, 메소, 아이템 전 서버 최고가 매입',
+    images: ['/kakao.jpg'],
+  },
 };
 
 export default function RootLayout({
