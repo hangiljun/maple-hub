@@ -1,11 +1,70 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navigation from '@/components/Navigation';
 import FAB from '@/components/FAB';
+import { firebaseConfig } from '@/lib/firebase-config';
+
+interface Review {
+  id: string;
+  title: string;
+  nickname: string;
+  content: string;
+  imageUrl?: string;
+  views: number;
+  createdAt: any;
+}
 
 export default function Home() {
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  const fetchReviews = async () => {
+    try {
+      const { projectId, apiKey } = firebaseConfig;
+      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/reviews?key=${apiKey}`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.documents) {
+        const reviewsData = data.documents.map((doc: any) => {
+          const docId = doc.name.split('/').pop();
+          return {
+            id: docId,
+            title: doc.fields.title?.stringValue || '',
+            nickname: doc.fields.nickname?.stringValue || '',
+            content: doc.fields.content?.stringValue || '',
+            imageUrl: doc.fields.imageUrl?.stringValue || '',
+            views: parseInt(doc.fields.views?.integerValue || '0'),
+            createdAt: doc.fields.createdAt?.timestampValue || doc.createTime
+          };
+        });
+
+        // 최신순 정렬 후 최대 3개만
+        reviewsData.sort((a: Review, b: Review) => {
+          const dateA = new Date(a.createdAt).getTime();
+          const dateB = new Date(b.createdAt).getTime();
+          return dateB - dateA;
+        });
+
+        setReviews(reviewsData.slice(0, 3));
+      }
+    } catch (error) {
+      console.error('후기 로드 실패:', error);
+    }
+  };
+
+  const formatDate = (date: any) => {
+    if (!date) return '';
+    const d = new Date(date);
+    return d.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\. /g, '.').replace(/\.$/, '');
+  };
+
   return (
     <div style={{
       backgroundColor: '#FAFBFC',
@@ -306,38 +365,81 @@ export default function Home() {
             gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))',
             gap: '20px'
           }}>
-            {[
-              { name: '김**', rating: 5, comment: '빠르고 안전한 거래였습니다!', date: '2026.06.23' },
-              { name: '이**', rating: 5, comment: '친절하고 신속한 응대 감사합니다', date: '2026.06.22' },
-              { name: '박**', rating: 5, comment: '시세보다 좋은 가격에 거래했어요', date: '2026.06.21' }
-            ].map((review, i) => (
-              <div key={i} style={{
-                background: 'white',
-                padding: '24px',
-                borderRadius: '16px',
-                border: '1px solid #E2E8F0',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+            {reviews.length === 0 ? (
+              <div style={{
+                gridColumn: '1 / -1',
+                textAlign: 'center',
+                padding: '60px 20px',
+                color: '#94A3B8',
+                fontSize: '15px'
               }}>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: '12px'
-                }}>
-                  <span style={{ fontSize: '16px', fontWeight: '700', color: '#1E293B' }}>{review.name}</span>
-                  <span style={{ fontSize: '18px' }}>{'⭐'.repeat(review.rating)}</span>
-                </div>
-                <p style={{
-                  fontSize: '14px',
-                  color: '#64748B',
-                  lineHeight: 1.6,
-                  marginBottom: '12px'
-                }}>
-                  {review.comment}
-                </p>
-                <span style={{ fontSize: '12px', color: '#94A3B8' }}>{review.date}</span>
+                아직 등록된 후기가 없습니다.
               </div>
-            ))}
+            ) : (
+              reviews.map((review) => (
+                <div key={review.id} style={{
+                  background: 'white',
+                  padding: '24px',
+                  borderRadius: '16px',
+                  border: '1px solid #E2E8F0',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onClick={() => window.location.href = '/reviews'}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.08)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
+                }}
+                >
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '12px'
+                  }}>
+                    <span style={{ fontSize: '16px', fontWeight: '700', color: '#1E293B' }}>{review.nickname}</span>
+                    <span style={{ fontSize: '18px' }}>⭐⭐⭐⭐⭐</span>
+                  </div>
+                  <h3 style={{
+                    fontSize: '15px',
+                    fontWeight: '600',
+                    color: '#475569',
+                    marginBottom: '8px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {review.title}
+                  </h3>
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#64748B',
+                    lineHeight: 1.6,
+                    marginBottom: '12px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical'
+                  }}>
+                    {review.content}
+                  </p>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <span style={{ fontSize: '12px', color: '#94A3B8' }}>{formatDate(review.createdAt)}</span>
+                    <span style={{ fontSize: '12px', color: '#94A3B8' }}>조회 {review.views}</span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
