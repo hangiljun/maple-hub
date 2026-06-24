@@ -31,7 +31,7 @@ export default function NoticePage() {
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const categories = ['전체', '공지사항', '메이플 패치', '이벤트', '업데이트'];
+  const categories = ['전체', '공지사항'];
 
   useEffect(() => {
     fetchNotices();
@@ -227,7 +227,7 @@ export default function NoticePage() {
               boxShadow: '0 2px 8px rgba(102,126,234,0.3)'
             }}
           >
-            관리자
+            + 공지 쓰기
           </button>
         </div>
 
