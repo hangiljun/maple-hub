@@ -17,7 +17,7 @@ export default function SafetyGuidePage() {
             🛡️ 안전거래 가이드
           </h1>
           <p style={{ fontSize: '16px', color: '#64748B', lineHeight: 1.7 }}>
-            메이플 허브와 함께 안전하고 신뢰할 수 있는 거래를 하세요
+            카카오톡 기반 거래 중개 서비스 - 안전한 거래를 위한 필수 가이드
           </p>
         </div>
 
@@ -43,7 +43,8 @@ export default function SafetyGuidePage() {
           </h2>
           <div style={{ marginBottom: '16px' }}>
             <p style={{ fontSize: '15px', color: '#475569', lineHeight: 1.8, marginBottom: '16px' }}>
-              메이플 허브는 정식 사업자등록을 완료한 신뢰할 수 있는 거래 플랫폼입니다.
+              메이플 허브는 정식 사업자등록을 완료한 거래 중개 플랫폼입니다.<br />
+              <strong style={{ color: '#1E293B' }}>※ 당사는 거래를 중개하는 플랫폼이며, 사이트 내에서 직접 거래가 이루어지지 않습니다.</strong>
             </p>
             <img
               src="/사업자 등록증.png"

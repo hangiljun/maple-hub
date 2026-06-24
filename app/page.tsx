@@ -190,7 +190,7 @@ export default function Home() {
             color: '#64748B',
             marginBottom: '40px'
           }}>
-            안전하고 빠른 거래를 시작하세요
+            카카오톡 기반 거래 중개 플랫폼
           </p>
         </div>
 
@@ -785,7 +785,7 @@ export default function Home() {
               </div>
               <p style={{ fontSize: '14px', opacity: 0.7, lineHeight: 1.7 }}>
                 메이플스토리 거래를 한곳에서<br />
-                안전하고 편리한 거래 플랫폼
+                카카오톡 기반 거래 중개 플랫폼
               </p>
             </div>
 
