@@ -16,11 +16,23 @@ interface Review {
   createdAt: any;
 }
 
+interface Notice {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  imageUrl?: string;
+  isPinned: boolean;
+  createdAt: any;
+}
+
 export default function Home() {
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [notices, setNotices] = useState<Notice[]>([]);
 
   useEffect(() => {
     fetchReviews();
+    fetchNotices();
   }, []);
 
   const fetchReviews = async () => {
@@ -56,6 +68,45 @@ export default function Home() {
       }
     } catch (error) {
       console.error('후기 로드 실패:', error);
+    }
+  };
+
+  const fetchNotices = async () => {
+    try {
+      const { projectId, apiKey } = firebaseConfig;
+      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/notices?key=${apiKey}`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.documents) {
+        const noticesData = data.documents.map((doc: any) => {
+          const docId = doc.name.split('/').pop();
+          return {
+            id: docId,
+            title: doc.fields.title?.stringValue || '',
+            content: doc.fields.content?.stringValue || '',
+            category: doc.fields.category?.stringValue || '공지사항',
+            imageUrl: doc.fields.imageUrl?.stringValue || '',
+            isPinned: doc.fields.isPinned?.booleanValue || false,
+            createdAt: doc.fields.createdAt?.timestampValue || doc.createTime
+          };
+        });
+
+        // 고정 공지를 우선으로, 그 다음 최신순 정렬
+        noticesData.sort((a: Notice, b: Notice) => {
+          if (a.isPinned !== b.isPinned) {
+            return a.isPinned ? -1 : 1;
+          }
+          const dateA = new Date(a.createdAt).getTime();
+          const dateB = new Date(b.createdAt).getTime();
+          return dateB - dateA;
+        });
+
+        setNotices(noticesData.slice(0, 3));
+      }
+    } catch (error) {
+      console.error('공지사항 로드 실패:', error);
     }
   };
 
@@ -493,52 +544,65 @@ export default function Home() {
               </Link>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {[
-                { badge: '공지', title: '사이트 오픈 안내', date: '6/22(월)' },
-                { badge: '공지', title: '6/22(월) 메이플 옥션 개편 사항 관련 안내', date: '6/22(월)' },
-                { badge: '점검', title: '[패치완료] 6/23(화) 마이너버전(7) 패치', date: '6/23(화)' }
-              ].map((notice, i) => (
-                <Link key={i} href="/notice" style={{
-                  textDecoration: 'none',
-                  padding: '16px',
-                  background: '#F8FAFC',
-                  borderRadius: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  transition: 'all 0.2s'
+              {notices.length === 0 ? (
+                <div style={{
+                  textAlign: 'center',
+                  padding: '40px 20px',
+                  color: '#94A3B8',
+                  fontSize: '14px'
                 }}>
-                  <span style={{
-                    padding: '4px 10px',
-                    background: notice.badge === '점검' ? '#FEF3C7' : '#E0E7FF',
-                    color: notice.badge === '점검' ? '#92400E' : '#4C1D95',
-                    fontSize: '12px',
-                    fontWeight: '700',
-                    borderRadius: '6px',
-                    flexShrink: 0
-                  }}>
-                    {notice.badge}
-                  </span>
-                  <span style={{
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    color: '#1E293B',
-                    flex: 1,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                  }}>
-                    {notice.title}
-                  </span>
-                  <span style={{
-                    fontSize: '12px',
-                    color: '#94A3B8',
-                    flexShrink: 0
-                  }}>
-                    {notice.date}
-                  </span>
-                </Link>
-              ))}
+                  등록된 공지사항이 없습니다.
+                </div>
+              ) : (
+                notices.map((notice) => {
+                  const badge = notice.category === '공지사항' ? '공지' : notice.category;
+                  const noticeDate = new Date(notice.createdAt);
+                  const formattedDate = `${noticeDate.getMonth() + 1}/${noticeDate.getDate()}(${['일','월','화','수','목','금','토'][noticeDate.getDay()]})`;
+
+                  return (
+                    <Link key={notice.id} href="/notice" style={{
+                      textDecoration: 'none',
+                      padding: '16px',
+                      background: '#F8FAFC',
+                      borderRadius: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      transition: 'all 0.2s'
+                    }}>
+                      <span style={{
+                        padding: '4px 10px',
+                        background: badge === '점검' ? '#FEF3C7' : '#E0E7FF',
+                        color: badge === '점검' ? '#92400E' : '#4C1D95',
+                        fontSize: '12px',
+                        fontWeight: '700',
+                        borderRadius: '6px',
+                        flexShrink: 0
+                      }}>
+                        {badge}
+                      </span>
+                      <span style={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        color: '#1E293B',
+                        flex: 1,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}>
+                        {notice.title}
+                      </span>
+                      <span style={{
+                        fontSize: '12px',
+                        color: '#94A3B8',
+                        flexShrink: 0
+                      }}>
+                        {formattedDate}
+                      </span>
+                    </Link>
+                  );
+                })
+              )}
             </div>
           </div>
 
