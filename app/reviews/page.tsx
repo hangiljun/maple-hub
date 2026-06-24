@@ -2,10 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { collection, addDoc, getDocs, query, orderBy, updateDoc, doc, increment, deleteDoc, where } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '@/lib/firebase';
-import app from '@/lib/firebase';
+import { storage } from '@/lib/firebase';
 import Navigation from '@/components/Navigation';
 import FAB from '@/components/FAB';
 
@@ -36,15 +34,49 @@ export default function ReviewsPage() {
 
   const fetchReviews = async () => {
     try {
-      const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
-      const querySnapshot = await getDocs(q);
-      const reviewsData = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Review[];
-      setReviews(reviewsData);
+      console.log('🔍 REST API로 후기 불러오기 시작...');
+      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+      const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/reviews?key=${apiKey}`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (data.documents) {
+        const reviewsData = data.documents.map((doc: any) => {
+          const docId = doc.name.split('/').pop();
+          return {
+            id: docId,
+            title: doc.fields.title?.stringValue || '',
+            nickname: doc.fields.nickname?.stringValue || '',
+            password: doc.fields.password?.stringValue || '',
+            content: doc.fields.content?.stringValue || '',
+            imageUrl: doc.fields.imageUrl?.stringValue || '',
+            views: parseInt(doc.fields.views?.integerValue || '0'),
+            createdAt: doc.fields.createdAt?.timestampValue || doc.createTime
+          };
+        });
+
+        // 최신순 정렬
+        reviewsData.sort((a: Review, b: Review) => {
+          const dateA = new Date(a.createdAt).getTime();
+          const dateB = new Date(b.createdAt).getTime();
+          return dateB - dateA;
+        });
+
+        setReviews(reviewsData);
+        console.log(`✅ ${reviewsData.length}개의 후기 로드 완료!`);
+      } else {
+        setReviews([]);
+        console.log('후기가 없습니다.');
+      }
     } catch (error) {
-      console.error('리뷰 불러오기 실패:', error);
+      console.error('❌ 리뷰 불러오기 실패:', error);
     }
   };
 
@@ -91,8 +123,8 @@ export default function ReviewsPage() {
         }
       }
 
-      // Firestore에 저장 (타임아웃 10초로 단축)
-      console.log('2. Firestore에 데이터 저장 시작');
+      // Firestore에 REST API로 저장
+      console.log('2. REST API로 Firestore에 데이터 저장 시작');
       console.log('저장할 데이터:', {
         title: form.title,
         nickname: form.nickname,
@@ -100,30 +132,38 @@ export default function ReviewsPage() {
         imageUrl: imageUrl || '없음',
       });
 
-      // 타임아웃을 10초로 줄이고 더 명확한 에러 메시지
-      let timeoutId: NodeJS.Timeout;
-      const timeoutPromise = new Promise((_, reject) => {
-        timeoutId = setTimeout(() => {
-          console.error('⏰ 10초 타임아웃 발생!');
-          reject(new Error('Firebase 저장 시간 초과 (10초)\n\n가능한 원인:\n1. Firebase 규칙이 제대로 게시되지 않음\n2. 네트워크 연결 문제\n3. 브라우저 확장 프로그램이 차단\n\n개발자 도구 > Network 탭을 확인해주세요.'));
-        }, 10000);
+      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+      const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/reviews?key=${apiKey}`;
+
+      const body = {
+        fields: {
+          title: { stringValue: form.title },
+          nickname: { stringValue: form.nickname },
+          password: { stringValue: form.password },
+          content: { stringValue: form.content },
+          imageUrl: { stringValue: imageUrl || '' },
+          views: { integerValue: 0 },
+          createdAt: { timestampValue: new Date().toISOString() }
+        }
+      };
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body)
       });
 
-      const savePromise = addDoc(collection(db, 'reviews'), {
-        title: form.title,
-        nickname: form.nickname,
-        password: form.password,
-        content: form.content,
-        imageUrl: imageUrl || '',
-        views: 0,
-        createdAt: new Date()
-      }).then((result) => {
-        clearTimeout(timeoutId);
-        return result;
-      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`HTTP ${response.status}: ${JSON.stringify(errorData)}`);
+      }
 
-      const docRef = await Promise.race([savePromise, timeoutPromise]) as any;
-      console.log('2. Firestore 저장 완료, ID:', docRef.id);
+      const result = await response.json();
+      const docId = result.name.split('/').pop();
+      console.log('2. Firestore 저장 완료, ID:', docId);
 
       // 성공 처리
       alert('후기가 등록되었습니다!');
@@ -170,11 +210,25 @@ export default function ReviewsPage() {
   // 리뷰 클릭 (조회수 증가)
   const handleReviewClick = async (review: Review) => {
     try {
-      const reviewRef = doc(db, 'reviews', review.id);
-      await updateDoc(reviewRef, {
-        views: increment(1)
+      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+      const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/reviews/${review.id}?key=${apiKey}&updateMask.fieldPaths=views`;
+
+      const newViews = review.views + 1;
+
+      await fetch(url, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fields: {
+            views: { integerValue: newViews }
+          }
+        })
       });
-      setSelectedReview({ ...review, views: review.views + 1 });
+
+      setSelectedReview({ ...review, views: newViews });
     } catch (error) {
       console.error('조회수 증가 실패:', error);
       setSelectedReview(review);
@@ -197,7 +251,18 @@ export default function ReviewsPage() {
     if (!confirm('정말 삭제하시겠습니까?')) return;
 
     try {
-      await deleteDoc(doc(db, 'reviews', reviewId));
+      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+      const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/reviews/${reviewId}?key=${apiKey}`;
+
+      const response = await fetch(url, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
       alert('삭제되었습니다.');
       setSelectedReview(null);
       fetchReviews();
