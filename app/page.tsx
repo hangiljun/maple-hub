@@ -271,161 +271,232 @@ export default function Home() {
 
         </div>
 
-        {/* 이용후기 대형 카드 */}
-        <Link href="/reviews" style={{ textDecoration: 'none', display: 'block', marginBottom: '80px' }}>
-          <div className="card-hover" style={{
-            background: 'linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%)',
-            padding: '56px 48px',
-            borderRadius: '28px',
-            position: 'relative',
-            overflow: 'hidden',
-            border: '1px solid rgba(255, 255, 255, 0.8)',
-            boxShadow: '0 20px 60px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
+        {/* 이용후기 섹션 */}
+        <div style={{ marginBottom: '60px' }}>
+          <div style={{
             display: 'flex',
-            alignItems: 'center',
             justifyContent: 'space-between',
-            gap: '40px'
-          }}>
-            {/* 배경 장식 */}
-            <div style={{
-              position: 'absolute',
-              bottom: '-100px',
-              right: '-100px',
-              width: '300px',
-              height: '300px',
-              background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)',
-              borderRadius: '50%'
-            }}></div>
-
-            <div style={{ flex: 1, zIndex: 1 }}>
-              <div className="float-animation" style={{
-                fontSize: '96px',
-                marginBottom: '24px',
-                filter: 'drop-shadow(0 4px 16px rgba(16, 185, 129, 0.3))',
-                animationDelay: '0.5s'
-              }}>⭐</div>
-              <h3 style={{
-                fontSize: '36px',
-                fontWeight: '900',
-                marginBottom: '20px',
-                color: '#065F46'
-              }}>이용후기</h3>
-              <p style={{
-                fontSize: '18px',
-                color: '#047857',
-                lineHeight: 1.8,
-                opacity: 0.9
-              }}>
-                실제 거래 후기를 확인하고<br />
-                직접 후기를 작성해보세요
-              </p>
-            </div>
-            <div style={{
-              fontSize: '16px',
-              color: '#10b981',
-              fontWeight: '700',
-              zIndex: 1
-            }}>
-              → 후기 보러가기
-            </div>
-          </div>
-        </Link>
-
-        {/* 공지사항 섹션 */}
-        <div style={{
-          background: 'rgba(255, 255, 255, 0.7)',
-          padding: '48px',
-          borderRadius: '24px',
-          border: '1px solid rgba(102, 126, 234, 0.1)',
-          marginBottom: '80px',
-          backdropFilter: 'blur(10px)',
-          boxShadow: '0 8px 32px rgba(102, 126, 234, 0.08)'
-        }}>
-          <h2 style={{
-            fontSize: '28px',
-            fontWeight: '900',
-            color: '#1E293B',
-            marginBottom: '32px',
-            display: 'flex',
             alignItems: 'center',
-            gap: '12px'
+            marginBottom: '32px'
           }}>
-            📢 공지사항
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h2 style={{
+              fontSize: '28px',
+              fontWeight: '900',
+              color: '#1E293B',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px'
+            }}>
+              ⭐ 이용후기
+            </h2>
+            <Link href="/reviews" style={{
+              textDecoration: 'none',
+              fontSize: '15px',
+              fontWeight: '600',
+              color: '#667eea',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}>
+              더보기 →
+            </Link>
+          </div>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))',
+            gap: '20px'
+          }}>
             {[
-              { title: '사이트 오픈 안내', date: '2026-06-23' },
-              { title: '안전거래 가이드', date: '2026-06-20' },
-              { title: '이용 약관 안내', date: '2026-06-18' }
-            ].map((notice, i) => (
-              <Link key={i} href="/notice" style={{
-                textDecoration: 'none',
-                padding: '20px 24px',
-                background: 'rgba(255, 255, 255, 0.8)',
+              { name: '김**', rating: 5, comment: '빠르고 안전한 거래였습니다!', date: '2026.06.23' },
+              { name: '이**', rating: 5, comment: '친절하고 신속한 응대 감사합니다', date: '2026.06.22' },
+              { name: '박**', rating: 5, comment: '시세보다 좋은 가격에 거래했어요', date: '2026.06.21' }
+            ].map((review, i) => (
+              <div key={i} style={{
+                background: 'white',
+                padding: '24px',
                 borderRadius: '16px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                transition: 'all 0.3s',
-                border: '1px solid rgba(102, 126, 234, 0.08)'
+                border: '1px solid #E2E8F0',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
               }}>
-                <span style={{ fontSize: '16px', fontWeight: '600', color: '#1E293B' }}>{notice.title}</span>
-                <span style={{ fontSize: '14px', color: '#64748B' }}>{notice.date}</span>
-              </Link>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '12px'
+                }}>
+                  <span style={{ fontSize: '16px', fontWeight: '700', color: '#1E293B' }}>{review.name}</span>
+                  <span style={{ fontSize: '18px' }}>{'⭐'.repeat(review.rating)}</span>
+                </div>
+                <p style={{
+                  fontSize: '14px',
+                  color: '#64748B',
+                  lineHeight: 1.6,
+                  marginBottom: '12px'
+                }}>
+                  {review.comment}
+                </p>
+                <span style={{ fontSize: '12px', color: '#94A3B8' }}>{review.date}</span>
+              </div>
             ))}
           </div>
         </div>
 
-        {/* 거래 방법 안내 */}
+        {/* 공지사항 + 거래방법 2분할 섹션 */}
         <div style={{
-          background: 'linear-gradient(135deg, rgba(240, 244, 255, 0.6) 0%, rgba(224, 231, 255, 0.6) 100%)',
-          padding: '56px 48px',
-          borderRadius: '28px',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.8)',
-          boxShadow: '0 8px 32px rgba(102, 126, 234, 0.12)'
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(400px, 100%), 1fr))',
+          gap: '32px',
+          marginBottom: '60px'
         }}>
-          <h2 style={{
-            fontSize: '32px',
-            fontWeight: '900',
-            color: '#1E293B',
-            marginBottom: '48px',
-            textAlign: 'center'
-          }}>
-            간편한 거래 방법
-          </h2>
+          {/* 공지사항 */}
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))',
-            gap: '24px'
+            background: 'white',
+            padding: '32px',
+            borderRadius: '20px',
+            border: '1px solid #E2E8F0',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.06)'
           }}>
-            {[
-              { num: '1', title: '원하는 메뉴 선택', desc: '급처템/메소/디스코드' },
-              { num: '2', title: '거래글 확인', desc: '실시간 거래 정보' },
-              { num: '3', title: '연락하기', desc: '카톡/디스코드' },
-              { num: '4', title: '안전 거래', desc: '거래 완료' }
-            ].map((step, i) => (
-              <div key={i} style={{ textAlign: 'center' }}>
-                <div style={{
-                  width: '80px',
-                  height: '80px',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  borderRadius: '50%',
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '24px'
+            }}>
+              <h2 style={{
+                fontSize: '24px',
+                fontWeight: '900',
+                color: '#1E293B',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                📢 공지사항
+              </h2>
+              <Link href="/notice" style={{
+                textDecoration: 'none',
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#667eea'
+              }}>
+                더보기 →
+              </Link>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {[
+                { badge: '공지', title: '사이트 오픈 안내', date: '6/22(월)' },
+                { badge: '공지', title: '6/22(월) 메이플 옥션 개편 사항 관련 안내', date: '6/22(월)' },
+                { badge: '점검', title: '[패치완료] 6/23(화) 마이너버전(7) 패치', date: '6/23(화)' }
+              ].map((notice, i) => (
+                <Link key={i} href="/notice" style={{
+                  textDecoration: 'none',
+                  padding: '16px',
+                  background: '#F8FAFC',
+                  borderRadius: '12px',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 20px',
-                  fontSize: '36px',
-                  fontWeight: '900',
-                  color: 'white',
-                  boxShadow: '0 8px 24px rgba(102, 126, 234, 0.3)'
+                  gap: '12px',
+                  transition: 'all 0.2s'
                 }}>
-                  {step.num}
+                  <span style={{
+                    padding: '4px 10px',
+                    background: notice.badge === '점검' ? '#FEF3C7' : '#E0E7FF',
+                    color: notice.badge === '점검' ? '#92400E' : '#4C1D95',
+                    fontSize: '12px',
+                    fontWeight: '700',
+                    borderRadius: '6px',
+                    flexShrink: 0
+                  }}>
+                    {notice.badge}
+                  </span>
+                  <span style={{
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#1E293B',
+                    flex: 1,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {notice.title}
+                  </span>
+                  <span style={{
+                    fontSize: '12px',
+                    color: '#94A3B8',
+                    flexShrink: 0
+                  }}>
+                    {notice.date}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* 거래방법 */}
+          <div style={{
+            background: 'linear-gradient(135deg, #E0E7FF 0%, #C7D2FE 100%)',
+            padding: '32px',
+            borderRadius: '20px',
+            border: '1px solid rgba(255, 255, 255, 0.8)',
+            boxShadow: '0 4px 16px rgba(102, 126, 234, 0.15)'
+          }}>
+            <h2 style={{
+              fontSize: '24px',
+              fontWeight: '900',
+              color: '#4C1D95',
+              marginBottom: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              💡 거래방법
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {[
+                { step: '1', title: '원하는 메뉴 선택', desc: '급처템, 메소거래, 디스코드 중 선택' },
+                { step: '2', title: '거래글 확인', desc: '실시간 거래 정보를 확인하세요' },
+                { step: '3', title: '연락하기', desc: '카카오톡으로 판매자에게 연락' },
+                { step: '4', title: '안전 거래', desc: '거래 완료 후 후기 작성' }
+              ].map((step, i) => (
+                <div key={i} style={{
+                  display: 'flex',
+                  gap: '16px',
+                  alignItems: 'start'
+                }}>
+                  <div style={{
+                    width: '40px',
+                    height: '40px',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '20px',
+                    fontWeight: '900',
+                    color: 'white',
+                    flexShrink: 0
+                  }}>
+                    {step.step}
+                  </div>
+                  <div>
+                    <h3 style={{
+                      fontSize: '16px',
+                      fontWeight: '700',
+                      color: '#4C1D95',
+                      marginBottom: '4px'
+                    }}>
+                      {step.title}
+                    </h3>
+                    <p style={{
+                      fontSize: '13px',
+                      color: '#5B21B6',
+                      lineHeight: 1.5
+                    }}>
+                      {step.desc}
+                    </p>
+                  </div>
                 </div>
-                <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1E293B', marginBottom: '12px' }}>{step.title}</h3>
-                <p style={{ fontSize: '14px', color: '#64748B' }}>{step.desc}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
@@ -437,21 +508,80 @@ export default function Home() {
       {/* 푸터 */}
       <footer style={{
         background: '#1E293B',
-        padding: '48px 20px',
+        padding: '60px 20px 40px',
         color: 'white',
-        textAlign: 'center',
         marginTop: '80px'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ fontSize: '28px', fontWeight: '900', marginBottom: '16px' }}>🍁 메이플 허브</div>
-          <p style={{ fontSize: '15px', opacity: 0.7, marginBottom: '24px' }}>
-            메이플스토리 거래의 모든 것
-          </p>
-          <div style={{ fontSize: '13px', opacity: 0.5, lineHeight: 1.8 }}>
-            <p>© 2026 메이플 허브. All rights reserved.</p>
-            <p style={{ marginTop: '12px' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(250px, 100%), 1fr))',
+            gap: '40px',
+            marginBottom: '48px'
+          }}>
+            {/* 로고 및 설명 */}
+            <div>
+              <div style={{ fontSize: '24px', fontWeight: '900', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <img src="/logo.ico" alt="MAPLE HUB" style={{ width: '32px', height: '32px' }} />
+                메이플 허브
+              </div>
+              <p style={{ fontSize: '14px', opacity: 0.7, lineHeight: 1.7 }}>
+                메이플스토리 거래의 모든 것<br />
+                안전하고 편리한 거래 플랫폼
+              </p>
+            </div>
+
+            {/* 바로가기 */}
+            <div>
+              <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px' }}>바로가기</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <Link href="/items" style={{ color: 'white', opacity: 0.7, textDecoration: 'none', fontSize: '14px', transition: 'opacity 0.2s' }}>
+                  급처템 거래
+                </Link>
+                <Link href="/meso" style={{ color: 'white', opacity: 0.7, textDecoration: 'none', fontSize: '14px', transition: 'opacity 0.2s' }}>
+                  메소 거래
+                </Link>
+                <Link href="/discord" style={{ color: 'white', opacity: 0.7, textDecoration: 'none', fontSize: '14px', transition: 'opacity 0.2s' }}>
+                  디스코드
+                </Link>
+                <Link href="/reviews" style={{ color: 'white', opacity: 0.7, textDecoration: 'none', fontSize: '14px', transition: 'opacity 0.2s' }}>
+                  이용후기
+                </Link>
+              </div>
+            </div>
+
+            {/* 고객지원 */}
+            <div>
+              <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px' }}>고객지원</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <Link href="/notice" style={{ color: 'white', opacity: 0.7, textDecoration: 'none', fontSize: '14px', transition: 'opacity 0.2s' }}>
+                  공지사항
+                </Link>
+                <a href="https://open.kakao.com/o/sfxfJyAi" target="_blank" rel="noopener noreferrer" style={{ color: 'white', opacity: 0.7, textDecoration: 'none', fontSize: '14px', transition: 'opacity 0.2s' }}>
+                  카카오톡 문의
+                </a>
+                <a href="#" style={{ color: 'white', opacity: 0.7, textDecoration: 'none', fontSize: '14px', transition: 'opacity 0.2s' }}>
+                  이용약관
+                </a>
+                <a href="#" style={{ color: 'white', opacity: 0.7, textDecoration: 'none', fontSize: '14px', transition: 'opacity 0.2s' }}>
+                  개인정보처리방침
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* 하단 구분선 */}
+          <div style={{
+            borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+            paddingTop: '32px',
+            textAlign: 'center'
+          }}>
+            <p style={{ fontSize: '13px', opacity: 0.5, lineHeight: 1.8, marginBottom: '12px' }}>
               본 사이트는 거래 중개 플랫폼이 아닌 홍보 공간이며,<br />
               당사자 간의 직거래로 인해 발생하는 피해에 대해 책임을 지지 않습니다.
+            </p>
+            <p style={{ fontSize: '13px', opacity: 0.5 }}>
+              © 2026 메이플 허브. All rights reserved.
             </p>
           </div>
         </div>
