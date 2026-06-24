@@ -395,19 +395,7 @@ export default function DiscordPage() {
               </ul>
             </div>
 
-            {/* 제휴 문의 */}
-            <div style={{ background: '#F8FAFC', padding: '24px', borderRadius: '16px', border: '1px solid #E2E8F0' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#8b5cf6', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                🌸 메이플 제휴문의
-              </h3>
-              <ul style={{ fontSize: '14px', color: '#64748B', lineHeight: 2, paddingLeft: '20px' }}>
-                <li>mvp작업</li>
-                <li>급처문의</li>
-                <li>보스대행</li>
-              </ul>
-            </div>
-
-            {/* 클래식 디스코드 */}
+            {/* 클래식 디스코드 */}}
             <div style={{ background: '#F8FAFC', padding: '24px', borderRadius: '16px', border: '1px solid #E2E8F0' }}>
               <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#3b82f6', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 🌸 클래식 디스코드
