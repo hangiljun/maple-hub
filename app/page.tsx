@@ -183,7 +183,7 @@ export default function Home() {
             marginBottom: '20px',
             lineHeight: 1.2
           }}>
-            메이플스토리 거래의 모든 것
+            메이플스토리 거래를 한곳에서
           </h1>
           <p style={{
             fontSize: 'clamp(16px, 2vw, 20px)',
@@ -202,7 +202,7 @@ export default function Home() {
           marginBottom: '60px'
         }}>
 
-          {/* 급처템 홍보 배너 */}
+          {/* 급처템 문의 배너 */}
           <Link href="/items" style={{ textDecoration: 'none' }}>
             <div className="card-hover" style={{
               position: 'relative',
@@ -214,7 +214,7 @@ export default function Home() {
             }}>
               <img
                 src="/급처템.png"
-                alt="급처템 홍보"
+                alt="급처템 문의"
                 style={{
                   width: '100%',
                   height: 'auto',
@@ -231,7 +231,7 @@ export default function Home() {
                   fontWeight: '700',
                   color: '#1E293B',
                   marginBottom: '4px'
-                }}>급처템 홍보</h3>
+                }}>급처템 문의</h3>
                 <p style={{
                   fontSize: '13px',
                   color: '#64748B'
@@ -404,7 +404,7 @@ export default function Home() {
               {
                 icon: '🛡️',
                 title: '안전한 거래',
-                desc: '검증된 거래자들과 안전하고 믿을 수 있는 거래 환경'
+                desc: '사업자등록을 하고 안전하게 운영 하고있습니다'
               },
               {
                 icon: '💯',
@@ -585,8 +585,8 @@ export default function Home() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {[
                 { step: '1', title: '원하는 메뉴 선택', desc: '급처템, 메소거래, 디스코드 중 선택' },
-                { step: '2', title: '거래글 확인', desc: '실시간 거래 정보를 확인하세요' },
-                { step: '3', title: '연락하기', desc: '카카오톡으로 판매자에게 연락' },
+                { step: '2', title: '해당 채널 거래 방법 확인', desc: '거래 정보를 확인 하세요' },
+                { step: '3', title: '연락하기', desc: '카카오톡으로 문의 하기' },
                 { step: '4', title: '안전 거래', desc: '거래 완료 후 후기 작성' }
               ].map((step, i) => (
                 <div key={i} style={{
@@ -662,13 +662,13 @@ export default function Home() {
             </Link>
           </div>
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))',
-            gap: '20px'
+            overflowX: 'auto',
+            WebkitOverflowScrolling: 'touch',
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#CBD5E1 #F1F5F9'
           }}>
             {reviews.length === 0 ? (
               <div style={{
-                gridColumn: '1 / -1',
                 textAlign: 'center',
                 padding: '60px 20px',
                 color: '#94A3B8',
@@ -677,78 +677,86 @@ export default function Home() {
                 아직 등록된 후기가 없습니다.
               </div>
             ) : (
-              reviews.map((review) => (
-                <div key={review.id} style={{
-                  background: 'white',
-                  padding: '24px',
-                  borderRadius: '16px',
-                  border: '1px solid #E2E8F0',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: '400px'
-                }}
-                onClick={() => window.location.href = '/reviews'}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                  e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.08)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
-                }}
-                >
-                  <div style={{
-                    marginBottom: '12px'
-                  }}>
-                    <span style={{ fontSize: '16px', fontWeight: '700', color: '#1E293B' }}>{review.nickname}</span>
-                  </div>
-                  {review.imageUrl && (
+              <div style={{
+                display: 'flex',
+                gap: '20px',
+                paddingBottom: '20px'
+              }}>
+                {reviews.map((review) => (
+                  <div key={review.id} style={{
+                    background: 'white',
+                    padding: '24px',
+                    borderRadius: '16px',
+                    border: '1px solid #E2E8F0',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '400px',
+                    minWidth: 'calc(25% - 15px)',
+                    flexShrink: 0
+                  }}
+                  onClick={() => window.location.href = '/reviews'}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.08)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
+                  }}
+                  >
                     <div style={{
-                      marginBottom: '12px',
-                      borderRadius: '12px',
-                      overflow: 'hidden'
+                      marginBottom: '12px'
                     }}>
-                      <img
-                        src={review.imageUrl}
-                        alt="후기 이미지"
-                        style={{
-                          width: '100%',
-                          height: '200px',
-                          objectFit: 'cover'
-                        }}
-                      />
+                      <span style={{ fontSize: '16px', fontWeight: '700', color: '#1E293B' }}>{review.nickname}</span>
                     </div>
-                  )}
-                  <div style={{
-                    marginTop: 'auto'
-                  }}>
-                    <p style={{
-                      fontSize: '14px',
-                      color: '#475569',
-                      lineHeight: 1.7,
-                      marginBottom: '12px',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: 'vertical'
-                    }}>
-                      {review.content}
-                    </p>
+                    {review.imageUrl && (
+                      <div style={{
+                        marginBottom: '12px',
+                        borderRadius: '12px',
+                        overflow: 'hidden'
+                      }}>
+                        <img
+                          src={review.imageUrl}
+                          alt="후기 이미지"
+                          style={{
+                            width: '100%',
+                            height: '200px',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      </div>
+                    )}
                     <div style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center'
+                      marginTop: 'auto'
                     }}>
-                      <span style={{ fontSize: '12px', color: '#94A3B8' }}>{formatDate(review.createdAt)}</span>
-                      <span style={{ fontSize: '12px', color: '#94A3B8' }}>조회 {review.views}</span>
+                      <p style={{
+                        fontSize: '14px',
+                        color: '#475569',
+                        lineHeight: 1.7,
+                        marginBottom: '12px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical'
+                      }}>
+                        {review.content}
+                      </p>
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}>
+                        <span style={{ fontSize: '12px', color: '#94A3B8' }}>{formatDate(review.createdAt)}</span>
+                        <span style={{ fontSize: '12px', color: '#94A3B8' }}>조회 {review.views}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </div>
         </div>
@@ -776,7 +784,7 @@ export default function Home() {
                 메이플 허브
               </div>
               <p style={{ fontSize: '14px', opacity: 0.7, lineHeight: 1.7 }}>
-                메이플스토리 거래의 모든 것<br />
+                메이플스토리 거래를 한곳에서<br />
                 안전하고 편리한 거래 플랫폼
               </p>
             </div>
