@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { firebaseConfig } from '@/lib/firebase-config';
+import { collection, addDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '@/lib/firebase';
 
 interface PriceTier {
   label: string;
@@ -26,12 +29,26 @@ interface Review {
   createdAt: any;
 }
 
+interface Notice {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  imageUrl?: string;
+  isPinned: boolean;
+  createdAt: any;
+}
+
 export default function AdminPage() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [password, setPassword] = useState('');
-  const [activeTab, setActiveTab] = useState<'price' | 'reviews'>('price');
+  const [activeTab, setActiveTab] = useState<'price' | 'reviews' | 'notices'>('price');
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const [noticeForm, setNoticeForm] = useState({ title: '', content: '', category: '공지사항', isPinned: false });
+  const [noticeImage, setNoticeImage] = useState<File | null>(null);
+  const [noticeLoading, setNoticeLoading] = useState(false);
   const [priceTable, setPriceTable] = useState<PriceTable>({
     buy: [
       { label: '1 ~ 100억', maxQty: 100, price: 1300, hot: false },
@@ -59,10 +76,14 @@ export default function AdminPage() {
     }
   }, []);
 
-  // 탭 변경 시 후기 새로고침
+  // 탭 변경 시 데이터 새로고침
   useEffect(() => {
-    if (isLoggedIn && activeTab === 'reviews') {
-      fetchReviews();
+    if (isLoggedIn) {
+      if (activeTab === 'reviews') {
+        fetchReviews();
+      } else if (activeTab === 'notices') {
+        fetchNotices();
+      }
     }
   }, [activeTab, isLoggedIn]);
 
@@ -120,6 +141,107 @@ export default function AdminPage() {
 
       alert('삭제되었습니다.');
       fetchReviews();
+    } catch (error) {
+      console.error('삭제 실패:', error);
+      alert('삭제에 실패했습니다.');
+    }
+  };
+
+  // 공지사항 불러오기
+  const fetchNotices = async () => {
+    try {
+      const { projectId, apiKey } = firebaseConfig;
+      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/notices?key=${apiKey}`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.documents) {
+        const noticesData = data.documents.map((doc: any) => {
+          const docId = doc.name.split('/').pop();
+          return {
+            id: docId,
+            title: doc.fields.title?.stringValue || '',
+            content: doc.fields.content?.stringValue || '',
+            category: doc.fields.category?.stringValue || '공지사항',
+            imageUrl: doc.fields.imageUrl?.stringValue || '',
+            isPinned: doc.fields.isPinned?.booleanValue || false,
+            createdAt: doc.fields.createdAt?.timestampValue || doc.createTime
+          };
+        });
+
+        noticesData.sort((a: Notice, b: Notice) => {
+          if (a.isPinned !== b.isPinned) {
+            return a.isPinned ? -1 : 1;
+          }
+          const dateA = new Date(a.createdAt).getTime();
+          const dateB = new Date(b.createdAt).getTime();
+          return dateB - dateA;
+        });
+
+        setNotices(noticesData);
+      }
+    } catch (error) {
+      console.error('공지사항 로드 실패:', error);
+    }
+  };
+
+  // 공지사항 작성
+  const handleNoticeSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!noticeForm.title || !noticeForm.content) {
+      return alert('제목과 내용을 입력하세요.');
+    }
+
+    setNoticeLoading(true);
+    try {
+      let imageUrl = '';
+      if (noticeImage) {
+        const timestamp = Date.now();
+        const storageRef = ref(storage, `notices/${timestamp}_${noticeImage.name}`);
+        await uploadBytes(storageRef, noticeImage);
+        imageUrl = await getDownloadURL(storageRef);
+      }
+
+      await addDoc(collection(db, 'notices'), {
+        title: noticeForm.title,
+        content: noticeForm.content,
+        category: noticeForm.category,
+        imageUrl,
+        isPinned: noticeForm.isPinned,
+        createdAt: new Date()
+      });
+
+      alert('공지사항이 등록되었습니다!');
+      setNoticeForm({ title: '', content: '', category: '공지사항', isPinned: false });
+      setNoticeImage(null);
+      fetchNotices();
+    } catch (error: any) {
+      console.error('공지사항 등록 실패:', error);
+      alert(`공지사항 등록에 실패했습니다.\n에러: ${error.message || error}`);
+    } finally {
+      setNoticeLoading(false);
+    }
+  };
+
+  // 공지사항 삭제
+  const handleDeleteNotice = async (noticeId: string, title: string) => {
+    if (!confirm(`"${title}" 공지사항을 삭제하시겠습니까?`)) return;
+
+    try {
+      const { projectId, apiKey } = firebaseConfig;
+      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/notices/${noticeId}?key=${apiKey}`;
+
+      const response = await fetch(url, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      alert('삭제되었습니다.');
+      fetchNotices();
     } catch (error) {
       console.error('삭제 실패:', error);
       alert('삭제에 실패했습니다.');
@@ -398,6 +520,22 @@ export default function AdminPage() {
             >
               📝 후기 관리 ({reviews.length})
             </button>
+            <button
+              onClick={() => setActiveTab('notices')}
+              style={{
+                padding: '12px 24px',
+                background: activeTab === 'notices' ? '#667eea' : 'transparent',
+                color: activeTab === 'notices' ? 'white' : '#666',
+                border: 'none',
+                borderRadius: '8px 8px 0 0',
+                fontSize: '15px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+            >
+              📢 공지사항 관리 ({notices.length})
+            </button>
           </div>
         </div>
 
@@ -655,6 +793,262 @@ export default function AdminPage() {
                       <div style={{ marginTop: '12px' }}>
                         <img
                           src={review.imageUrl}
+                          alt="첨부 이미지"
+                          style={{
+                            maxWidth: '200px',
+                            maxHeight: '200px',
+                            borderRadius: '8px',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'notices' && (
+          <div style={{
+            background: 'white',
+            padding: '32px',
+            borderRadius: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+            marginBottom: '32px'
+          }}>
+            <h2 style={{
+              fontSize: '24px',
+              fontWeight: '900',
+              color: '#1a1a1a',
+              marginBottom: '24px'
+            }}>
+              ✍️ 공지사항 작성
+            </h2>
+
+            <form onSubmit={handleNoticeSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569' }}>
+                  제목
+                </label>
+                <input
+                  type="text"
+                  value={noticeForm.title}
+                  onChange={(e) => setNoticeForm({ ...noticeForm, title: e.target.value })}
+                  placeholder="공지사항 제목을 입력하세요"
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: '1px solid #E2E8F0',
+                    borderRadius: '8px',
+                    fontSize: '14px'
+                  }}
+                  required
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569' }}>
+                  카테고리
+                </label>
+                <input
+                  type="text"
+                  value={noticeForm.category}
+                  onChange={(e) => setNoticeForm({ ...noticeForm, category: e.target.value })}
+                  placeholder="카테고리 (예: 공지사항, 점검 등)"
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: '1px solid #E2E8F0',
+                    borderRadius: '8px',
+                    fontSize: '14px'
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569' }}>
+                  내용
+                </label>
+                <textarea
+                  value={noticeForm.content}
+                  onChange={(e) => setNoticeForm({ ...noticeForm, content: e.target.value })}
+                  placeholder="공지사항 내용을 입력하세요"
+                  rows={8}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: '1px solid #E2E8F0',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    resize: 'vertical'
+                  }}
+                  required
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569' }}>
+                  이미지 (선택)
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setNoticeImage(e.target.files?.[0] || null)}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: '1px solid #E2E8F0',
+                    borderRadius: '8px',
+                    fontSize: '14px'
+                  }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input
+                  type="checkbox"
+                  id="isPinned"
+                  checked={noticeForm.isPinned}
+                  onChange={(e) => setNoticeForm({ ...noticeForm, isPinned: e.target.checked })}
+                  style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                />
+                <label htmlFor="isPinned" style={{ fontSize: '14px', fontWeight: '600', color: '#475569', cursor: 'pointer' }}>
+                  📌 상단 고정
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                disabled={noticeLoading}
+                style={{
+                  padding: '14px',
+                  background: noticeLoading ? '#94A3B8' : '#667eea',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '15px',
+                  fontWeight: '700',
+                  cursor: noticeLoading ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {noticeLoading ? '등록 중...' : '공지사항 등록'}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {activeTab === 'notices' && (
+          <div style={{
+            background: 'white',
+            padding: '32px',
+            borderRadius: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+          }}>
+            <h2 style={{
+              fontSize: '24px',
+              fontWeight: '900',
+              color: '#1a1a1a',
+              marginBottom: '24px'
+            }}>
+              📢 등록된 공지사항 ({notices.length}개)
+            </h2>
+
+            {notices.length === 0 ? (
+              <div style={{
+                padding: '80px 20px',
+                textAlign: 'center',
+                color: '#94A3B8'
+              }}>
+                등록된 공지사항이 없습니다.
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {notices.map((notice) => (
+                  <div
+                    key={notice.id}
+                    style={{
+                      padding: '24px',
+                      background: '#F8FAFC',
+                      borderRadius: '12px',
+                      border: '1px solid #E2E8F0',
+                      position: 'relative'
+                    }}
+                  >
+                    {notice.isPinned && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '16px',
+                        right: '80px',
+                        padding: '4px 12px',
+                        background: '#FEF3C7',
+                        color: '#92400E',
+                        fontSize: '12px',
+                        fontWeight: '700',
+                        borderRadius: '6px'
+                      }}>
+                        📌 고정
+                      </div>
+                    )}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '12px' }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{
+                          fontSize: '12px',
+                          color: '#7C3AED',
+                          fontWeight: '700',
+                          marginBottom: '8px'
+                        }}>
+                          [{notice.category}]
+                        </div>
+                        <h3 style={{
+                          fontSize: '18px',
+                          fontWeight: '700',
+                          color: '#1E293B',
+                          marginBottom: '8px'
+                        }}>
+                          {notice.title}
+                        </h3>
+                        <div style={{
+                          fontSize: '14px',
+                          color: '#64748B',
+                          marginBottom: '12px'
+                        }}>
+                          <span>{new Date(notice.createdAt).toLocaleDateString('ko-KR')}</span>
+                        </div>
+                        <div style={{
+                          fontSize: '14px',
+                          color: '#475569',
+                          lineHeight: 1.6,
+                          whiteSpace: 'pre-wrap',
+                          maxHeight: '100px',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}>
+                          {notice.content}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteNotice(notice.id, notice.title)}
+                        style={{
+                          padding: '8px 16px',
+                          background: '#EF4444',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          fontSize: '13px',
+                          fontWeight: '700',
+                          cursor: 'pointer',
+                          marginLeft: '16px'
+                        }}
+                      >
+                        삭제
+                      </button>
+                    </div>
+                    {notice.imageUrl && (
+                      <div style={{ marginTop: '12px' }}>
+                        <img
+                          src={notice.imageUrl}
                           alt="첨부 이미지"
                           style={{
                             maxWidth: '200px',
