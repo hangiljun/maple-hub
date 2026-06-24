@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 
 interface NavigationProps {
-  currentPage: 'home' | 'items' | 'meso' | 'discord' | 'reviews' | 'notice';
+  currentPage: 'home' | 'items' | 'meso' | 'discord' | 'reviews' | 'notice' | 'faq' | 'safety-guide';
 }
 
 export default function Navigation({ currentPage }: NavigationProps) {
@@ -16,7 +16,9 @@ export default function Navigation({ currentPage }: NavigationProps) {
     { key: 'meso', label: '메소거래', href: '/meso' },
     { key: 'discord', label: '디스코드', href: '/discord' },
     { key: 'reviews', label: '이용후기', href: '/reviews' },
-    { key: 'notice', label: '공지사항', href: '/notice' }
+    { key: 'notice', label: '공지사항', href: '/notice' },
+    { key: 'faq', label: 'FAQ', href: '/faq' },
+    { key: 'safety-guide', label: '안전거래', href: '/safety-guide' }
   ];
 
   return (
