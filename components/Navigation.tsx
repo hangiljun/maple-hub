@@ -17,8 +17,7 @@ export default function Navigation({ currentPage }: NavigationProps) {
     { key: 'discord', label: '디스코드', href: '/discord' },
     { key: 'reviews', label: '이용후기', href: '/reviews' },
     { key: 'notice', label: '공지사항', href: '/notice' },
-    { key: 'faq', label: 'FAQ', href: '/faq' },
-    { key: 'safety-guide', label: '안전거래', href: '/safety-guide' }
+    { key: 'faq', label: 'Q&A', href: '/faq' }
   ];
 
   return (
