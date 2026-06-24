@@ -202,32 +202,6 @@ export default function ReviewsPage() {
     }
   };
 
-  // 리뷰 클릭 (조회수 증가)
-  const handleReviewClick = async (review: Review) => {
-    try {
-      const { projectId, apiKey } = firebaseConfig;
-      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/reviews/${review.id}?key=${apiKey}&updateMask.fieldPaths=views`;
-
-      const newViews = review.views + 1;
-
-      await fetch(url, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fields: {
-            views: { integerValue: newViews }
-          }
-        })
-      });
-
-      setSelectedReview({ ...review, views: newViews });
-    } catch (error) {
-      console.error('조회수 증가 실패:', error);
-      setSelectedReview(review);
-    }
-  };
 
 
   const filteredReviews = reviews.filter(r =>
@@ -318,9 +292,9 @@ export default function ReviewsPage() {
           </div>
         ) : (
           filteredReviews.map((review, index) => (
-            <div
+            <Link
               key={review.id}
-              onClick={() => handleReviewClick(review)}
+              href={`/reviews/${review.id}`}
               style={{
                 display: 'flex',
                 padding: '18px 0',
@@ -329,7 +303,8 @@ export default function ReviewsPage() {
                 backgroundColor: '#FFFFFF',
                 textAlign: 'center',
                 fontSize: '14px',
-                transition: 'background-color 0.2s'
+                transition: 'background-color 0.2s',
+                textDecoration: 'none'
               }}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F8FAFC'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FFFFFF'}
@@ -341,7 +316,7 @@ export default function ReviewsPage() {
               <div style={{ width: '15%', color: '#64748B' }}>{review.nickname}</div>
               <div style={{ width: '10%', color: '#94A3B8' }}>{formatDate(review.createdAt)}</div>
               <div style={{ width: '10%', color: '#94A3B8' }}>{review.views}</div>
-            </div>
+            </Link>
           ))
         )}
 

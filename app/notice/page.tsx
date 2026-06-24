@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { getDocs, query, orderBy, collection } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import Navigation from '@/components/Navigation';
@@ -21,7 +20,6 @@ interface Notice {
 // Admin password moved to server-side API for security
 
 export default function NoticePage() {
-  const router = useRouter();
   const [notices, setNotices] = useState<Notice[]>([]);
   const [activeTab, setActiveTab] = useState('전체');
 
@@ -124,9 +122,9 @@ export default function NoticePage() {
             {filteredNotices.map((notice) => {
               const thumbnail = notice.imageUrl || extractFirstImg(notice.content);
               return (
-                <div
+                <Link
                   key={notice.id}
-                  onClick={() => router.push(`/notice/${notice.id}`)}
+                  href={`/notice/${notice.id}`}
                   style={{
                     display: 'block',
                     textDecoration: 'none',
@@ -181,7 +179,7 @@ export default function NoticePage() {
                       <span style={{ color: '#667eea', fontWeight: 'bold' }}>자세히 →</span>
                     </div>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>

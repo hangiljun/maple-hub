@@ -78,7 +78,7 @@ export default function MesoPage() {
     alert('신청 내용이 복사되었습니다!\n카카오톡 오픈채팅에 붙여넣어주세요.');
 
     // 카카오톡 오픈채팅 열기
-    window.open('https://open.kakao.com/o/sx49Xazi', '_blank');
+    window.open('https://open.kakao.com/o/sfxfJyAi', '_blank');
   };
 
   return (
