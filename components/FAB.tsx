@@ -56,8 +56,8 @@ export default function FAB({ type, href }: FABProps) {
           fontSize: '14px',
           fontWeight: '500',
           whiteSpace: 'nowrap',
-          opacity: 0,
-          transform: 'translateX(10px)',
+          opacity: 1,
+          transform: 'translateX(0)',
           transition: 'all 0.3s ease',
           pointerEvents: 'none'
         }}
@@ -86,8 +86,7 @@ export default function FAB({ type, href }: FABProps) {
           e.currentTarget.style.boxShadow = `0 12px 40px ${shadowHoverColor}`;
           const label = e.currentTarget.previousElementSibling as HTMLElement;
           if (label) {
-            label.style.opacity = '1';
-            label.style.transform = 'translateX(0)';
+            label.style.transform = 'scale(1.05)';
           }
         }}
         onMouseLeave={(e) => {
@@ -95,8 +94,7 @@ export default function FAB({ type, href }: FABProps) {
           e.currentTarget.style.boxShadow = `0 8px 32px ${shadowColor}`;
           const label = e.currentTarget.previousElementSibling as HTMLElement;
           if (label) {
-            label.style.opacity = '0';
-            label.style.transform = 'translateX(10px)';
+            label.style.transform = 'scale(1)';
           }
         }}
       >
