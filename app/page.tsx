@@ -283,7 +283,7 @@ export default function Home() {
           </Link>
 
           {/* 디스코드 홍보 배너 */}
-          <Link href="/discord" style={{ textDecoration: 'none' }}>
+          <div style={{ textDecoration: 'none' }}>
             <div className="card-hover" style={{
               position: 'relative',
               borderRadius: '16px',
@@ -294,7 +294,7 @@ export default function Home() {
             }}>
               <img
                 src="/discord.png"
-                alt="디스코드 홍보"
+                alt="디스코드"
                 style={{
                   width: '100%',
                   height: 'auto',
@@ -306,21 +306,34 @@ export default function Home() {
                 padding: '16px 20px',
                 textAlign: 'center'
               }}>
-                <h3 style={{
-                  fontSize: '16px',
-                  fontWeight: '700',
-                  color: '#1E293B',
-                  marginBottom: '4px'
-                }}>디스코드 홍보</h3>
-                <p style={{
-                  fontSize: '13px',
-                  color: '#64748B'
-                }}>
-                  길드 • 파티 모집
-                </p>
+                <Link href="/discord" style={{ textDecoration: 'none', width: '100%', display: 'block' }}>
+                  <button style={{
+                    width: '100%',
+                    padding: '12px 24px',
+                    background: '#5865F2',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    boxShadow: '0 4px 12px rgba(88, 101, 242, 0.3)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#4752C4';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#5865F2';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}>
+                    디스코드 바로가기 →
+                  </button>
+                </Link>
               </div>
             </div>
-          </Link>
+          </div>
 
         </div>
 
