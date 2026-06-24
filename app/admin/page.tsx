@@ -59,6 +59,13 @@ export default function AdminPage() {
     }
   }, []);
 
+  // 탭 변경 시 후기 새로고침
+  useEffect(() => {
+    if (isLoggedIn && activeTab === 'reviews') {
+      fetchReviews();
+    }
+  }, [activeTab, isLoggedIn]);
+
   // 후기 불러오기
   const fetchReviews = async () => {
     try {
@@ -121,9 +128,10 @@ export default function AdminPage() {
 
   // 로그인
   const handleLogin = () => {
-    if (password === 'admin1234') {
+    if (password === 'rlfwns55') {
       setIsLoggedIn(true);
       localStorage.setItem('admin_auth', 'true');
+      fetchReviews();
       alert('로그인 성공!');
     } else {
       alert('비밀번호가 틀렸습니다.');
@@ -282,7 +290,7 @@ export default function AdminPage() {
             color: '#92400E',
             lineHeight: 1.6
           }}>
-            💡 기본 비밀번호: admin1234
+            💡 관리자 비밀번호를 입력하세요
           </div>
         </div>
       </div>
