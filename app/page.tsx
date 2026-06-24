@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Navigation from '@/components/Navigation';
 import FAB from '@/components/FAB';
 
 export default function Home() {
@@ -38,54 +39,7 @@ export default function Home() {
         }
       `}</style>
 
-      {/* 고정 헤더 */}
-      <nav style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
-        background: 'rgba(255, 255, 255, 0.85)',
-        borderBottom: '1px solid rgba(102, 126, 234, 0.2)',
-        padding: '18px 5%',
-        backdropFilter: 'blur(20px)',
-        boxShadow: '0 2px 20px rgba(102, 126, 234, 0.08)'
-      }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <Link href="/" style={{
-            textDecoration: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px'
-          }}>
-            <img src="/logo.ico" alt="MAPLE HUB" style={{ width: '40px', height: '40px' }} />
-            <span style={{
-              fontSize: '22px',
-              fontWeight: '900',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}>메이플 허브</span>
-          </Link>
-          <div style={{ display: 'flex', gap: '32px', fontSize: '15px', fontWeight: '600' }}>
-            <Link href="/" style={{
-              color: '#667eea',
-              textDecoration: 'none',
-              borderBottom: '2px solid #667eea',
-              paddingBottom: '4px'
-            }}>홈</Link>
-            <Link href="/items" style={{ color: '#64748B', textDecoration: 'none', transition: 'color 0.2s' }}>급처템</Link>
-            <Link href="/meso" style={{ color: '#64748B', textDecoration: 'none', transition: 'color 0.2s' }}>메소거래</Link>
-            <Link href="/discord" style={{ color: '#64748B', textDecoration: 'none', transition: 'color 0.2s' }}>디스코드</Link>
-            <Link href="/reviews" style={{ color: '#64748B', textDecoration: 'none', transition: 'color 0.2s' }}>이용후기</Link>
-            <Link href="/notice" style={{ color: '#64748B', textDecoration: 'none', transition: 'color 0.2s' }}>공지사항</Link>
-          </div>
-        </div>
-      </nav>
+      <Navigation currentPage="home" />
 
       {/* 메인 콘텐츠 */}
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'clamp(40px, 8vw, 80px) clamp(16px, 4vw, 20px)' }}>

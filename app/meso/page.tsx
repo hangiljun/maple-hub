@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Navigation from '@/components/Navigation';
 import FAB from '@/components/FAB';
 
 interface PriceTier {
@@ -82,31 +83,7 @@ export default function MesoPage() {
 
   return (
     <div style={{ backgroundColor: '#FFFFFF', minHeight: '100vh' }}>
-      {/* 고정 헤더 */}
-      <nav style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
-        background: 'white',
-        borderBottom: '2px solid #667eea',
-        padding: '20px 5%',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <img src="/logo.ico" alt="MAPLE HUB" style={{ width: '40px', height: '40px' }} />
-            <span style={{ fontSize: '24px', fontWeight: '900', color: '#667eea' }}>메이플 허브</span>
-          </Link>
-          <div style={{ display: 'flex', gap: '32px', fontSize: '16px', fontWeight: '600' }}>
-            <Link href="/" style={{ color: '#64748B', textDecoration: 'none' }}>홈</Link>
-            <Link href="/items" style={{ color: '#64748B', textDecoration: 'none' }}>급처템</Link>
-            <Link href="/meso" style={{ color: '#667eea', textDecoration: 'none', borderBottom: '2px solid #667eea', paddingBottom: '4px' }}>메소거래</Link>
-            <Link href="/discord" style={{ color: '#64748B', textDecoration: 'none' }}>디스코드</Link>
-            <Link href="/reviews" style={{ color: '#64748B', textDecoration: 'none' }}>이용후기</Link>
-            <Link href="/notice" style={{ color: '#64748B', textDecoration: 'none' }}>공지사항</Link>
-          </div>
-        </div>
-      </nav>
+      <Navigation currentPage="meso" />
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 20px' }}>
 

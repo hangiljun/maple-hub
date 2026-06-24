@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { collection, addDoc, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase';
+import Navigation from '@/components/Navigation';
 import FAB from '@/components/FAB';
 
 interface Notice {
@@ -145,33 +146,7 @@ export default function NoticePage() {
 
   return (
     <div style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', fontFamily: "'Noto Sans KR', sans-serif", color: '#1E293B' }}>
-      {/* 네비게이션 */}
-      <nav style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        padding: '15px 5%',
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        borderBottom: '1px solid #E2E8F0',
-        alignItems: 'center',
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
-        backdropFilter: 'blur(10px)',
-        boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
-      }}>
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', textDecoration: 'none' }}>
-          <img src="/logo.ico" alt="MAPLE HUB" style={{ width: '40px', height: '40px' }} />
-          <span style={{ fontSize: '20px', fontWeight: '900', color: '#667eea' }}>메이플 허브</span>
-        </Link>
-        <div style={{ display: 'flex', gap: '25px', fontSize: '15px', fontWeight: '600' }}>
-          <Link href="/" style={{ color: '#64748B', textDecoration: 'none', cursor: 'pointer' }}>홈</Link>
-          <Link href="/items" style={{ color: '#64748B', textDecoration: 'none', cursor: 'pointer' }}>급처템</Link>
-          <Link href="/meso" style={{ color: '#64748B', textDecoration: 'none', cursor: 'pointer' }}>메소거래</Link>
-          <Link href="/discord" style={{ color: '#64748B', textDecoration: 'none', cursor: 'pointer' }}>디스코드</Link>
-          <Link href="/reviews" style={{ color: '#64748B', textDecoration: 'none', cursor: 'pointer' }}>이용후기</Link>
-          <span style={{ color: '#667eea', cursor: 'pointer' }}>공지사항</span>
-        </div>
-      </nav>
+      <Navigation currentPage="notice" />
 
       {/* 배너 */}
       <div style={{ width: '100%', backgroundColor: '#E2E8F0', display: 'flex', justifyContent: 'center' }}>
