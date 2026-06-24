@@ -192,30 +192,6 @@ export default function Home() {
           }}>
             카카오톡 기반 거래 중개 플랫폼
           </p>
-
-          {/* 중요 공지 */}
-          <div style={{
-            maxWidth: '700px',
-            margin: '0 auto 40px',
-            background: 'linear-gradient(135deg, #FEE2E2 0%, #FEF2F2 100%)',
-            padding: '20px 28px',
-            borderRadius: '16px',
-            border: '2px solid #DC2626'
-          }}>
-            <div style={{
-              fontSize: '14px',
-              color: '#991B1B',
-              lineHeight: 1.7,
-              textAlign: 'center'
-            }}>
-              <p style={{ marginBottom: '8px', fontWeight: '700', fontSize: '15px' }}>
-                ⚠️ 메이플스토리 현금 거래는 게임 운영정책상 금지되어 있습니다
-              </p>
-              <p style={{ fontSize: '13px' }}>
-                계정 회수/정지 등 모든 책임은 이용자 본인에게 있으며, 당사는 게임사 제재에 대해 책임지지 않습니다
-              </p>
-            </div>
-          </div>
         </div>
 
         {/* 배너 그리드 (급처템, 메소, 디스코드) */}
