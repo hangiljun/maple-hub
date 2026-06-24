@@ -60,14 +60,17 @@ export default function TermsPage() {
               제3조 (서비스의 내용)
             </h2>
             <p style={{ fontSize: '15px', color: '#475569', lineHeight: 1.8, marginBottom: '12px' }}>
-              사이트는 다음과 같은 서비스를 제공합니다.
+              사이트는 다음과 같은 거래 중개 서비스를 제공합니다.
             </p>
             <ul style={{ fontSize: '15px', color: '#475569', lineHeight: 2, paddingLeft: '24px' }}>
-              <li>메이플스토리 아이템 거래 정보 제공</li>
-              <li>메소 거래 시세 정보 제공</li>
+              <li>메이플스토리 아이템 거래 중개 (카카오톡 기반)</li>
+              <li>메소 거래 중개 및 시세 정보 제공</li>
               <li>디스코드 커뮤니티 정보 제공</li>
               <li>거래 후기 작성 및 열람 서비스</li>
             </ul>
+            <p style={{ fontSize: '15px', color: '#475569', lineHeight: 1.8, marginTop: '12px' }}>
+              <strong>※ 사이트는 거래를 중개하는 플랫폼이며, 사이트 내에서 직접 거래가 이루어지지 않습니다. 실제 거래는 판매자와 구매자 간 카카오톡을 통해 직접 진행됩니다.</strong>
+            </p>
           </section>
 
           <section style={{ marginBottom: '40px' }}>
@@ -75,7 +78,7 @@ export default function TermsPage() {
               제4조 (사이트의 의무)
             </h2>
             <p style={{ fontSize: '15px', color: '#475569', lineHeight: 1.8 }}>
-              사이트는 안정적인 서비스 제공을 위해 최선을 다하며, 개인정보 보호에 관한 법규를 준수합니다. 다만, 사이트는 거래 중개 플랫폼이 아니며, 이용자 간 직거래로 인해 발생하는 분쟁이나 피해에 대해서는 책임을 지지 않습니다.
+              사이트는 안정적인 거래 중개 서비스 제공을 위해 최선을 다하며, 개인정보 보호에 관한 법규를 준수합니다. 다만, 사이트는 거래를 중개하는 플랫폼으로서 판매자와 구매자를 연결해주는 역할만 담당하며, 실제 거래는 당사자 간 직접 진행됩니다. 따라서 거래 과정에서 발생하는 분쟁이나 피해에 대해서는 책임을 지지 않습니다.
             </p>
           </section>
 
@@ -104,10 +107,26 @@ export default function TermsPage() {
             </p>
             <ul style={{ fontSize: '15px', color: '#475569', lineHeight: 2, paddingLeft: '24px' }}>
               <li>이용자 간 직거래로 인해 발생하는 모든 분쟁 및 손해</li>
+              <li><strong style={{ color: '#DC2626' }}>메이플스토리 게임 운영정책 위반으로 인한 계정 회수, 정지, 제재 등 모든 불이익</strong></li>
+              <li><strong style={{ color: '#DC2626' }}>게임 운영사의 정책 변경 및 제재 조치</strong></li>
               <li>천재지변 또는 이에 준하는 불가항력으로 인한 서비스 중단</li>
               <li>이용자의 귀책사유로 인한 서비스 이용 장애</li>
               <li>제3자가 제공하는 정보의 정확성 및 신뢰성</li>
             </ul>
+            <div style={{
+              background: '#FEF2F2',
+              border: '2px solid #DC2626',
+              borderRadius: '12px',
+              padding: '16px',
+              marginTop: '16px'
+            }}>
+              <p style={{ fontSize: '15px', color: '#991B1B', lineHeight: 1.8, fontWeight: '700' }}>
+                ⚠️ 중요 고지사항
+              </p>
+              <p style={{ fontSize: '14px', color: '#991B1B', lineHeight: 1.8, marginTop: '8px' }}>
+                메이플스토리의 현금 거래는 게임 운영정책상 금지되어 있습니다. 현금 거래로 인한 계정 회수, 정지, 제재 등의 모든 법적 책임과 불이익은 이용자 본인에게 있으며, 당사는 이에 대해 어떠한 책임도 지지 않습니다. 거래 전 반드시 게임 운영정책을 확인하시고 본인의 판단과 책임 하에 거래하시기 바랍니다.
+              </p>
+            </div>
           </section>
 
           <section style={{ marginBottom: '40px' }}>

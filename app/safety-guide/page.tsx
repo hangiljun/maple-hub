@@ -21,6 +21,40 @@ export default function SafetyGuidePage() {
           </p>
         </div>
 
+        {/* 중요 공지 */}
+        <div style={{
+          background: 'linear-gradient(135deg, #FEE2E2 0%, #FEF2F2 100%)',
+          padding: '24px 32px',
+          borderRadius: '20px',
+          border: '2px solid #DC2626',
+          marginBottom: '32px'
+        }}>
+          <h2 style={{
+            fontSize: '20px',
+            fontWeight: '900',
+            color: '#DC2626',
+            marginBottom: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            ⚠️ 필독: 게임 운영정책 관련 안내
+          </h2>
+          <div style={{ fontSize: '15px', color: '#991B1B', lineHeight: 1.8 }}>
+            <p style={{ marginBottom: '12px', fontWeight: '700' }}>
+              메이플스토리의 현금 거래는 게임 운영정책상 금지되어 있습니다.
+            </p>
+            <p style={{ marginBottom: '12px' }}>
+              • 현금 거래로 인한 계정 회수, 정지, 제재 등의 모든 책임은 거래 당사자에게 있습니다.<br />
+              • 당사는 게임 운영사의 정책 변경 및 제재 조치에 대해 어떠한 책임도 지지 않습니다.<br />
+              • 거래 전 반드시 게임 운영정책을 확인하시고, 본인의 판단 하에 거래하시기 바랍니다.
+            </p>
+            <p style={{ fontWeight: '700' }}>
+              ※ 거래 시 발생하는 모든 법적 책임은 이용자 본인에게 있습니다.
+            </p>
+          </div>
+        </div>
+
         {/* 사업자 등록증 */}
         <div style={{
           background: 'white',

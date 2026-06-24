@@ -834,9 +834,13 @@ export default function Home() {
             paddingTop: '32px',
             textAlign: 'center'
           }}>
-            <p style={{ fontSize: '13px', opacity: 0.5, lineHeight: 1.8, marginBottom: '12px' }}>
-              본 사이트는 거래 중개 플랫폼이 아닌 홍보 공간이며,<br />
-              당사자 간의 직거래로 인해 발생하는 피해에 대해 책임을 지지 않습니다.
+            <p style={{ fontSize: '13px', opacity: 0.6, lineHeight: 1.8, marginBottom: '8px' }}>
+              본 사이트는 카카오톡 기반 거래 중개 플랫폼입니다.
+            </p>
+            <p style={{ fontSize: '12px', opacity: 0.5, lineHeight: 1.7, marginBottom: '12px' }}>
+              메이플스토리의 현금 거래는 게임 운영정책상 금지되어 있으며,<br />
+              이로 인한 계정 회수, 정지, 제재 등 모든 책임은 이용자 본인에게 있습니다.<br />
+              당사는 게임 운영사의 제재 조치에 대해 어떠한 책임도 지지 않습니다.
             </p>
             <p style={{ fontSize: '13px', opacity: 0.5 }}>
               © 2026 메이플 허브. All rights reserved.
