@@ -262,14 +262,15 @@ export default function Home() {
           </Link>
 
           {/* 메소 거래 카드 */}
-          <Link href="/meso" style={{ textDecoration: 'none' }}>
+          <div style={{ textDecoration: 'none' }}>
             <div className="card-hover" style={{
               background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
-              padding: '48px 32px',
+              padding: '32px',
               borderRadius: '24px',
-              minHeight: '280px',
+              minHeight: '320px',
               display: 'flex',
               flexDirection: 'column',
+              alignItems: 'center',
               justifyContent: 'space-between',
               position: 'relative',
               overflow: 'hidden',
@@ -287,38 +288,58 @@ export default function Home() {
                 borderRadius: '50%'
               }}></div>
 
-              <div>
+              <div style={{ textAlign: 'center', width: '100%' }}>
                 <div className="float-animation" style={{
-                  fontSize: '72px',
-                  marginBottom: '20px',
+                  width: '120px',
+                  height: '120px',
+                  margin: '0 auto 20px',
                   filter: 'drop-shadow(0 4px 12px rgba(245, 158, 11, 0.3))',
                   animationDelay: '1s'
-                }}>💰</div>
+                }}>
+                  <img src="/메소.png" alt="메소" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                </div>
                 <h3 style={{
-                  fontSize: '28px',
+                  fontSize: '24px',
                   fontWeight: '900',
-                  marginBottom: '16px',
+                  marginBottom: '12px',
                   color: '#92400E'
-                }}>메소 거래</h3>
+                }}>메이플 메소 거래</h3>
                 <p style={{
-                  fontSize: '15px',
+                  fontSize: '14px',
                   color: '#B45309',
-                  lineHeight: 1.7,
+                  lineHeight: 1.6,
                   opacity: 0.9
                 }}>
                   안전한 메소 거래<br />실시간 시세 확인
                 </p>
               </div>
-              <div style={{
-                fontSize: '14px',
-                color: '#f59e0b',
-                fontWeight: '700',
-                marginTop: '24px'
-              }}>
-                → 시세 보러가기
-              </div>
+              <Link href="/meso" style={{ textDecoration: 'none', width: '100%' }}>
+                <button style={{
+                  width: '100%',
+                  padding: '14px 24px',
+                  background: '#f59e0b',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontSize: '15px',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#d97706';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#f59e0b';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}>
+                  → 바로가기
+                </button>
+              </Link>
             </div>
-          </Link>
+          </div>
 
           {/* 디스코드 홍보 카드 */}
           <Link href="/discord" style={{ textDecoration: 'none' }}>
