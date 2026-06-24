@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { firebaseConfig } from '@/lib/firebase-config';
 
 interface PriceTier {
   label: string;
@@ -15,10 +16,22 @@ interface PriceTable {
   sell: PriceTier[];
 }
 
+interface Review {
+  id: string;
+  title: string;
+  nickname: string;
+  content: string;
+  imageUrl?: string;
+  views: number;
+  createdAt: any;
+}
+
 export default function AdminPage() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [password, setPassword] = useState('');
+  const [activeTab, setActiveTab] = useState<'price' | 'reviews'>('price');
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [priceTable, setPriceTable] = useState<PriceTable>({
     buy: [
       { label: '1 ~ 100억', maxQty: 100, price: 1300, hot: false },
@@ -42,8 +55,69 @@ export default function AdminPage() {
     const savedAuth = localStorage.getItem('admin_auth');
     if (savedAuth === 'true') {
       setIsLoggedIn(true);
+      fetchReviews();
     }
   }, []);
+
+  // 후기 불러오기
+  const fetchReviews = async () => {
+    try {
+      const { projectId, apiKey } = firebaseConfig;
+      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/reviews?key=${apiKey}`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.documents) {
+        const reviewsData = data.documents.map((doc: any) => {
+          const docId = doc.name.split('/').pop();
+          return {
+            id: docId,
+            title: doc.fields.title?.stringValue || '',
+            nickname: doc.fields.nickname?.stringValue || '',
+            content: doc.fields.content?.stringValue || '',
+            imageUrl: doc.fields.imageUrl?.stringValue || '',
+            views: parseInt(doc.fields.views?.integerValue || '0'),
+            createdAt: doc.fields.createdAt?.timestampValue || doc.createTime
+          };
+        });
+
+        reviewsData.sort((a: Review, b: Review) => {
+          const dateA = new Date(a.createdAt).getTime();
+          const dateB = new Date(b.createdAt).getTime();
+          return dateB - dateA;
+        });
+
+        setReviews(reviewsData);
+      }
+    } catch (error) {
+      console.error('후기 로드 실패:', error);
+    }
+  };
+
+  // 후기 삭제
+  const handleDeleteReview = async (reviewId: string, title: string) => {
+    if (!confirm(`"${title}" 후기를 삭제하시겠습니까?`)) return;
+
+    try {
+      const { projectId, apiKey } = firebaseConfig;
+      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/reviews/${reviewId}?key=${apiKey}`;
+
+      const response = await fetch(url, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      alert('삭제되었습니다.');
+      fetchReviews();
+    } catch (error) {
+      console.error('삭제 실패:', error);
+      alert('삭제에 실패했습니다.');
+    }
+  };
 
   // 로그인
   const handleLogin = () => {
@@ -225,53 +299,90 @@ export default function AdminPage() {
           padding: '32px',
           borderRadius: '20px',
           marginBottom: '32px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
+          boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
         }}>
-          <div>
-            <h1 style={{ fontSize: '32px', fontWeight: '900', color: '#1a1a1a', marginBottom: '8px' }}>
-              🎛️ 메소 가격 관리
-            </h1>
-            <p style={{ fontSize: '14px', color: '#666' }}>
-              메소 거래 시세를 설정합니다
-            </p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+            <div>
+              <h1 style={{ fontSize: '32px', fontWeight: '900', color: '#1a1a1a', marginBottom: '8px' }}>
+                🎛️ 관리자 페이지
+              </h1>
+              <p style={{ fontSize: '14px', color: '#666' }}>
+                메소 가격 및 후기를 관리합니다
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button
+                onClick={() => router.push('/')}
+                style={{
+                  padding: '12px 24px',
+                  background: '#0066CC',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '10px',
+                  fontSize: '14px',
+                  fontWeight: '700',
+                  cursor: 'pointer'
+                }}
+              >
+                홈으로
+              </button>
+              <button
+                onClick={handleLogout}
+                style={{
+                  padding: '12px 24px',
+                  background: '#666',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '10px',
+                  fontSize: '14px',
+                  fontWeight: '700',
+                  cursor: 'pointer'
+                }}
+              >
+                로그아웃
+              </button>
+            </div>
           </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
+
+          {/* 탭 */}
+          <div style={{ display: 'flex', gap: '8px', borderBottom: '2px solid #f1f5f9' }}>
             <button
-              onClick={() => router.push('/meso')}
+              onClick={() => setActiveTab('price')}
               style={{
                 padding: '12px 24px',
-                background: '#0066CC',
-                color: 'white',
+                background: activeTab === 'price' ? '#667eea' : 'transparent',
+                color: activeTab === 'price' ? 'white' : '#666',
                 border: 'none',
-                borderRadius: '10px',
-                fontSize: '14px',
+                borderRadius: '8px 8px 0 0',
+                fontSize: '15px',
                 fontWeight: '700',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                transition: 'all 0.2s'
               }}
             >
-              메소 페이지로
+              💰 메소 가격 관리
             </button>
             <button
-              onClick={handleLogout}
+              onClick={() => setActiveTab('reviews')}
               style={{
                 padding: '12px 24px',
-                background: '#666',
-                color: 'white',
+                background: activeTab === 'reviews' ? '#667eea' : 'transparent',
+                color: activeTab === 'reviews' ? 'white' : '#666',
                 border: 'none',
-                borderRadius: '10px',
-                fontSize: '14px',
+                borderRadius: '8px 8px 0 0',
+                fontSize: '15px',
                 fontWeight: '700',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                transition: 'all 0.2s'
               }}
             >
-              로그아웃
+              📝 후기 관리 ({reviews.length})
             </button>
           </div>
         </div>
 
+        {activeTab === 'price' && (
+          <>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '32px', marginBottom: '32px' }}>
 
           {/* 구매가 (사이트가 유저로부터 메소를 구매) */}
@@ -431,6 +542,115 @@ export default function AdminPage() {
             🔄 초기화
           </button>
         </div>
+        </>
+        )}
+
+        {activeTab === 'reviews' && (
+          <div style={{
+            background: 'white',
+            padding: '32px',
+            borderRadius: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+          }}>
+            <h2 style={{
+              fontSize: '24px',
+              fontWeight: '900',
+              color: '#1a1a1a',
+              marginBottom: '24px'
+            }}>
+              📝 후기 관리 ({reviews.length}개)
+            </h2>
+
+            {reviews.length === 0 ? (
+              <div style={{
+                padding: '80px 20px',
+                textAlign: 'center',
+                color: '#94A3B8'
+              }}>
+                등록된 후기가 없습니다.
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {reviews.map((review) => (
+                  <div
+                    key={review.id}
+                    style={{
+                      padding: '24px',
+                      background: '#F8FAFC',
+                      borderRadius: '12px',
+                      border: '1px solid #E2E8F0'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '12px' }}>
+                      <div style={{ flex: 1 }}>
+                        <h3 style={{
+                          fontSize: '18px',
+                          fontWeight: '700',
+                          color: '#1E293B',
+                          marginBottom: '8px'
+                        }}>
+                          {review.title}
+                        </h3>
+                        <div style={{
+                          fontSize: '14px',
+                          color: '#64748B',
+                          marginBottom: '12px'
+                        }}>
+                          <span>작성자: {review.nickname}</span>
+                          <span style={{ margin: '0 8px' }}>•</span>
+                          <span>조회수: {review.views}</span>
+                          <span style={{ margin: '0 8px' }}>•</span>
+                          <span>{new Date(review.createdAt).toLocaleDateString('ko-KR')}</span>
+                        </div>
+                        <div style={{
+                          fontSize: '14px',
+                          color: '#475569',
+                          lineHeight: 1.6,
+                          whiteSpace: 'pre-wrap',
+                          maxHeight: '100px',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}>
+                          {review.content}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteReview(review.id, review.title)}
+                        style={{
+                          padding: '8px 16px',
+                          background: '#EF4444',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          fontSize: '13px',
+                          fontWeight: '700',
+                          cursor: 'pointer',
+                          marginLeft: '16px'
+                        }}
+                      >
+                        삭제
+                      </button>
+                    </div>
+                    {review.imageUrl && (
+                      <div style={{ marginTop: '12px' }}>
+                        <img
+                          src={review.imageUrl}
+                          alt="첨부 이미지"
+                          style={{
+                            maxWidth: '200px',
+                            maxHeight: '200px',
+                            borderRadius: '8px',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
       </div>
     </div>

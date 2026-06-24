@@ -16,14 +16,13 @@ interface Review {
   imageUrl?: string;
   views: number;
   createdAt: any;
-  password: string;
 }
 
 export default function ReviewsPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [form, setForm] = useState({ title: '', nickname: '', password: '', content: '' });
+  const [form, setForm] = useState({ title: '', nickname: '', content: '' });
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
@@ -94,7 +93,7 @@ export default function ReviewsPage() {
     e.preventDefault();
 
     // 입력값 검증
-    if (!form.title || !form.nickname || !form.password || !form.content) {
+    if (!form.title || !form.nickname || !form.content) {
       alert('모든 항목을 입력하세요.');
       return;
     }
@@ -141,7 +140,6 @@ export default function ReviewsPage() {
         fields: {
           title: { stringValue: form.title },
           nickname: { stringValue: form.nickname },
-          password: { stringValue: form.password },
           content: { stringValue: form.content },
           imageUrl: { stringValue: imageUrl || '' },
           views: { integerValue: 0 },
@@ -169,7 +167,7 @@ export default function ReviewsPage() {
       // 성공 처리
       alert('후기가 등록되었습니다!');
       setShowForm(false);
-      setForm({ title: '', nickname: '', password: '', content: '' });
+      setForm({ title: '', nickname: '', content: '' });
       setImage(null);
 
       // 목록 새로고침
@@ -231,41 +229,6 @@ export default function ReviewsPage() {
     }
   };
 
-  // 리뷰 삭제
-  const handleDelete = async (reviewId: string) => {
-    const password = prompt('비밀번호를 입력하세요:');
-    if (!password) return;
-
-    const review = reviews.find(r => r.id === reviewId);
-    if (!review) return;
-
-    if (review.password !== password) {
-      alert('비밀번호가 일치하지 않습니다.');
-      return;
-    }
-
-    if (!confirm('정말 삭제하시겠습니까?')) return;
-
-    try {
-      const { projectId, apiKey } = firebaseConfig;
-      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/reviews/${reviewId}?key=${apiKey}`;
-
-      const response = await fetch(url, {
-        method: 'DELETE'
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
-      alert('삭제되었습니다.');
-      setSelectedReview(null);
-      fetchReviews();
-    } catch (error) {
-      console.error('삭제 실패:', error);
-      alert('삭제에 실패했습니다.');
-    }
-  };
 
   const filteredReviews = reviews.filter(r =>
     r.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -469,26 +432,14 @@ export default function ReviewsPage() {
                 />
               </div>
 
-              <div style={{ display: 'flex', gap: '20px', marginBottom: '15px' }}>
-                <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>작성자 *</p>
-                  <input
-                    placeholder="닉네임"
-                    value={form.nickname}
-                    onChange={e => setForm({ ...form, nickname: e.target.value })}
-                    style={lightInputStyle}
-                  />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>비밀번호 *</p>
-                  <input
-                    type="password"
-                    placeholder="수정/삭제용 비밀번호"
-                    value={form.password}
-                    onChange={e => setForm({ ...form, password: e.target.value })}
-                    style={lightInputStyle}
-                  />
-                </div>
+              <div style={{ marginBottom: '15px' }}>
+                <p style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '8px', color: '#64748B' }}>작성자 *</p>
+                <input
+                  placeholder="닉네임"
+                  value={form.nickname}
+                  onChange={e => setForm({ ...form, nickname: e.target.value })}
+                  style={lightInputStyle}
+                />
               </div>
 
               <div style={{ marginBottom: '15px' }}>
@@ -536,7 +487,7 @@ export default function ReviewsPage() {
                   type="button"
                   onClick={() => {
                     setShowForm(false);
-                    setForm({ title: '', nickname: '', password: '', content: '' });
+                    setForm({ title: '', nickname: '', content: '' });
                     setImage(null);
                   }}
                   disabled={loading}
@@ -625,27 +576,12 @@ export default function ReviewsPage() {
 
             <div style={{ display: 'flex', gap: '10px' }}>
               <button
-                onClick={() => handleDelete(selectedReview.id)}
-                style={{
-                  padding: '12px 24px',
-                  backgroundColor: '#EF4444',
-                  color: '#FFF',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  fontSize: '14px'
-                }}
-              >
-                삭제
-              </button>
-              <button
                 onClick={() => setSelectedReview(null)}
                 style={{
                   flex: 1,
                   padding: '12px',
-                  backgroundColor: '#F1F5F9',
-                  color: '#64748B',
+                  backgroundColor: '#667eea',
+                  color: '#FFF',
                   border: 'none',
                   borderRadius: '8px',
                   cursor: 'pointer',
