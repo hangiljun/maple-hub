@@ -375,7 +375,6 @@ export default function DiscordPage() {
               <ul style={{ fontSize: '14px', color: '#64748B', lineHeight: 2, paddingLeft: '20px' }}>
                 <li>부주작업</li>
                 <li>보스작업</li>
-                <li>메포개시</li>
                 <li>낙변거래</li>
                 <li>인기도작</li>
                 <li>커미션존</li>
