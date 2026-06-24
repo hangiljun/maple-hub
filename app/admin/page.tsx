@@ -39,16 +39,33 @@ interface Notice {
   createdAt: any;
 }
 
+interface Item {
+  id: string;
+  server: string;
+  itemName: string;
+  price: string;
+  seller: string;
+  contact: string;
+  contactId: string;
+  description: string;
+  imageUrl?: string;
+  createdAt: any;
+}
+
 export default function AdminPage() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [password, setPassword] = useState('');
-  const [activeTab, setActiveTab] = useState<'price' | 'reviews' | 'notices'>('price');
+  const [activeTab, setActiveTab] = useState<'price' | 'reviews' | 'notices' | 'items'>('price');
   const [reviews, setReviews] = useState<Review[]>([]);
   const [notices, setNotices] = useState<Notice[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
   const [noticeForm, setNoticeForm] = useState({ title: '', content: '', category: '공지사항', isPinned: false });
   const [noticeImage, setNoticeImage] = useState<File | null>(null);
   const [noticeLoading, setNoticeLoading] = useState(false);
+  const [itemForm, setItemForm] = useState({ server: '스카니아', itemName: '', price: '', seller: '', contact: '카카오톡', contactId: '', description: '' });
+  const [itemImage, setItemImage] = useState<File | null>(null);
+  const [itemLoading, setItemLoading] = useState(false);
   const [priceTable, setPriceTable] = useState<PriceTable>({
     buy: [
       { label: '1 ~ 100억', maxQty: 100, price: 1300, hot: false },
@@ -83,6 +100,8 @@ export default function AdminPage() {
         fetchReviews();
       } else if (activeTab === 'notices') {
         fetchNotices();
+      } else if (activeTab === 'items') {
+        fetchItems();
       }
     }
   }, [activeTab, isLoggedIn]);
@@ -242,6 +261,110 @@ export default function AdminPage() {
 
       alert('삭제되었습니다.');
       fetchNotices();
+    } catch (error) {
+      console.error('삭제 실패:', error);
+      alert('삭제에 실패했습니다.');
+    }
+  };
+
+  // 급처템 불러오기
+  const fetchItems = async () => {
+    try {
+      const { projectId, apiKey } = firebaseConfig;
+      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/items?key=${apiKey}`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.documents) {
+        const itemsData = data.documents.map((doc: any) => {
+          const docId = doc.name.split('/').pop();
+          return {
+            id: docId,
+            server: doc.fields.server?.stringValue || '',
+            itemName: doc.fields.itemName?.stringValue || '',
+            price: doc.fields.price?.stringValue || '',
+            seller: doc.fields.seller?.stringValue || '',
+            contact: doc.fields.contact?.stringValue || '',
+            contactId: doc.fields.contactId?.stringValue || '',
+            description: doc.fields.description?.stringValue || '',
+            imageUrl: doc.fields.imageUrl?.stringValue || '',
+            createdAt: doc.fields.createdAt?.timestampValue || doc.createTime
+          };
+        });
+
+        itemsData.sort((a: Item, b: Item) => {
+          const dateA = new Date(a.createdAt).getTime();
+          const dateB = new Date(b.createdAt).getTime();
+          return dateB - dateA;
+        });
+
+        setItems(itemsData);
+      }
+    } catch (error) {
+      console.error('급처템 로드 실패:', error);
+    }
+  };
+
+  // 급처템 등록
+  const handleItemSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!itemForm.itemName || !itemForm.price || !itemForm.seller || !itemForm.contactId) {
+      return alert('필수 항목을 모두 입력하세요.');
+    }
+
+    setItemLoading(true);
+    try {
+      let imageUrl = '';
+      if (itemImage) {
+        const timestamp = Date.now();
+        const storageRef = ref(storage, `items/${timestamp}_${itemImage.name}`);
+        await uploadBytes(storageRef, itemImage);
+        imageUrl = await getDownloadURL(storageRef);
+      }
+
+      await addDoc(collection(db, 'items'), {
+        server: itemForm.server,
+        itemName: itemForm.itemName,
+        price: itemForm.price,
+        seller: itemForm.seller,
+        contact: itemForm.contact,
+        contactId: itemForm.contactId,
+        description: itemForm.description,
+        imageUrl,
+        createdAt: new Date()
+      });
+
+      alert('급처템이 등록되었습니다!');
+      setItemForm({ server: '스카니아', itemName: '', price: '', seller: '', contact: '카카오톡', contactId: '', description: '' });
+      setItemImage(null);
+      fetchItems();
+    } catch (error: any) {
+      console.error('급처템 등록 실패:', error);
+      alert(`급처템 등록에 실패했습니다.\n에러: ${error.message || error}`);
+    } finally {
+      setItemLoading(false);
+    }
+  };
+
+  // 급처템 삭제
+  const handleDeleteItem = async (itemId: string, itemName: string) => {
+    if (!confirm(`"${itemName}" 급처템을 삭제하시겠습니까?`)) return;
+
+    try {
+      const { projectId, apiKey } = firebaseConfig;
+      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/items/${itemId}?key=${apiKey}`;
+
+      const response = await fetch(url, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      alert('삭제되었습니다.');
+      fetchItems();
     } catch (error) {
       console.error('삭제 실패:', error);
       alert('삭제에 실패했습니다.');
@@ -535,6 +658,22 @@ export default function AdminPage() {
               }}
             >
               📢 공지사항 관리 ({notices.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('items')}
+              style={{
+                padding: '12px 24px',
+                background: activeTab === 'items' ? '#667eea' : 'transparent',
+                color: activeTab === 'items' ? 'white' : '#666',
+                border: 'none',
+                borderRadius: '8px 8px 0 0',
+                fontSize: '15px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+            >
+              ⚡ 급처템 관리 ({items.length})
             </button>
           </div>
         </div>
@@ -1050,6 +1189,318 @@ export default function AdminPage() {
                         <img
                           src={notice.imageUrl}
                           alt="첨부 이미지"
+                          style={{
+                            maxWidth: '200px',
+                            maxHeight: '200px',
+                            borderRadius: '8px',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'items' && (
+          <div style={{
+            background: 'white',
+            padding: '32px',
+            borderRadius: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+            marginBottom: '32px'
+          }}>
+            <h2 style={{
+              fontSize: '24px',
+              fontWeight: '900',
+              color: '#1a1a1a',
+              marginBottom: '24px'
+            }}>
+              ✍️ 급처템 등록
+            </h2>
+
+            <form onSubmit={handleItemSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569' }}>
+                    서버
+                  </label>
+                  <input
+                    type="text"
+                    value={itemForm.server}
+                    onChange={(e) => setItemForm({ ...itemForm, server: e.target.value })}
+                    placeholder="서버명"
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '1px solid #E2E8F0',
+                      borderRadius: '8px',
+                      fontSize: '14px'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569' }}>
+                    가격
+                  </label>
+                  <input
+                    type="text"
+                    value={itemForm.price}
+                    onChange={(e) => setItemForm({ ...itemForm, price: e.target.value })}
+                    placeholder="가격 (예: 50억)"
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '1px solid #E2E8F0',
+                      borderRadius: '8px',
+                      fontSize: '14px'
+                    }}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569' }}>
+                  아이템명
+                </label>
+                <input
+                  type="text"
+                  value={itemForm.itemName}
+                  onChange={(e) => setItemForm({ ...itemForm, itemName: e.target.value })}
+                  placeholder="아이템 이름"
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: '1px solid #E2E8F0',
+                    borderRadius: '8px',
+                    fontSize: '14px'
+                  }}
+                  required
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569' }}>
+                    판매자
+                  </label>
+                  <input
+                    type="text"
+                    value={itemForm.seller}
+                    onChange={(e) => setItemForm({ ...itemForm, seller: e.target.value })}
+                    placeholder="판매자 닉네임"
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '1px solid #E2E8F0',
+                      borderRadius: '8px',
+                      fontSize: '14px'
+                    }}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569' }}>
+                    연락 방법
+                  </label>
+                  <input
+                    type="text"
+                    value={itemForm.contact}
+                    onChange={(e) => setItemForm({ ...itemForm, contact: e.target.value })}
+                    placeholder="연락 방법 (예: 카카오톡)"
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '1px solid #E2E8F0',
+                      borderRadius: '8px',
+                      fontSize: '14px'
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569' }}>
+                  연락처 ID
+                </label>
+                <input
+                  type="text"
+                  value={itemForm.contactId}
+                  onChange={(e) => setItemForm({ ...itemForm, contactId: e.target.value })}
+                  placeholder="카톡ID/디코ID 등"
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: '1px solid #E2E8F0',
+                    borderRadius: '8px',
+                    fontSize: '14px'
+                  }}
+                  required
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569' }}>
+                  상세 설명
+                </label>
+                <textarea
+                  value={itemForm.description}
+                  onChange={(e) => setItemForm({ ...itemForm, description: e.target.value })}
+                  placeholder="아이템 상세 설명"
+                  rows={4}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: '1px solid #E2E8F0',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    resize: 'vertical'
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569' }}>
+                  이미지 (선택)
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setItemImage(e.target.files?.[0] || null)}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: '1px solid #E2E8F0',
+                    borderRadius: '8px',
+                    fontSize: '14px'
+                  }}
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={itemLoading}
+                style={{
+                  padding: '14px',
+                  background: itemLoading ? '#94A3B8' : '#667eea',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '15px',
+                  fontWeight: '700',
+                  cursor: itemLoading ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {itemLoading ? '등록 중...' : '급처템 등록'}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {activeTab === 'items' && (
+          <div style={{
+            background: 'white',
+            padding: '32px',
+            borderRadius: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+          }}>
+            <h2 style={{
+              fontSize: '24px',
+              fontWeight: '900',
+              color: '#1a1a1a',
+              marginBottom: '24px'
+            }}>
+              ⚡ 등록된 급처템 ({items.length}개)
+            </h2>
+
+            {items.length === 0 ? (
+              <div style={{
+                padding: '80px 20px',
+                textAlign: 'center',
+                color: '#94A3B8'
+              }}>
+                등록된 급처템이 없습니다.
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {items.map((item) => (
+                  <div
+                    key={item.id}
+                    style={{
+                      padding: '24px',
+                      background: '#F8FAFC',
+                      borderRadius: '12px',
+                      border: '1px solid #E2E8F0'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '12px' }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{
+                          fontSize: '12px',
+                          color: '#7C3AED',
+                          fontWeight: '700',
+                          marginBottom: '8px'
+                        }}>
+                          [{item.server}] {item.price}
+                        </div>
+                        <h3 style={{
+                          fontSize: '18px',
+                          fontWeight: '700',
+                          color: '#1E293B',
+                          marginBottom: '8px'
+                        }}>
+                          {item.itemName}
+                        </h3>
+                        <div style={{
+                          fontSize: '14px',
+                          color: '#64748B',
+                          marginBottom: '12px'
+                        }}>
+                          <span>판매자: {item.seller}</span>
+                          <span style={{ margin: '0 8px' }}>•</span>
+                          <span>{item.contact}: {item.contactId}</span>
+                          <span style={{ margin: '0 8px' }}>•</span>
+                          <span>{new Date(item.createdAt).toLocaleDateString('ko-KR')}</span>
+                        </div>
+                        {item.description && (
+                          <div style={{
+                            fontSize: '14px',
+                            color: '#475569',
+                            lineHeight: 1.6,
+                            whiteSpace: 'pre-wrap'
+                          }}>
+                            {item.description}
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => handleDeleteItem(item.id, item.itemName)}
+                        style={{
+                          padding: '8px 16px',
+                          background: '#EF4444',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          fontSize: '13px',
+                          fontWeight: '700',
+                          cursor: 'pointer',
+                          marginLeft: '16px'
+                        }}
+                      >
+                        삭제
+                      </button>
+                    </div>
+                    {item.imageUrl && (
+                      <div style={{ marginTop: '12px' }}>
+                        <img
+                          src={item.imageUrl}
+                          alt="아이템 이미지"
                           style={{
                             maxWidth: '200px',
                             maxHeight: '200px',
