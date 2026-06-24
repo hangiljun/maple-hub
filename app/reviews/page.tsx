@@ -163,8 +163,9 @@ export default function ReviewsPage() {
         alignItems: 'center',
         boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
       }}>
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', textDecoration: 'none' }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', textDecoration: 'none' }}>
           <img src="/logo.ico" alt="MAPLE HUB" style={{ width: '40px', height: '40px' }} />
+          <span style={{ fontSize: '20px', fontWeight: '900', color: '#667eea' }}>메이플 허브</span>
         </Link>
         <div style={{ display: 'flex', gap: '25px', fontWeight: '600', fontSize: '15px' }}>
           <Link href="/" style={{ cursor: 'pointer', textDecoration: 'none', color: '#64748B' }}>홈</Link>

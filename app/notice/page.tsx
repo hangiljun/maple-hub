@@ -159,8 +159,9 @@ export default function NoticePage() {
         backdropFilter: 'blur(10px)',
         boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
       }}>
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', textDecoration: 'none' }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', textDecoration: 'none' }}>
           <img src="/logo.ico" alt="MAPLE HUB" style={{ width: '40px', height: '40px' }} />
+          <span style={{ fontSize: '20px', fontWeight: '900', color: '#667eea' }}>메이플 허브</span>
         </Link>
         <div style={{ display: 'flex', gap: '25px', fontSize: '15px', fontWeight: '600' }}>
           <Link href="/" style={{ color: '#64748B', textDecoration: 'none', cursor: 'pointer' }}>홈</Link>

@@ -60,9 +60,16 @@ export default function Home() {
             textDecoration: 'none',
             display: 'flex',
             alignItems: 'center',
-            gap: '8px'
+            gap: '12px'
           }}>
             <img src="/logo.ico" alt="MAPLE HUB" style={{ width: '40px', height: '40px' }} />
+            <span style={{
+              fontSize: '22px',
+              fontWeight: '900',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>메이플 허브</span>
           </Link>
           <div style={{ display: 'flex', gap: '32px', fontSize: '15px', fontWeight: '600' }}>
             <Link href="/" style={{

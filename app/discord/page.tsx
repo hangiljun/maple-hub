@@ -41,8 +41,9 @@ export default function DiscordPage() {
         boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+          <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
             <img src="/logo.ico" alt="MAPLE HUB" style={{ width: '40px', height: '40px' }} />
+            <span style={{ fontSize: '24px', fontWeight: '900', color: '#667eea' }}>메이플 허브</span>
           </Link>
           <div style={{ display: 'flex', gap: '32px', fontSize: '16px', fontWeight: '600' }}>
             <Link href="/" style={{ color: '#64748B', textDecoration: 'none' }}>홈</Link>
