@@ -127,14 +127,26 @@ export default function AdminPage() {
   };
 
   // 로그인
-  const handleLogin = () => {
-    if (password === 'rlfwns55') {
-      setIsLoggedIn(true);
-      localStorage.setItem('admin_auth', 'true');
-      fetchReviews();
-      alert('로그인 성공!');
-    } else {
-      alert('비밀번호가 틀렸습니다.');
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('/api/admin-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIsLoggedIn(true);
+        localStorage.setItem('admin_auth', 'true');
+        fetchReviews();
+        alert('로그인 성공!');
+      } else {
+        alert(data.error || '비밀번호가 틀렸습니다.');
+      }
+    } catch (error) {
+      alert('로그인 중 오류가 발생했습니다.');
     }
   };
 

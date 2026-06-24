@@ -19,7 +19,7 @@ interface Notice {
   createdAt: any;
 }
 
-const ADMIN_PASSWORD = 'rlfwns55';
+// Admin password moved to server-side API for security
 
 export default function NoticePage() {
   const router = useRouter();
@@ -58,13 +58,27 @@ export default function NoticePage() {
     }
   };
 
-  const handleAdminLogin = () => {
+  const handleAdminLogin = async () => {
     const password = prompt('관리자 비밀번호를 입력하세요:');
-    if (password === ADMIN_PASSWORD) {
-      setIsAdmin(true);
-      setShowAdminForm(true);
-    } else if (password) {
-      alert('비밀번호가 일치하지 않습니다.');
+    if (!password) return;
+
+    try {
+      const response = await fetch('/api/admin-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIsAdmin(true);
+        setShowAdminForm(true);
+      } else {
+        alert(data.error || '비밀번호가 일치하지 않습니다.');
+      }
+    } catch (error) {
+      alert('로그인 중 오류가 발생했습니다.');
     }
   };
 
@@ -117,8 +131,23 @@ export default function NoticePage() {
   const handleDelete = async (noticeId: string) => {
     if (!isAdmin) {
       const password = prompt('관리자 비밀번호를 입력하세요:');
-      if (password !== ADMIN_PASSWORD) {
-        alert('비밀번호가 일치하지 않습니다.');
+      if (!password) return;
+
+      try {
+        const response = await fetch('/api/admin-auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          alert(data.error || '비밀번호가 일치하지 않습니다.');
+          return;
+        }
+      } catch (error) {
+        alert('인증 중 오류가 발생했습니다.');
         return;
       }
     }
