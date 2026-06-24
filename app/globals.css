@@ -11,6 +11,16 @@ body {
   color: #1E293B;
 }
 
+/* 고정 버튼 모바일 최적화 */
+@media (max-width: 768px) {
+  a[href*="discord.gg"] {
+    bottom: 16px !important;
+    right: 16px !important;
+    padding: 12px 20px !important;
+    font-size: 14px !important;
+  }
+}
+
 /* 모바일 최적화 */
 @media (max-width: 768px) {
   /* 네비게이션 메뉴 스크롤 */
