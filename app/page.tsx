@@ -409,7 +409,7 @@ export default function Home() {
                     }}>
                       <img
                         src={review.imageUrl}
-                        alt={review.title}
+                        alt="후기 이미지"
                         style={{
                           width: '100%',
                           height: '200px',
@@ -418,26 +418,15 @@ export default function Home() {
                       />
                     </div>
                   )}
-                  <h3 style={{
-                    fontSize: '15px',
-                    fontWeight: '600',
-                    color: '#1E293B',
-                    marginBottom: '8px',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                  }}>
-                    {review.title}
-                  </h3>
                   <p style={{
                     fontSize: '14px',
-                    color: '#64748B',
-                    lineHeight: 1.6,
+                    color: '#475569',
+                    lineHeight: 1.7,
                     marginBottom: '12px',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     display: '-webkit-box',
-                    WebkitLineClamp: 2,
+                    WebkitLineClamp: 3,
                     WebkitBoxOrient: 'vertical'
                   }}>
                     {review.content}
