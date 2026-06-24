@@ -387,7 +387,7 @@ export default function Home() {
                   transition: 'all 0.2s',
                   display: 'flex',
                   flexDirection: 'column',
-                  minHeight: '320px'
+                  height: '400px'
                 }}
                 onClick={() => window.location.href = '/reviews'}
                 onMouseEnter={(e) => {
