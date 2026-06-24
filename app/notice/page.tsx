@@ -507,7 +507,7 @@ export default function NoticePage() {
         }}
       >
         <span style={{ fontSize: '20px' }}>💬</span>
-        <span>카톡 문의하기</span>
+        <span>han8246 카톡</span>
       </a>
     </div>
   );
