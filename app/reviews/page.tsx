@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { collection, addDoc, getDocs, query, orderBy, updateDoc, doc, increment, deleteDoc, where } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase';
+import app from '@/lib/firebase';
 import Navigation from '@/components/Navigation';
 import FAB from '@/components/FAB';
 
@@ -73,6 +74,7 @@ export default function ReviewsPage() {
 
     setLoading(true);
     console.log('=== 후기 등록 시작 ===');
+    console.log('Firebase 프로젝트 ID:', process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID);
 
     try {
       let imageUrl = '';
@@ -89,8 +91,23 @@ export default function ReviewsPage() {
         }
       }
 
-      // Firestore에 저장 (타임아웃 추가)
+      // Firestore에 저장 (타임아웃 10초로 단축)
       console.log('2. Firestore에 데이터 저장 시작');
+      console.log('저장할 데이터:', {
+        title: form.title,
+        nickname: form.nickname,
+        content: form.content.substring(0, 50) + '...',
+        imageUrl: imageUrl || '없음',
+      });
+
+      // 타임아웃을 10초로 줄이고 더 명확한 에러 메시지
+      let timeoutId: NodeJS.Timeout;
+      const timeoutPromise = new Promise((_, reject) => {
+        timeoutId = setTimeout(() => {
+          console.error('⏰ 10초 타임아웃 발생!');
+          reject(new Error('Firebase 저장 시간 초과 (10초)\n\n가능한 원인:\n1. Firebase 규칙이 제대로 게시되지 않음\n2. 네트워크 연결 문제\n3. 브라우저 확장 프로그램이 차단\n\n개발자 도구 > Network 탭을 확인해주세요.'));
+        }, 10000);
+      });
 
       const savePromise = addDoc(collection(db, 'reviews'), {
         title: form.title,
@@ -100,11 +117,10 @@ export default function ReviewsPage() {
         imageUrl: imageUrl || '',
         views: 0,
         createdAt: new Date()
+      }).then((result) => {
+        clearTimeout(timeoutId);
+        return result;
       });
-
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('저장 시간 초과 (30초). Firebase 연결을 확인하세요.')), 30000)
-      );
 
       const docRef = await Promise.race([savePromise, timeoutPromise]) as any;
       console.log('2. Firestore 저장 완료, ID:', docRef.id);
@@ -122,18 +138,26 @@ export default function ReviewsPage() {
 
     } catch (error: any) {
       console.error('❌ 후기 등록 실패:', error);
+      console.error('에러 타입:', typeof error);
       console.error('에러 상세:', {
         message: error.message,
         code: error.code,
+        name: error.name,
         stack: error.stack
       });
+
+      // Firebase 연결 상태 확인
+      console.log('Firebase 앱 이름:', app?.name);
+      console.log('Firestore 인스턴스:', db ? '존재함' : '없음');
 
       let errorMessage = '후기 등록에 실패했습니다.';
 
       if (error.code === 'permission-denied') {
-        errorMessage += '\nFirebase 권한 오류입니다. 관리자에게 문의하세요.';
+        errorMessage = '❌ Firebase 권한 오류\n\nFirebase Console에서:\n1. Firestore Database 규칙 탭 클릭\n2. 규칙 확인\n3. "게시" 버튼 클릭했는지 확인\n4. 5분 정도 기다린 후 다시 시도';
+      } else if (error.message.includes('시간 초과') || error.message.includes('timeout')) {
+        errorMessage = error.message;
       } else if (error.message) {
-        errorMessage += `\n오류: ${error.message}`;
+        errorMessage += `\n\n오류: ${error.message}`;
       }
 
       alert(errorMessage);
