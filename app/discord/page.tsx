@@ -286,6 +286,164 @@ export default function DiscordPage() {
           </div>
         </div>
 
+        {/* 디스코드 입장 안내 */}
+        <div style={{
+          background: 'linear-gradient(135deg, #5865F2 0%, #7289DA 100%)',
+          padding: '40px',
+          borderRadius: '20px',
+          marginBottom: '48px',
+          color: 'white',
+          boxShadow: '0 8px 32px rgba(88, 101, 242, 0.3)'
+        }}>
+          <h2 style={{ fontSize: '28px', fontWeight: '900', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+            🍁 메이플 디스코드 입장 안내 (사진 참고)
+          </h2>
+
+          <div style={{ background: 'rgba(255,255,255,0.1)', padding: '24px', borderRadius: '16px', marginBottom: '20px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              ✅ 인증방법
+            </h3>
+            <ol style={{ paddingLeft: '20px', lineHeight: 2, fontSize: '15px' }}>
+              <li>게임내에서 현재 시간 꼭 찍은 후 &lt;사진 참고&gt;<br/>
+                  사진을 📸|인증안내 채널에 1:1 메시지로 보내주세요.</li>
+              <li>사진찍을이 완료 되었으면 꼭 아래에 ⭐인증 신청⭐ 버튼을 눌러주세요!</li>
+            </ol>
+          </div>
+
+          <div style={{ background: 'rgba(255,255,255,0.1)', padding: '24px', borderRadius: '16px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              🌸 주의사항
+            </h3>
+            <ol style={{ paddingLeft: '20px', lineHeight: 2, fontSize: '15px' }}>
+              <li>메랜/클래닉 유저분들은 아예에 메랜/클래닉 채널 이동 ➜ #✅|통합-공지사항</li>
+              <li>사진 찍을이 안되시면 관리자에 친구추가 요청.</li>
+              <li>입증 신청이 완성이 안되면 상대에 메이플스토리 디스코드에 참가하기 잘 가기가 클릭</li>
+            </ol>
+          </div>
+        </div>
+
+        {/* 채널 구조 안내 */}
+        <div style={{
+          background: 'white',
+          padding: '48px 40px',
+          borderRadius: '20px',
+          border: '1px solid #E5E7EB',
+          marginBottom: '48px',
+          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)'
+        }}>
+          <h2 style={{ fontSize: '28px', fontWeight: '900', color: '#1E293B', marginBottom: '32px', textAlign: 'center' }}>
+            📋 디스코드 채널 구조
+          </h2>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+
+            {/* 메이플 커뮤니티 */}
+            <div style={{ background: '#F8FAFC', padding: '24px', borderRadius: '16px', border: '1px solid #E2E8F0' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#667eea', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🌸 메이플 커뮤니티
+              </h3>
+              <ul style={{ fontSize: '14px', color: '#64748B', lineHeight: 2, paddingLeft: '20px' }}>
+                <li>게시판</li>
+                <li>이벤트</li>
+                <li>자유대화</li>
+                <li>닉변요청</li>
+                <li>패치노트</li>
+                <li>화면공유</li>
+              </ul>
+            </div>
+
+            {/* 거래 채널 */}
+            <div style={{ background: '#F8FAFC', padding: '24px', borderRadius: '16px', border: '1px solid #E2E8F0' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#10b981', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🌸 메이플 거래채널
+              </h3>
+              <ul style={{ fontSize: '14px', color: '#64748B', lineHeight: 2, paddingLeft: '20px' }}>
+                <li>챌린저스</li>
+                <li>루나, 스카니아</li>
+                <li>엘리시움, 크로아</li>
+                <li>베라, 오로라</li>
+                <li>애오스, 헬리오스</li>
+                <li>기타서버, 메이플m</li>
+              </ul>
+            </div>
+
+            {/* 작업 공고 */}
+            <div style={{ background: '#F8FAFC', padding: '24px', borderRadius: '16px', border: '1px solid #E2E8F0' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#f59e0b', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🌸 메이플 작업공고
+              </h3>
+              <ul style={{ fontSize: '14px', color: '#64748B', lineHeight: 2, paddingLeft: '20px' }}>
+                <li>부주작업</li>
+                <li>보스작업</li>
+                <li>메포개시</li>
+                <li>낙변거래</li>
+                <li>인기도작</li>
+                <li>커미션존</li>
+              </ul>
+            </div>
+
+            {/* 길드 문의 */}
+            <div style={{ background: '#F8FAFC', padding: '24px', borderRadius: '16px', border: '1px solid #E2E8F0' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#ec4899', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🌸 메이플 길드문의
+              </h3>
+              <ul style={{ fontSize: '14px', color: '#64748B', lineHeight: 2, paddingLeft: '20px' }}>
+                <li>루나, 스카니아</li>
+                <li>엘리시움, 크로아</li>
+                <li>베라, 오로라</li>
+                <li>기타서버</li>
+                <li>애오스, 헬리오스</li>
+              </ul>
+            </div>
+
+            {/* 제휴 문의 */}
+            <div style={{ background: '#F8FAFC', padding: '24px', borderRadius: '16px', border: '1px solid #E2E8F0' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#8b5cf6', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🌸 메이플 제휴문의
+              </h3>
+              <ul style={{ fontSize: '14px', color: '#64748B', lineHeight: 2, paddingLeft: '20px' }}>
+                <li>mvp작업</li>
+                <li>급처문의</li>
+                <li>보스대행</li>
+              </ul>
+            </div>
+
+            {/* 클래식 디스코드 */}
+            <div style={{ background: '#F8FAFC', padding: '24px', borderRadius: '16px', border: '1px solid #E2E8F0' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#3b82f6', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🌸 클래식 디스코드
+              </h3>
+              <ul style={{ fontSize: '14px', color: '#64748B', lineHeight: 2, paddingLeft: '20px' }}>
+                <li>통합-공지사항</li>
+                <li>통합-닉변요청</li>
+                <li>클래닉-거래방</li>
+                <li>클래닉-파티-겸</li>
+                <li>메랜-거래방</li>
+                <li>메랜-파티모집</li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+        {/* 관리자 문의 */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+          padding: '40px',
+          borderRadius: '20px',
+          border: '1px solid rgba(102, 126, 234, 0.2)',
+          textAlign: 'center'
+        }}>
+          <h2 style={{ fontSize: '24px', fontWeight: '900', color: '#1E293B', marginBottom: '16px' }}>
+            💬 메이플 디스코드 인증 문의
+          </h2>
+          <p style={{ fontSize: '16px', color: '#64748B', marginBottom: '8px' }}>
+            - 관리자 메시지 인증 문의 및 요청사항: @IMS.DJ - 관리자
+          </p>
+          <p style={{ fontSize: '16px', color: '#64748B' }}>
+            - 메랜/클래닉 채널 이동: #✅|통합-공지사항 (수정됨)
+          </p>
+        </div>
 
       </div>
     </div>
