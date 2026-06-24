@@ -67,12 +67,13 @@ export default function NoticePage() {
       <Navigation currentPage="notice" />
 
       {/* 배너 */}
-      <div style={{ width: '100%', backgroundColor: '#E2E8F0', display: 'flex', justifyContent: 'center' }}>
-        <div style={{ width: '100%', maxWidth: '1200px', aspectRatio: '4/1', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'white' }}>
-            <h1 style={{ fontSize: '32px', fontWeight: 'bold', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>공지사항</h1>
-            <p style={{ fontSize: '16px', marginTop: '10px', color: 'rgba(255,255,255,0.9)' }}>새로운 소식과 이벤트를 확인하세요.</p>
-          </div>
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ width: '100%', maxWidth: '1200px', position: 'relative', overflow: 'hidden' }}>
+          <img
+            src="/공지.png"
+            alt="공지사항 배너"
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+          />
         </div>
       </div>
 
