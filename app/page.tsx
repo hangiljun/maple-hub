@@ -405,6 +405,23 @@ export default function Home() {
                     <span style={{ fontSize: '16px', fontWeight: '700', color: '#1E293B' }}>{review.nickname}</span>
                     <span style={{ fontSize: '18px' }}>⭐⭐⭐⭐⭐</span>
                   </div>
+                  {review.imageUrl && (
+                    <div style={{
+                      marginBottom: '12px',
+                      borderRadius: '12px',
+                      overflow: 'hidden'
+                    }}>
+                      <img
+                        src={review.imageUrl}
+                        alt={review.title}
+                        style={{
+                          width: '100%',
+                          height: '160px',
+                          objectFit: 'cover'
+                        }}
+                      />
+                    </div>
+                  )}
                   <h3 style={{
                     fontSize: '15px',
                     fontWeight: '600',
