@@ -145,9 +145,7 @@ export default function ItemsPage() {
     }
   };
 
-  const filteredItems = items.filter(item =>
-    selectedServer === '전체' || item.server === selectedServer
-  );
+  const filteredItems = items;
 
   const formatDate = (date: any) => {
     if (!date) return '';
@@ -165,7 +163,7 @@ export default function ItemsPage() {
         <div style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <h1 style={{ fontSize: '36px', fontWeight: '900', color: '#1E293B', marginBottom: '12px' }}>
-              ⚡ 급처템 거래
+              ⚡ 급처템 문의
             </h1>
             <p style={{ fontSize: '16px', color: '#64748B' }}>
               판매하고 싶은 아이템을 등록하거나 급처템을 구매하세요 ({items.length}개)
@@ -236,32 +234,6 @@ export default function ItemsPage() {
             • 게임 내에서 직접 거래하세요<br />
             • 거래 전 판매자 캐릭터를 확인하세요<br />
             • 의심스러운 거래는 피하세요
-          </div>
-        </div>
-
-        {/* 필터 */}
-        <div style={{ marginBottom: '32px' }}>
-          <div style={{ fontSize: '13px', fontWeight: '700', color: '#64748B', marginBottom: '12px' }}>서버 선택</div>
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            {servers.map(server => (
-              <button
-                key={server}
-                onClick={() => setSelectedServer(server)}
-                style={{
-                  padding: '10px 20px',
-                  borderRadius: '10px',
-                  border: selectedServer === server ? '2px solid #667eea' : '2px solid #E5E7EB',
-                  background: selectedServer === server ? '#667eea' : 'white',
-                  color: selectedServer === server ? 'white' : '#64748B',
-                  fontSize: '14px',
-                  fontWeight: '700',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-              >
-                {server}
-              </button>
-            ))}
           </div>
         </div>
 

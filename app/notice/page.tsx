@@ -102,22 +102,6 @@ export default function NoticePage() {
               </button>
             ))}
           </div>
-          <button
-            onClick={() => router.push('/admin')}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#667eea',
-              color: '#FFF',
-              border: 'none',
-              borderRadius: '30px',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              fontSize: '14px',
-              boxShadow: '0 2px 8px rgba(102,126,234,0.3)'
-            }}
-          >
-            🔧 관리자
-          </button>
         </div>
 
         {/* 공지사항 카드 그리드 */}
