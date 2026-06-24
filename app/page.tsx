@@ -384,7 +384,10 @@ export default function Home() {
                   border: '1px solid #E2E8F0',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                   cursor: 'pointer',
-                  transition: 'all 0.2s'
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minHeight: '320px'
                 }}
                 onClick={() => window.location.href = '/reviews'}
                 onMouseEnter={(e) => {
@@ -418,26 +421,30 @@ export default function Home() {
                       />
                     </div>
                   )}
-                  <p style={{
-                    fontSize: '14px',
-                    color: '#475569',
-                    lineHeight: 1.7,
-                    marginBottom: '12px',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    display: '-webkit-box',
-                    WebkitLineClamp: 3,
-                    WebkitBoxOrient: 'vertical'
-                  }}>
-                    {review.content}
-                  </p>
                   <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
+                    marginTop: 'auto'
                   }}>
-                    <span style={{ fontSize: '12px', color: '#94A3B8' }}>{formatDate(review.createdAt)}</span>
-                    <span style={{ fontSize: '12px', color: '#94A3B8' }}>조회 {review.views}</span>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#475569',
+                      lineHeight: 1.7,
+                      marginBottom: '12px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical'
+                    }}>
+                      {review.content}
+                    </p>
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}>
+                      <span style={{ fontSize: '12px', color: '#94A3B8' }}>{formatDate(review.createdAt)}</span>
+                      <span style={{ fontSize: '12px', color: '#94A3B8' }}>조회 {review.views}</span>
+                    </div>
                   </div>
                 </div>
               ))
