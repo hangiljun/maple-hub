@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
+import Navigation from '@/components/Navigation';
 import FAB from '@/components/FAB';
 
 export default function DiscordPage() {
@@ -30,36 +30,45 @@ export default function DiscordPage() {
 
   return (
     <div style={{ backgroundColor: '#FAFBFC', minHeight: '100vh' }}>
-      {/* 고정 헤더 */}
-      <nav style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
-        background: 'white',
-        borderBottom: '2px solid #667eea',
-        padding: '20px 5%',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <img src="/logo.ico" alt="MAPLE HUB" style={{ width: '40px', height: '40px' }} />
-            <span style={{ fontSize: '24px', fontWeight: '900', color: '#667eea' }}>메이플 허브</span>
-          </Link>
-          <div style={{ display: 'flex', gap: '32px', fontSize: '16px', fontWeight: '600' }}>
-            <Link href="/" style={{ color: '#64748B', textDecoration: 'none' }}>홈</Link>
-            <Link href="/items" style={{ color: '#64748B', textDecoration: 'none' }}>급처템</Link>
-            <Link href="/meso" style={{ color: '#64748B', textDecoration: 'none' }}>메소거래</Link>
-            <Link href="/discord" style={{ color: '#667eea', textDecoration: 'none', borderBottom: '2px solid #667eea', paddingBottom: '4px' }}>디스코드</Link>
-            <Link href="/reviews" style={{ color: '#64748B', textDecoration: 'none' }}>이용후기</Link>
-            <Link href="/notice" style={{ color: '#64748B', textDecoration: 'none' }}>공지사항</Link>
-          </div>
-        </div>
-      </nav>
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .discord-banner {
+            height: 300px !important;
+          }
+          .discord-banner-title {
+            font-size: 24px !important;
+          }
+          .discord-banner-text {
+            font-size: 14px !important;
+          }
+          .discord-banner-button {
+            padding: 16px 32px !important;
+            font-size: 16px !important;
+          }
+          .discord-stat-card {
+            padding: 24px 20px !important;
+          }
+          .discord-stat-number {
+            font-size: 32px !important;
+          }
+          .discord-content-padding {
+            padding: 30px 16px !important;
+          }
+          .discord-section-title {
+            font-size: 20px !important;
+          }
+          .discord-channel-list {
+            font-size: 14px !important;
+          }
+        }
+      `}</style>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 20px' }}>
+      <Navigation currentPage="discord" />
+
+      <div className="discord-content-padding" style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 20px' }}>
 
         {/* 디스코드 이미지 배너 */}
-        <div style={{
+        <div className="discord-banner" style={{
           width: '100%',
           height: '600px',
           borderRadius: '20px',
@@ -89,16 +98,17 @@ export default function DiscordPage() {
             textAlign: 'center'
           }}>
             <div style={{ position: 'relative', zIndex: 1 }}>
-              <h2 style={{ fontSize: '36px', fontWeight: '900', color: 'white', marginBottom: '16px', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+              <h2 className="discord-banner-title" style={{ fontSize: '36px', fontWeight: '900', color: 'white', marginBottom: '16px', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
                 지금 바로 참여하세요!
               </h2>
-              <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.95)', marginBottom: '32px' }}>
+              <p className="discord-banner-text" style={{ fontSize: '18px', color: 'rgba(255,255,255,0.95)', marginBottom: '32px' }}>
                 {members.toLocaleString()}명의 메이플 유저와 함께하는 공간
               </p>
               <a
                 href="https://discord.gg/2UwBw8dnSv"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="discord-banner-button"
                 style={{
                   display: 'inline-block',
                   padding: '20px 60px',
@@ -145,7 +155,7 @@ export default function DiscordPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '48px' }}>
 
           {/* 회원수 */}
-          <div style={{
+          <div className="discord-stat-card" style={{
             background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
             padding: '32px 24px',
             borderRadius: '16px',
@@ -153,12 +163,12 @@ export default function DiscordPage() {
             boxShadow: '0 8px 24px rgba(99, 102, 241, 0.3)'
           }}>
             <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '12px' }}>👥 회원수</div>
-            <div style={{ fontSize: '40px', fontWeight: '900', marginBottom: '8px' }}>{members.toLocaleString()}</div>
+            <div className="discord-stat-number" style={{ fontSize: '40px', fontWeight: '900', marginBottom: '8px' }}>{members.toLocaleString()}</div>
             <div style={{ fontSize: '12px', opacity: 0.8 }}>하루 150명씩 증가 중</div>
           </div>
 
           {/* 활동수 */}
-          <div style={{
+          <div className="discord-stat-card" style={{
             background: 'linear-gradient(135deg, #f59e0b 0%, #f97316 100%)',
             padding: '32px 24px',
             borderRadius: '16px',
@@ -166,12 +176,12 @@ export default function DiscordPage() {
             boxShadow: '0 8px 24px rgba(245, 158, 11, 0.3)'
           }}>
             <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '12px' }}>⚡ 활동수</div>
-            <div style={{ fontSize: '40px', fontWeight: '900', marginBottom: '8px' }}>{activity}</div>
+            <div className="discord-stat-number" style={{ fontSize: '40px', fontWeight: '900', marginBottom: '8px' }}>{activity}</div>
             <div style={{ fontSize: '12px', opacity: 0.8 }}>3분마다 갱신</div>
           </div>
 
           {/* 채팅수 */}
-          <div style={{
+          <div className="discord-stat-card" style={{
             background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
             padding: '32px 24px',
             borderRadius: '16px',
@@ -179,7 +189,7 @@ export default function DiscordPage() {
             boxShadow: '0 8px 24px rgba(16, 185, 129, 0.3)'
           }}>
             <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '12px' }}>💬 채팅수</div>
-            <div style={{ fontSize: '40px', fontWeight: '900', marginBottom: '8px' }}>{chats}</div>
+            <div className="discord-stat-number" style={{ fontSize: '40px', fontWeight: '900', marginBottom: '8px' }}>{chats}</div>
             <div style={{ fontSize: '12px', opacity: 0.8 }}>3분마다 갱신</div>
           </div>
 
