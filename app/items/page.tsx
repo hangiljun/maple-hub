@@ -231,19 +231,18 @@ export default function ItemsPage() {
         {/* 아이템 목록 */}
         {filteredItems.length === 0 ? (
           <div style={{
-            padding: '80px 20px',
-            textAlign: 'center',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
             backgroundColor: '#FFFFFF',
             borderRadius: '20px',
-            border: '1px solid #E5E7EB'
+            overflow: 'hidden'
           }}>
-            <div style={{ fontSize: '48px', marginBottom: '20px' }}>🎁</div>
-            <p style={{ fontSize: '18px', color: '#64748B', fontWeight: '600', marginBottom: '12px' }}>
-              등록된 거래글이 없습니다
-            </p>
-            <p style={{ fontSize: '14px', color: '#94A3B8' }}>
-              첫 번째 거래글을 등록해보세요!
-            </p>
+            <img
+              src="/items-banner.png"
+              alt="메이플스토리 급처템 거래"
+              style={{ width: '100%', height: 'auto', display: 'block' }}
+            />
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
