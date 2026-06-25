@@ -838,7 +838,7 @@ export default function Home() {
             <div style={{ fontSize: '13px', opacity: 0.7, lineHeight: 1.9, marginBottom: '20px' }}>
               <p style={{ marginBottom: '8px', fontWeight: '600' }}>메이플 허브</p>
               <p style={{ fontSize: '12px', opacity: 0.8 }}>
-                이메일: 6332159@gmail.com | 카카오톡: han8246
+                카카오톡: han8246
               </p>
             </div>
 

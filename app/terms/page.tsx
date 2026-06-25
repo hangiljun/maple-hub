@@ -146,6 +146,28 @@ export default function TermsPage() {
               본 약관은 사이트를 이용하는 모든 이용자에게 적용됩니다. 사이트는 필요시 약관을 변경할 수 있으며, 변경된 약관은 공지사항을 통해 공지합니다.
             </p>
           </section>
+          <section style={{ marginTop: '60px', paddingTop: '40px', borderTop: '2px solid #E2E8F0' }}>
+            <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#1E293B', marginBottom: '24px', textAlign: 'center' }}>
+              사업자 등록증
+            </h2>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: '20px'
+            }}>
+              <img
+                src="/사업자 등록증.png"
+                alt="사업자 등록증"
+                style={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                  border: '1px solid #E2E8F0'
+                }}
+              />
+            </div>
+          </section>
         </div>
 
         <div style={{ marginTop: '40px', textAlign: 'center' }}>
