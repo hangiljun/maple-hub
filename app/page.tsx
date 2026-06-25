@@ -214,7 +214,7 @@ export default function Home() {
             }}>
               <img
                 src="/급처템.png"
-                alt="급처템 문의"
+                alt="메이플스토리 급처템 거래 문의 - 최고가 매입"
                 style={{
                   width: '100%',
                   height: 'auto',
@@ -254,7 +254,7 @@ export default function Home() {
             }}>
               <img
                 src="/메소.png"
-                alt="메소 거래"
+                alt="메이플스토리 메소 거래 - 실시간 시세 확인"
                 style={{
                   width: '100%',
                   height: 'auto',
@@ -294,7 +294,7 @@ export default function Home() {
             }}>
               <img
                 src="/discord.png"
-                alt="디스코드"
+                alt="메이플스토리 디스코드 커뮤니티"
                 style={{
                   width: '100%',
                   height: 'auto',
@@ -780,7 +780,7 @@ export default function Home() {
             {/* 로고 및 설명 */}
             <div>
               <div style={{ fontSize: '24px', fontWeight: '900', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <img src="/logo.ico" alt="MAPLE HUB" style={{ width: '32px', height: '32px' }} />
+                <img src="/logo.ico" alt="메이플 허브 - 메이플스토리 급처템 및 메소 거래" style={{ width: '32px', height: '32px' }} />
                 메이플 허브
               </div>
               <p style={{ fontSize: '14px', opacity: 0.7, lineHeight: 1.7 }}>
