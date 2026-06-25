@@ -81,7 +81,7 @@ export default function SafetyGuidePage() {
               <strong style={{ color: '#1E293B' }}>※ 당사는 거래를 중개하는 플랫폼이며, 사이트 내에서 직접 거래가 이루어지지 않습니다.</strong>
             </p>
             <img
-              src="/사업자 등록증.png"
+              src="/business-license.png"
               alt="사업자 등록증"
               style={{
                 width: '100%',

@@ -213,7 +213,7 @@ export default function Home() {
               transition: 'all 0.3s'
             }}>
               <img
-                src="/급처템.png"
+                src="/items-banner.png"
                 alt="메이플스토리 급처템 거래 문의 - 최고가 매입"
                 style={{
                   width: '100%',
@@ -253,7 +253,7 @@ export default function Home() {
               transition: 'all 0.3s'
             }}>
               <img
-                src="/메소.png"
+                src="/meso-banner.png"
                 alt="메이플스토리 메소 거래 - 실시간 시세 확인"
                 style={{
                   width: '100%',

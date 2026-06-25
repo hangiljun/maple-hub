@@ -223,7 +223,7 @@ export default function ReviewsPage() {
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <div style={{ width: '100%', maxWidth: '1200px', position: 'relative', overflow: 'hidden' }}>
           <img
-            src="/공지.png"
+            src="/notice-banner.png"
             alt="메이플 허브 이용후기 - 실제 고객 거래 후기"
             style={{ width: '100%', height: 'auto', display: 'block' }}
           />

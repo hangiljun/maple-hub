@@ -156,7 +156,7 @@ export default function TermsPage() {
               marginBottom: '20px'
             }}>
               <img
-                src="/사업자 등록증.png"
+                src="/business-license.png"
                 alt="사업자 등록증"
                 style={{
                   maxWidth: '100%',
