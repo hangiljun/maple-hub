@@ -157,18 +157,7 @@ export default function ItemsPage() {
     <div style={{ backgroundColor: '#FAFBFC', minHeight: '100vh' }}>
       <Navigation currentPage="items" />
 
-      {/* 배너 영역 */}
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginBottom: '40px' }}>
-        <div style={{ width: '100%', maxWidth: '1200px', position: 'relative', overflow: 'hidden' }}>
-          <img
-            src="/items-banner.png"
-            alt="메이플스토리 급처템 거래 - 최고가 매입"
-            style={{ width: '100%', height: 'auto', display: 'block' }}
-          />
-        </div>
-      </div>
-
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px 60px' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 20px' }}>
 
         {/* 페이지 제목 */}
         <div style={{ marginBottom: '40px' }}>
@@ -178,6 +167,15 @@ export default function ItemsPage() {
           <p style={{ fontSize: '16px', color: '#64748B' }}>
             관리자가 등록한 급처템을 확인하세요 ({items.length}개)
           </p>
+        </div>
+
+        {/* 배너 영역 */}
+        <div style={{ width: 'calc(100% + 40px)', marginLeft: '-20px', marginRight: '-20px', marginBottom: '40px' }}>
+          <img
+            src="/items-banner.png"
+            alt="메이플스토리 급처템 거래 - 최고가 매입"
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+          />
         </div>
 
         {/* 거래 방법 안내 */}
