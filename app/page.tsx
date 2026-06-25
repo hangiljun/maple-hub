@@ -815,7 +815,7 @@ export default function Home() {
                 <Link href="/notice" style={{ color: 'white', opacity: 0.7, textDecoration: 'none', fontSize: '14px', transition: 'opacity 0.2s' }}>
                   공지사항
                 </Link>
-                <a href="https://open.kakao.com/o/sfxfJyAi" target="_blank" rel="noopener noreferrer" style={{ color: 'white', opacity: 0.7, textDecoration: 'none', fontSize: '14px', transition: 'opacity 0.2s' }}>
+                <a href="https://open.kakao.com/o/sx49Xazi" target="_blank" rel="noopener noreferrer" style={{ color: 'white', opacity: 0.7, textDecoration: 'none', fontSize: '14px', transition: 'opacity 0.2s' }}>
                   카카오톡 문의
                 </a>
                 <Link href="/terms" style={{ color: 'white', opacity: 0.7, textDecoration: 'none', fontSize: '14px', transition: 'opacity 0.2s' }}>

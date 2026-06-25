@@ -169,15 +169,6 @@ export default function ItemsPage() {
           </p>
         </div>
 
-        {/* 배너 영역 */}
-        <div style={{ width: 'calc(100% + 40px)', marginLeft: '-20px', marginRight: '-20px', marginBottom: '40px' }}>
-          <img
-            src="/items-banner.png"
-            alt="메이플스토리 급처템 거래 - 최고가 매입"
-            style={{ width: '100%', height: 'auto', display: 'block' }}
-          />
-        </div>
-
         {/* 거래 방법 안내 */}
         <div style={{
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -230,20 +221,35 @@ export default function ItemsPage() {
 
         {/* 아이템 목록 */}
         {filteredItems.length === 0 ? (
-          <div style={{
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            backgroundColor: '#FFFFFF',
-            borderRadius: '20px',
-            overflow: 'hidden'
-          }}>
+          <a
+            href="https://open.kakao.com/o/sx49Xazi"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'block',
+              width: '100%',
+              backgroundColor: '#FFFFFF',
+              borderRadius: '20px',
+              overflow: 'hidden',
+              cursor: 'pointer',
+              transition: 'transform 0.2s, box-shadow 0.2s',
+              textDecoration: 'none'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.02)';
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(102, 126, 234, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
             <img
               src="/items-banner.png"
-              alt="메이플스토리 급처템 거래"
+              alt="메이플스토리 급처템 거래 - 카카오톡 han8246"
               style={{ width: '100%', height: 'auto', display: 'block' }}
             />
-          </div>
+          </a>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
             {filteredItems.map((item) => (
