@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Script from 'next/script';
 import { getDocs, query, orderBy, collection } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import Navigation from '@/components/Navigation';
@@ -62,23 +61,8 @@ export default function NoticePage() {
   };
 
   return (
-    <>
-      <Script id="notice-structured-data" type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "CollectionPage",
-          "name": "공지사항",
-          "url": "https://www.maplehub.co.kr/notice",
-          "description": "MAPLE HUB의 최신 소식과 공지사항을 확인하세요.",
-          "isPartOf": {
-            "@type": "WebSite",
-            "name": "MAPLE HUB",
-            "url": "https://www.maplehub.co.kr"
-          }
-        })}
-      </Script>
-      <div style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', fontFamily: "'Noto Sans KR', sans-serif", color: '#1E293B' }}>
-        <Navigation currentPage="notice" />
+    <div style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', fontFamily: "'Noto Sans KR', sans-serif", color: '#1E293B' }}>
+      <Navigation currentPage="notice" />
 
       {/* 배너 */}
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -204,8 +188,7 @@ export default function NoticePage() {
 
       {/* 관리자 작성 모달 */}
       <FAB type="kakao" />
-      </div>
-    </>
+    </div>
   );
 }
 
