@@ -71,6 +71,7 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
         <meta name="google-site-verification" content="vKwxqeCyU-SMMoxjChOUegTNxHzzj7PmdHc2sO_iDLQ" />
+        <meta name="naver-site-verification" content="8351ba44d4bcc248369b4c2d712ba5efb8e83db8" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
