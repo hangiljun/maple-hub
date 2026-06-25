@@ -695,7 +695,9 @@ export default function Home() {
                     flexDirection: 'column',
                     height: '400px',
                     minWidth: 'calc(25% - 15px)',
-                    flexShrink: 0
+                    maxWidth: 'calc(25% - 15px)',
+                    flexShrink: 0,
+                    overflow: 'hidden'
                   }}
                   onClick={() => window.location.href = '/reviews'}
                   onMouseEnter={(e) => {
@@ -708,7 +710,10 @@ export default function Home() {
                   }}
                   >
                     <div style={{
-                      marginBottom: '12px'
+                      marginBottom: '12px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
                     }}>
                       <span style={{ fontSize: '16px', fontWeight: '700', color: '#1E293B' }}>{review.nickname}</span>
                     </div>
