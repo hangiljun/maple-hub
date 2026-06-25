@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Script from 'next/script';
 import Navigation from '@/components/Navigation';
 import FAB from '@/components/FAB';
 import { firebaseConfig } from '@/lib/firebase-config';
@@ -117,12 +118,27 @@ export default function Home() {
   };
 
   return (
-    <div style={{
-      backgroundColor: '#FAFBFC',
-      background: 'linear-gradient(180deg, #FFFFFF 0%, #F0F4FF 50%, #E8F0FE 100%)',
-      minHeight: '100vh'
-    }}>
-      <style jsx global>{`
+    <>
+      <Script id="structured-data" type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "MAPLE HUB",
+          "url": "https://www.maplehub.co.kr",
+          "description": "메이플급처, 메이플스토리 급처템, 메소, 아이템 전 서버 최고가 매입. 24시간 상담 및 검증된 업체 리스트를 통해 안전하게 메이플급처 거래하세요.",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://www.maplehub.co.kr/reviews?search={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        })}
+      </Script>
+      <div style={{
+        backgroundColor: '#FAFBFC',
+        background: 'linear-gradient(180deg, #FFFFFF 0%, #F0F4FF 50%, #E8F0FE 100%)',
+        minHeight: '100vh'
+      }}>
+        <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
         * { font-family: 'Noto Sans KR', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -850,6 +866,7 @@ export default function Home() {
       </footer>
 
       <FAB type="kakao" />
-    </div>
+      </div>
+    </>
   );
 }

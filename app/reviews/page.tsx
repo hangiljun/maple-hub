@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Script from 'next/script';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/firebase';
 import { firebaseConfig } from '@/lib/firebase-config';
@@ -216,9 +217,24 @@ export default function ReviewsPage() {
   };
 
   return (
-    <div style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', fontFamily: "'Noto Sans KR', sans-serif", color: '#1E293B' }}>
+    <>
+      <Script id="reviews-structured-data" type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": "이용후기",
+          "url": "https://www.maplehub.co.kr/reviews",
+          "description": "MAPLE HUB 이용 고객님들의 실제 후기를 확인하세요.",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "MAPLE HUB",
+            "url": "https://www.maplehub.co.kr"
+          }
+        })}
+      </Script>
+      <div style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', fontFamily: "'Noto Sans KR', sans-serif", color: '#1E293B' }}>
 
-      <Navigation currentPage="reviews" />
+        <Navigation currentPage="reviews" />
 
       {/* 배너 영역 */}
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -554,7 +570,8 @@ export default function ReviewsPage() {
       )}
 
       <FAB type="kakao" />
-    </div>
+      </div>
+    </>
   );
 }
 
