@@ -35,36 +35,55 @@ export default function FAB({ type, href }: FABProps) {
   const { label, icon, background, shadowColor, shadowHoverColor } = config[type];
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        bottom: '32px',
-        right: '32px',
-        zIndex: 1000,
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px'
-      }}
-    >
+    <>
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .fab-container {
+            bottom: 20px !important;
+            right: 20px !important;
+          }
+          .fab-label {
+            display: none !important;
+          }
+          .fab-button {
+            width: 56px !important;
+            height: 56px !important;
+          }
+        }
+      `}</style>
+
       <div
-        className="fab-label"
+        className="fab-container"
         style={{
-          background: '#3C3C3C',
-          color: 'white',
-          padding: '10px 16px',
-          borderRadius: '20px',
-          fontSize: '14px',
-          fontWeight: '500',
-          whiteSpace: 'nowrap',
-          opacity: 1,
-          transform: 'translateX(0)',
-          transition: 'all 0.3s ease',
-          pointerEvents: 'none'
+          position: 'fixed',
+          bottom: '32px',
+          right: '32px',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px'
         }}
       >
-        {label}
-      </div>
+        <div
+          className="fab-label"
+          style={{
+            background: '#3C3C3C',
+            color: 'white',
+            padding: '10px 16px',
+            borderRadius: '20px',
+            fontSize: '14px',
+            fontWeight: '500',
+            whiteSpace: 'nowrap',
+            opacity: 1,
+            transform: 'translateX(0)',
+            transition: 'all 0.3s ease',
+            pointerEvents: 'none'
+          }}
+        >
+          {label}
+        </div>
       <a
+        className="fab-button"
         href={link}
         target="_blank"
         rel="noopener noreferrer"
@@ -100,6 +119,7 @@ export default function FAB({ type, href }: FABProps) {
       >
         <span style={{ fontSize: '28px' }}>{icon}</span>
       </a>
-    </div>
+      </div>
+    </>
   );
 }

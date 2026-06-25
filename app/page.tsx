@@ -834,6 +834,20 @@ export default function Home() {
             paddingTop: '32px',
             textAlign: 'center'
           }}>
+            {/* 사업자 정보 */}
+            <div style={{ fontSize: '13px', opacity: 0.7, lineHeight: 1.9, marginBottom: '20px' }}>
+              <p style={{ marginBottom: '8px', fontWeight: '600' }}>메이플 허브 | 대표: 한길준</p>
+              <p style={{ fontSize: '12px', opacity: 0.8 }}>
+                사업자등록번호: 776-10-03194 | 통신판매업신고: 제2025-대전유성-0090호
+              </p>
+              <p style={{ fontSize: '12px', opacity: 0.8, marginTop: '8px' }}>
+                대전광역시 유성구 반석동로53번길 41, 105동 906호 (반석동, 도룡마을12단지대우푸르지오)
+              </p>
+              <p style={{ fontSize: '12px', opacity: 0.8, marginTop: '8px' }}>
+                이메일: 6332159@gmail.com | 카카오톡: han8246
+              </p>
+            </div>
+
             <p style={{ fontSize: '13px', opacity: 0.6, lineHeight: 1.8, marginBottom: '8px' }}>
               본 사이트는 카카오톡 기반 거래 중개 플랫폼입니다.
             </p>
