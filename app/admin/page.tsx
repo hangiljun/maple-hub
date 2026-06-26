@@ -682,7 +682,7 @@ export default function AdminPage() {
           <>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '32px', marginBottom: '32px' }}>
 
-          {/* 구매가 (사이트가 유저로부터 메소를 구매) */}
+          {/* 메소 판매가 (유저가 메소를 팔 때) */}
           <div style={{
             background: 'white',
             padding: '32px',
@@ -698,10 +698,10 @@ export default function AdminPage() {
               alignItems: 'center',
               gap: '8px'
             }}>
-              🪙 구매가 (사이트 → 유저)
+              🪙 메소 판매가 (유저가 팔 때)
             </h2>
             <p style={{ fontSize: '13px', color: '#666', marginBottom: '24px' }}>
-              유저가 사이트에 메소를 판매할 때 가격
+              유저가 메소를 판매할 때 받는 가격 (업체 구매가)
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -738,7 +738,7 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {/* 판매가 (사이트가 유저에게 메소를 판매) */}
+          {/* 메소 구매가 (유저가 메소를 살 때) */}
           <div style={{
             background: 'white',
             padding: '32px',
@@ -754,10 +754,10 @@ export default function AdminPage() {
               alignItems: 'center',
               gap: '8px'
             }}>
-              💰 판매가 (유저 → 사이트)
+              💰 메소 구매가 (유저가 살 때)
             </h2>
             <p style={{ fontSize: '13px', color: '#666', marginBottom: '24px' }}>
-              유저가 사이트에서 메소를 구매할 때 가격
+              유저가 메소를 구매할 때 지불하는 가격 (업체 판매가)
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
