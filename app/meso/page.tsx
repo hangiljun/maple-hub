@@ -23,21 +23,14 @@ export default function MesoPage() {
   const challengersServers = ['챌린저스1', '챌린저스2', '챌린저스3', '챌린저스4'];
   const regularServers = ['스카니아', '루나', '엘리시움', '크로아', '베라', '오로라', '레드', '이노시스', '유니온', '아케인', '노바', '에오스', '헬리오스'];
 
-  // 가격표 (localStorage에서 불러오기)
-  const getDefaultPriceTable = () => ({
-    buy: [
-      { label: '1 ~ 100억', maxQty: 100, price: 1300, hot: false },
-      { label: '101 ~ 300억', maxQty: 300, price: 1350, hot: false },
-      { label: '301억 이상', maxQty: null, price: 1370, hot: true }
-    ],
-    sell: [
-      { label: '1 ~ 100억', maxQty: 100, price: 1550, hot: true },
-      { label: '101 ~ 300억', maxQty: 300, price: 1530, hot: false },
-      { label: '301억 이상', maxQty: null, price: 1520, hot: false }
-    ]
+  // 가격표 (관리자 페이지에서 설정)
+  const [priceTable, setPriceTable] = useState<{
+    buy: PriceTier[];
+    sell: PriceTier[];
+  }>({
+    buy: [],
+    sell: []
   });
-
-  const [priceTable, setPriceTable] = useState(getDefaultPriceTable());
 
   // 가격 로드
   React.useEffect(() => {
