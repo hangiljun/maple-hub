@@ -682,62 +682,6 @@ export default function AdminPage() {
           <>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '32px', marginBottom: '32px' }}>
 
-          {/* 메소 판매가 (유저가 메소를 팔 때) */}
-          <div style={{
-            background: 'white',
-            padding: '32px',
-            borderRadius: '20px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
-          }}>
-            <h2 style={{
-              fontSize: '24px',
-              fontWeight: '900',
-              color: '#7C3AED',
-              marginBottom: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              🪙 메소 판매가 (유저가 팔 때)
-            </h2>
-            <p style={{ fontSize: '13px', color: '#666', marginBottom: '24px' }}>
-              유저가 메소를 판매할 때 받는 가격 (업체 구매가)
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {priceTable.buy.map((tier, index) => (
-                <div key={index} style={{
-                  padding: '20px',
-                  background: '#F3E8FF',
-                  borderRadius: '12px',
-                  border: '1px solid #E4D1FF'
-                }}>
-                  <div style={{ fontSize: '14px', fontWeight: '700', color: '#7C3AED', marginBottom: '12px' }}>
-                    {tier.label}
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <span style={{ fontSize: '13px', color: '#666', fontWeight: '600' }}>1억당</span>
-                    <input
-                      type="number"
-                      value={tier.price}
-                      onChange={(e) => handlePriceChange('buy', index, parseInt(e.target.value))}
-                      style={{
-                        flex: 1,
-                        padding: '12px',
-                        borderRadius: '8px',
-                        border: '1px solid #E4D1FF',
-                        fontSize: '16px',
-                        fontWeight: '700',
-                        color: '#7C3AED'
-                      }}
-                    />
-                    <span style={{ fontSize: '13px', color: '#666', fontWeight: '600' }}>원</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* 메소 구매가 (유저가 메소를 살 때) */}
           <div style={{
             background: 'white',
@@ -757,7 +701,63 @@ export default function AdminPage() {
               💰 메소 구매가 (유저가 살 때)
             </h2>
             <p style={{ fontSize: '13px', color: '#666', marginBottom: '24px' }}>
-              유저가 메소를 구매할 때 지불하는 가격 (업체 판매가)
+              유저가 메소를 구매할 때 지불하는 가격
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {priceTable.buy.map((tier, index) => (
+                <div key={index} style={{
+                  padding: '20px',
+                  background: '#F3E8FF',
+                  borderRadius: '12px',
+                  border: '1px solid #E4D1FF'
+                }}>
+                  <div style={{ fontSize: '14px', fontWeight: '700', color: '#0066CC', marginBottom: '12px' }}>
+                    {tier.label}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <span style={{ fontSize: '13px', color: '#666', fontWeight: '600' }}>1억당</span>
+                    <input
+                      type="number"
+                      value={tier.price}
+                      onChange={(e) => handlePriceChange('buy', index, parseInt(e.target.value))}
+                      style={{
+                        flex: 1,
+                        padding: '12px',
+                        borderRadius: '8px',
+                        border: '1px solid #B3D9FF',
+                        fontSize: '16px',
+                        fontWeight: '700',
+                        color: '#0066CC'
+                      }}
+                    />
+                    <span style={{ fontSize: '13px', color: '#666', fontWeight: '600' }}>원</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 메소 판매가 (유저가 메소를 팔 때) */}
+          <div style={{
+            background: 'white',
+            padding: '32px',
+            borderRadius: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+          }}>
+            <h2 style={{
+              fontSize: '24px',
+              fontWeight: '900',
+              color: '#7C3AED',
+              marginBottom: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              🪙 메소 판매가 (유저가 팔 때)
+            </h2>
+            <p style={{ fontSize: '13px', color: '#666', marginBottom: '24px' }}>
+              유저가 메소를 판매할 때 받는 가격
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

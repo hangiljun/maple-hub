@@ -40,12 +40,12 @@ export default function MesoPage() {
       .catch(err => console.error('가격 로드 실패:', err));
   }, []);
 
-  // 가격 계산 (유저가 구매 = 사이트 판매가 / 유저가 판매 = 사이트 구매가)
+  // 가격 계산 (유저 관점)
   const calculatePrice = () => {
     const qty = parseFloat(amount);
     if (isNaN(qty) || qty <= 0) return { total: 0, pricePerBillion: 0 };
 
-    const table = tradeType === 'buy' ? priceTable.sell : priceTable.buy;
+    const table = tradeType === 'buy' ? priceTable.buy : priceTable.sell;
 
     for (const tier of table) {
       if (tier.maxQty === null || qty <= tier.maxQty) {
@@ -173,7 +173,7 @@ export default function MesoPage() {
               </div>
             </div>
 
-            {/* 메소 판매 시 (업체 구매가) */}
+            {/* 메소 구매 시 (유저 구매가) */}
             <div style={{ marginBottom: '28px' }}>
               <p style={{
                 color: '#0066CC',
@@ -186,7 +186,7 @@ export default function MesoPage() {
                 gap: '6px'
               }}>
                 <span>💰</span>
-                메소 판매 시 <span style={{ fontSize: '13px', fontWeight: '500', color: '#666' }}>(내가 팔 때)</span>
+                메소 구매 시 <span style={{ fontSize: '13px', fontWeight: '500', color: '#666' }}>(내가 살 때)</span>
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {priceTable.buy.map((tier, i) => (
@@ -233,7 +233,7 @@ export default function MesoPage() {
             {/* 구분선 */}
             <div style={{ height: '1px', background: '#e5e5e5', margin: '24px 0' }} />
 
-            {/* 메소 구매 시 (업체 판매가) */}
+            {/* 메소 판매 시 (유저 판매가) */}
             <div>
               <p style={{
                 color: '#7C3AED',
@@ -246,7 +246,7 @@ export default function MesoPage() {
                 gap: '6px'
               }}>
                 <span>🪙</span>
-                메소 구매 시 <span style={{ fontSize: '13px', fontWeight: '500', color: '#666' }}>(내가 살 때)</span>
+                메소 판매 시 <span style={{ fontSize: '13px', fontWeight: '500', color: '#666' }}>(내가 팔 때)</span>
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {priceTable.sell.map((tier, i) => (
