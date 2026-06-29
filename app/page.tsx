@@ -763,7 +763,7 @@ export default function Home() {
               지금 메이플 디스코드에 입장하셔서 소통하세요!
             </p>
             <div style={{ textAlign: 'center' }}>
-              <Link href="/discord" style={{ textDecoration: 'none' }}>
+              <a href="https://discord.gg/2UwBw8dnSv" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
                 <button style={{
                   padding: '16px 40px',
                   background: 'white',
@@ -786,7 +786,7 @@ export default function Home() {
                 }}>
                   디스코드 참여하기 →
                 </button>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
