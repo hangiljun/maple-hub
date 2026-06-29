@@ -297,6 +297,93 @@ export default function Home() {
 
         </div>
 
+        {/* SEO 소개 섹션 */}
+        <div style={{
+          background: '#FFFFFF',
+          padding: '48px 40px',
+          borderRadius: '20px',
+          marginBottom: '60px',
+          border: '1px solid #E5E7EB',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.06)'
+        }}>
+          <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
+            <h2 style={{
+              fontSize: '28px',
+              fontWeight: '900',
+              color: '#1E293B',
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '12px'
+            }}>
+              <span style={{ fontSize: '32px' }}>🎯</span>
+              메이플 허브는?
+            </h2>
+            <p style={{
+              fontSize: '16px',
+              color: '#475569',
+              lineHeight: 1.8,
+              marginBottom: '32px'
+            }}>
+              메이플스토리 급처템 전문 매입 플랫폼입니다.<br />
+              전 서버 아이템을 실시간 시세 분석을 통해 최고가에 신속하게 구매합니다.
+            </p>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '24px',
+              marginTop: '32px'
+            }}>
+              <div style={{
+                padding: '20px',
+                background: 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%)',
+                borderRadius: '12px',
+                border: '1px solid #BAE6FD'
+              }}>
+                <div style={{ fontSize: '32px', marginBottom: '8px' }}>⚡</div>
+                <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#0C4A6E', marginBottom: '4px' }}>
+                  실시간 시세 분석
+                </h3>
+                <p style={{ fontSize: '14px', color: '#0369A1' }}>
+                  경매장 시세 기반 정확한 가격 제시
+                </p>
+              </div>
+
+              <div style={{
+                padding: '20px',
+                background: 'linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)',
+                borderRadius: '12px',
+                border: '1px solid #BBF7D0'
+              }}>
+                <div style={{ fontSize: '32px', marginBottom: '8px' }}>🕐</div>
+                <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#14532D', marginBottom: '4px' }}>
+                  24시간 빠른 상담
+                </h3>
+                <p style={{ fontSize: '14px', color: '#15803D' }}>
+                  평균 5분 이내 응답 보장
+                </p>
+              </div>
+
+              <div style={{
+                padding: '20px',
+                background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
+                borderRadius: '12px',
+                border: '1px solid #FCD34D'
+              }}>
+                <div style={{ fontSize: '32px', marginBottom: '8px' }}>🛡️</div>
+                <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#78350F', marginBottom: '4px' }}>
+                  안전한 거래 보장
+                </h3>
+                <p style={{ fontSize: '14px', color: '#92400E' }}>
+                  검증된 거래 프로세스 운영
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* 왜 메이플허브 인가요? */}
         <div style={{
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
