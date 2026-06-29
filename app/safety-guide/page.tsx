@@ -55,47 +55,6 @@ export default function SafetyGuidePage() {
           </div>
         </div>
 
-        {/* 사업자 등록증 */}
-        <div style={{
-          background: 'white',
-          padding: '32px',
-          borderRadius: '20px',
-          border: '1px solid #E2E8F0',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
-          marginBottom: '32px'
-        }}>
-          <h2 style={{
-            fontSize: '24px',
-            fontWeight: '900',
-            color: '#1E293B',
-            marginBottom: '24px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
-            📋 사업자 등록 정보
-          </h2>
-          <div style={{ marginBottom: '16px' }}>
-            <p style={{ fontSize: '15px', color: '#475569', lineHeight: 1.8, marginBottom: '16px' }}>
-              메이플 허브는 정식 사업자등록을 완료한 거래 중개 플랫폼입니다.<br />
-              <strong style={{ color: '#1E293B' }}>※ 당사는 거래를 중개하는 플랫폼이며, 사이트 내에서 직접 거래가 이루어지지 않습니다.</strong>
-            </p>
-            <img
-              src="/business-license.png"
-              alt="사업자 등록증"
-              style={{
-                width: '100%',
-                maxWidth: '600px',
-                height: 'auto',
-                borderRadius: '12px',
-                border: '1px solid #E2E8F0',
-                display: 'block',
-                margin: '0 auto'
-              }}
-            />
-          </div>
-        </div>
-
         {/* 안전거래 원칙 */}
         <div style={{
           background: 'white',

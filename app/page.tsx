@@ -194,7 +194,7 @@ export default function Home() {
           </p>
         </div>
 
-        {/* 배너 그리드 (급처템, 메소, 디스코드) */}
+        {/* 배너 그리드 (급처템, 디스코드) */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))',
@@ -237,46 +237,6 @@ export default function Home() {
                   color: '#64748B'
                 }}>
                   빠른 아이템 거래
-                </p>
-              </div>
-            </div>
-          </Link>
-
-          {/* 메소 거래 배너 */}
-          <Link href="/meso" style={{ textDecoration: 'none' }}>
-            <div className="card-hover" style={{
-              position: 'relative',
-              borderRadius: '16px',
-              overflow: 'hidden',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
-              border: '1px solid rgba(255, 255, 255, 0.8)',
-              transition: 'all 0.3s'
-            }}>
-              <img
-                src="/meso-banner.png"
-                alt="메이플스토리 메소 거래 - 실시간 시세 확인"
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                  display: 'block'
-                }}
-              />
-              <div style={{
-                background: 'white',
-                padding: '16px 20px',
-                textAlign: 'center'
-              }}>
-                <h3 style={{
-                  fontSize: '16px',
-                  fontWeight: '700',
-                  color: '#1E293B',
-                  marginBottom: '4px'
-                }}>메이플 메소 거래</h3>
-                <p style={{
-                  fontSize: '13px',
-                  color: '#64748B'
-                }}>
-                  실시간 시세 확인
                 </p>
               </div>
             </div>
@@ -404,17 +364,17 @@ export default function Home() {
               {
                 icon: '🛡️',
                 title: '안전한 거래',
-                desc: '사업자등록을 하고 안전하게 운영 하고있습니다'
-              },
-              {
-                icon: '💯',
-                title: '실시간 시세',
-                desc: '메소 시세를 실시간으로 확인하고 합리적인 가격에 거래'
+                desc: '안전하게 운영되는 메이플 거래 플랫폼입니다'
               },
               {
                 icon: '🌙',
                 title: '24시간 운영',
                 desc: '언제든지 편한 시간에 거래 문의 및 상담 가능'
+              },
+              {
+                icon: '💯',
+                title: '빠른 응답',
+                desc: '문의사항에 대해 신속하고 정확하게 답변드립니다'
               }
             ].map((feature, i) => (
               <div key={i} style={{
@@ -584,7 +544,7 @@ export default function Home() {
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {[
-                { step: '1', title: '원하는 메뉴 선택', desc: '급처템, 메소거래, 디스코드 중 선택' },
+                { step: '1', title: '원하는 메뉴 선택', desc: '급처템, 디스코드 중 선택' },
                 { step: '2', title: '해당 채널 거래 방법 확인', desc: '거래 정보를 확인 하세요' },
                 { step: '3', title: '연락하기', desc: '카카오톡으로 문의 하기' },
                 { step: '4', title: '안전 거래', desc: '거래 완료 후 후기 작성' }
@@ -785,7 +745,7 @@ export default function Home() {
             {/* 로고 및 설명 */}
             <div>
               <div style={{ fontSize: '24px', fontWeight: '900', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <img src="/logo.ico" alt="메이플 허브 - 메이플스토리 급처템 및 메소 거래" style={{ width: '32px', height: '32px' }} />
+                <img src="/logo.ico" alt="메이플 허브 - 메이플스토리 급처템 거래" style={{ width: '32px', height: '32px' }} />
                 메이플 허브
               </div>
               <p style={{ fontSize: '14px', opacity: 0.7, lineHeight: 1.7 }}>
@@ -800,9 +760,6 @@ export default function Home() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <Link href="/items" style={{ color: 'white', opacity: 0.7, textDecoration: 'none', fontSize: '14px', transition: 'opacity 0.2s' }}>
                   급처템 거래
-                </Link>
-                <Link href="/meso" style={{ color: 'white', opacity: 0.7, textDecoration: 'none', fontSize: '14px', transition: 'opacity 0.2s' }}>
-                  메소 거래
                 </Link>
                 <Link href="/discord" style={{ color: 'white', opacity: 0.7, textDecoration: 'none', fontSize: '14px', transition: 'opacity 0.2s' }}>
                   디스코드

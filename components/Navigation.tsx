@@ -13,7 +13,6 @@ export default function Navigation({ currentPage }: NavigationProps) {
   const menuItems = [
     { key: 'home', label: '홈', href: '/' },
     { key: 'items', label: '급처템', href: '/items' },
-    { key: 'meso', label: '메소거래', href: '/meso' },
     { key: 'discord', label: '디스코드', href: '/discord' },
     { key: 'reviews', label: '이용후기', href: '/reviews' },
     { key: 'notice', label: '공지사항', href: '/notice' },
