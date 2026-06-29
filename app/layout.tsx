@@ -11,9 +11,9 @@ const notoSansKr = Noto_Sans_KR({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.maplehub.co.kr'),
-  title: '메이플급처 & 메이플스토리 아이템 - 전 서버 최고가 매입 및 시세 비교 | MAPLE HUB',
-  description: '메이플급처, 메이플스토리 급처템, 아이템 전 서버 최고가 매입. 24시간 상담 및 검증된 업체 리스트를 통해 안전하게 메이플급처 거래하세요.',
-  keywords: '메이플급처, 메이플스토리급처, 메이플 급처, 메이플스토리, 메이플, 메이플스토리 급처, 급처템, 아이템 매입, 메이플 시세',
+  title: '메이플스토리 급처템 & 메이플스토리 아이템 - 전 서버 최고가 구매 및 시세 비교',
+  description: '메이플급처, 메이플스토리 급처템, 아이템 전 서버 최고가 구매. 24시간 상담 및 검증된 경매장 분석을 통해 안전하게 메이플급처 거래하세요.',
+  keywords: '메이플급처, 메이플스토리급처, 메이플 급처, 메이플스토리, 메이플, 메이플스토리 급처, 급처템, 메이플장사, 메이플장사꾼, 메이플판매, 메이플 템 처분, 아이템 구매, 메이플 시세',
   icons: {
     icon: '/logo.ico',
     shortcut: '/logo.ico',
@@ -24,8 +24,8 @@ export const metadata: Metadata = {
     locale: 'ko_KR',
     url: 'https://www.maplehub.co.kr',
     siteName: 'MAPLE HUB',
-    title: '메이플급처 & 메이플스토리 아이템 - MAPLE HUB',
-    description: '메이플급처, 메이플스토리 급처템, 아이템 전 서버 최고가 매입. 24시간 상담 및 검증된 업체 리스트를 통해 안전하게 메이플급처 거래하세요.',
+    title: '메이플스토리 급처템 & 메이플스토리 아이템 - 전 서버 최고가 구매 및 시세 비교',
+    description: '메이플급처, 메이플스토리 급처템, 아이템 전 서버 최고가 구매. 24시간 상담 및 검증된 경매장 분석을 통해 안전하게 메이플급처 거래하세요.',
     images: [
       {
         url: '/kakao.jpg',
@@ -37,8 +37,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: '메이플급처 & 메이플스토리 아이템 - MAPLE HUB',
-    description: '메이플급처, 메이플스토리 급처템, 아이템 전 서버 최고가 매입',
+    title: '메이플스토리 급처템 & 메이플스토리 아이템 - 전 서버 최고가 구매 및 시세 비교',
+    description: '메이플급처, 메이플스토리 급처템, 아이템 전 서버 최고가 구매. 24시간 상담 및 검증된 경매장 분석을 통해 안전하게 메이플급처 거래하세요.',
     images: ['/kakao.jpg'],
   },
 };
@@ -53,7 +53,7 @@ export default function RootLayout({
     "@type": "WebSite",
     "name": "MAPLE HUB",
     "url": "https://www.maplehub.co.kr",
-    "description": "메이플급처, 메이플스토리 급처템, 아이템 전 서버 최고가 매입. 24시간 상담 및 검증된 업체 리스트를 통해 안전하게 메이플급처 거래하세요.",
+    "description": "메이플급처, 메이플스토리 급처템, 아이템 전 서버 최고가 구매. 24시간 상담 및 검증된 경매장 분석을 통해 안전하게 메이플급처 거래하세요.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": "https://www.maplehub.co.kr/reviews?search={search_term_string}",
