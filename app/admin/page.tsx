@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { firebaseConfig } from '@/lib/firebase-config';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase';
 
@@ -51,6 +51,7 @@ export default function AdminPage() {
   const [noticeForm, setNoticeForm] = useState({ title: '', content: '', category: '공지사항', isPinned: false });
   const [noticeImage, setNoticeImage] = useState<File | null>(null);
   const [noticeLoading, setNoticeLoading] = useState(false);
+  const [editingNoticeId, setEditingNoticeId] = useState<string | null>(null);
   const [itemForm, setItemForm] = useState({ server: '스카니아', itemName: '', price: '', seller: '', contact: '카카오톡', contactId: '', description: '' });
   const [itemImage, setItemImage] = useState<File | null>(null);
   const [itemLoading, setItemLoading] = useState(false);
@@ -253,7 +254,27 @@ export default function AdminPage() {
     input.click();
   };
 
-  // 공지사항 작성
+  // 공지사항 수정 시작
+  const handleEditNotice = (notice: Notice) => {
+    setEditingNoticeId(notice.id);
+    setNoticeForm({
+      title: notice.title,
+      content: notice.content,
+      category: notice.category,
+      isPinned: notice.isPinned
+    });
+    // 스크롤을 폼으로 이동
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // 공지사항 수정 취소
+  const handleCancelEdit = () => {
+    setEditingNoticeId(null);
+    setNoticeForm({ title: '', content: '', category: '공지사항', isPinned: false });
+    setNoticeImage(null);
+  };
+
+  // 공지사항 작성/수정
   const handleNoticeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!noticeForm.title || !noticeForm.content) {
@@ -270,30 +291,56 @@ export default function AdminPage() {
         const storageRef = ref(storage, `notices/${timestamp}_${noticeImage.name}`);
         await uploadBytes(storageRef, noticeImage);
         imageUrl = await getDownloadURL(storageRef);
-      } else {
-        // 썸네일이 없으면 본문에서 첫 이미지 추출
+      } else if (!editingNoticeId) {
+        // 신규 작성 시: 썸네일이 없으면 본문에서 첫 이미지 추출
         const imgMatch = noticeForm.content.match(/<img[^>]+src="([^">]+)"/);
         if (imgMatch) {
           imageUrl = imgMatch[1];
         }
       }
 
-      await addDoc(collection(db, 'notices'), {
-        title: noticeForm.title,
-        content: noticeForm.content,
-        category: noticeForm.category,
-        imageUrl,
-        isPinned: noticeForm.isPinned,
-        createdAt: new Date()
-      });
+      if (editingNoticeId) {
+        // 수정 모드
+        const updateData: any = {
+          title: noticeForm.title,
+          content: noticeForm.content,
+          category: noticeForm.category,
+          isPinned: noticeForm.isPinned
+        };
 
-      alert('공지사항이 등록되었습니다!');
+        // 새 이미지가 있으면 추가
+        if (imageUrl) {
+          updateData.imageUrl = imageUrl;
+        } else {
+          // 새 이미지가 없으면 본문에서 추출
+          const imgMatch = noticeForm.content.match(/<img[^>]+src="([^">]+)"/);
+          if (imgMatch) {
+            updateData.imageUrl = imgMatch[1];
+          }
+        }
+
+        await updateDoc(doc(db, 'notices', editingNoticeId), updateData);
+        alert('공지사항이 수정되었습니다!');
+        setEditingNoticeId(null);
+      } else {
+        // 신규 작성 모드
+        await addDoc(collection(db, 'notices'), {
+          title: noticeForm.title,
+          content: noticeForm.content,
+          category: noticeForm.category,
+          imageUrl,
+          isPinned: noticeForm.isPinned,
+          createdAt: new Date()
+        });
+        alert('공지사항이 등록되었습니다!');
+      }
+
       setNoticeForm({ title: '', content: '', category: '공지사항', isPinned: false });
       setNoticeImage(null);
       fetchNotices();
     } catch (error: any) {
-      console.error('공지사항 등록 실패:', error);
-      alert(`공지사항 등록에 실패했습니다.\n에러: ${error.message || error}`);
+      console.error('공지사항 처리 실패:', error);
+      alert(`공지사항 처리에 실패했습니다.\n에러: ${error.message || error}`);
     } finally {
       setNoticeLoading(false);
     }
@@ -783,8 +830,39 @@ export default function AdminPage() {
               color: '#1a1a1a',
               marginBottom: '24px'
             }}>
-              ✍️ 공지사항 작성
+              {editingNoticeId ? '✏️ 공지사항 수정' : '✍️ 공지사항 작성'}
             </h2>
+
+            {editingNoticeId && (
+              <div style={{
+                padding: '12px 16px',
+                background: '#FEF3C7',
+                border: '1px solid #FCD34D',
+                borderRadius: '8px',
+                marginBottom: '16px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <span style={{ fontSize: '14px', color: '#92400E' }}>
+                  📝 수정 모드
+                </span>
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  style={{
+                    padding: '6px 12px',
+                    background: 'white',
+                    border: '1px solid #CBD5E1',
+                    borderRadius: '6px',
+                    fontSize: '13px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  취소
+                </button>
+              </div>
+            )}
 
             <form onSubmit={handleNoticeSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
@@ -1033,7 +1111,9 @@ export default function AdminPage() {
                   cursor: noticeLoading ? 'not-allowed' : 'pointer'
                 }}
               >
-                {noticeLoading ? '등록 중...' : '공지사항 등록'}
+                {noticeLoading
+                  ? (editingNoticeId ? '수정 중...' : '등록 중...')
+                  : (editingNoticeId ? '공지사항 수정' : '공지사항 등록')}
               </button>
             </form>
           </div>
@@ -1128,22 +1208,38 @@ export default function AdminPage() {
                           {notice.content}
                         </div>
                       </div>
-                      <button
-                        onClick={() => handleDeleteNotice(notice.id, notice.title)}
-                        style={{
-                          padding: '8px 16px',
-                          background: '#EF4444',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '8px',
-                          fontSize: '13px',
-                          fontWeight: '700',
-                          cursor: 'pointer',
-                          marginLeft: '16px'
-                        }}
-                      >
-                        삭제
-                      </button>
+                      <div style={{ display: 'flex', gap: '8px', marginLeft: '16px' }}>
+                        <button
+                          onClick={() => handleEditNotice(notice)}
+                          style={{
+                            padding: '8px 16px',
+                            background: '#3B82F6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontSize: '13px',
+                            fontWeight: '700',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          수정
+                        </button>
+                        <button
+                          onClick={() => handleDeleteNotice(notice.id, notice.title)}
+                          style={{
+                            padding: '8px 16px',
+                            background: '#EF4444',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontSize: '13px',
+                            fontWeight: '700',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          삭제
+                        </button>
+                      </div>
                     </div>
                     {notice.imageUrl && (
                       <div style={{ marginTop: '12px' }}>
