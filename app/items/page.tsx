@@ -632,7 +632,7 @@ export default function ItemsPage() {
             </p>
           </div>
 
-          <p style={{ fontSize: '15px', color: '#475569', lineHeight: 1.8' }}>
+          <p style={{ fontSize: '15px', color: '#475569', lineHeight: 1.8 }}>
             그 가치를 가장 안전하고 정확하게 사줄 사람들이 모인 최적의 공간이 바로 이곳입니다. 아직도 인게임 경매장의 무거운 수수료 때문에 고민이시거나, 비싼 고가 아이템의 처분 타이밍을 못 잡아 발을 동동 구르고 계신다면 지금 MAPLE HUB를 이용해 보세요. <strong style={{ color: '#667eea' }}>안전성, 신속함, 그리고 가격 만족도까지 결과가 완전히 달라질 것입니다.</strong>
           </p>
         </section>
