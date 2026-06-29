@@ -32,8 +32,8 @@ export default function Navigation({ currentPage }: NavigationProps) {
     { key: 'home', label: '홈', href: '/' },
     { key: 'items', label: '급처템', href: '/items' },
     { key: 'discord', label: '디스코드', href: '/discord' },
-    { key: 'reviews', label: '이용후기', href: '/reviews' },
     { key: 'notice', label: '공지사항', href: '/notice' },
+    { key: 'reviews', label: '이용후기', href: '/reviews' },
     { key: 'faq', label: 'Q&A', href: '/faq' }
   ];
 
