@@ -279,7 +279,7 @@ export default function Home() {
                 padding: '16px 20px',
                 textAlign: 'center'
               }}>
-                <Link href="/discord" style={{ textDecoration: 'none', width: '100%', display: 'block' }}>
+                <a href="https://discord.gg/2UwBw8dnSv" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', width: '100%', display: 'block' }}>
                   <button style={{
                     width: '100%',
                     padding: '12px 24px',
@@ -303,7 +303,7 @@ export default function Home() {
                   }}>
                     디스코드 바로가기 →
                   </button>
-                </Link>
+                </a>
               </div>
             </div>
           </div>
