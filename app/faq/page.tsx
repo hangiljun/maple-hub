@@ -26,28 +26,16 @@ export default function FAQPage() {
       ]
     },
     {
-      category: '결제 및 환불',
-      questions: [
-        {
-          q: '결제 방법은 어떻게 되나요?',
-          a: '계좌이체를 통한 결제를 기본으로 하고 있습니다. 거래 전 계좌번호를 안내받으시고, 입금 확인 후 아이템이 전달됩니다.'
-        },
-        {
-          q: '환불이 가능한가요?',
-          a: '거래 전 취소는 100% 환불 가능하며, 거래 후에는 쌍방 합의 하에 환불이 진행됩니다. 단, 고객의 단순 변심으로 인한 환불은 제한될 수 있습니다.'
-        }
-      ]
-    },
-    {
       category: '안전거래',
       questions: [
         {
           q: '거래가 안전한가요?',
-          a: '메이플 허브는 안전하게 운영되는 플랫폼입니다. 거래 관련 문의사항은 언제든 상담 가능합니다.'
+          a: '수백번의 거래중에 사고 한번 없었습니다.'
         },
         {
           q: '거래는 어떻게 진행되나요?',
-          a: '급처템 문의는 han8246으로 카카오톡 연락 주세요.'
+          a: '급처템 문의는 han8246으로 카카오톡 연락 주세요.',
+          button: { text: '급처템 메뉴 보기', link: '/items' }
         },
         {
           q: '문제가 생기면 어떻게 하나요?',
@@ -194,10 +182,37 @@ export default function FAQPage() {
                           fontSize: '15px',
                           color: '#475569',
                           lineHeight: 1.8,
-                          margin: 0
+                          margin: 0,
+                          marginBottom: 'button' in faq ? '16px' : 0
                         }}>
                           {faq.a}
                         </p>
+                        {'button' in faq && faq.button && (
+                          <a href={faq.button.link} style={{ textDecoration: 'none' }}>
+                            <button style={{
+                              padding: '12px 24px',
+                              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '8px',
+                              fontSize: '14px',
+                              fontWeight: '700',
+                              cursor: 'pointer',
+                              boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
+                              transition: 'all 0.3s'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.transform = 'translateY(-2px)';
+                              e.currentTarget.style.boxShadow = '0 6px 16px rgba(102, 126, 234, 0.4)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.transform = 'translateY(0)';
+                              e.currentTarget.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.3)';
+                            }}>
+                              {faq.button.text} →
+                            </button>
+                          </a>
+                        )}
                       </div>
                     )}
                   </div>
