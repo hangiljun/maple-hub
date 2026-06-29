@@ -193,6 +193,13 @@ export default function AdminPage() {
       formattedText = `<span style="color: ${value}">${selectedText || '색상 텍스트'}</span>`;
     } else if (tag === 'size') {
       formattedText = `<span style="font-size: ${value}">${selectedText || '크기 텍스트'}</span>`;
+    } else if (tag === 'link') {
+      const url = prompt('링크 URL을 입력하세요:', 'https://');
+      if (url) {
+        formattedText = `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color: #3B82F6; text-decoration: underline;">${selectedText || url}</a>`;
+      } else {
+        return;
+      }
     }
 
     const newContent =
@@ -210,6 +217,42 @@ export default function AdminPage() {
     }, 0);
   };
 
+  // 본문에 이미지 삽입
+  const insertImageToContent = async () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e: any) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      try {
+        const timestamp = Date.now();
+        const storageRef = ref(storage, `notices/content/${timestamp}_${file.name}`);
+        await uploadBytes(storageRef, file);
+        const imageUrl = await getDownloadURL(storageRef);
+
+        const textarea = noticeTextareaRef.current;
+        if (!textarea) return;
+
+        const start = textarea.selectionStart;
+        const imageTag = `<img src="${imageUrl}" alt="이미지" style="max-width: 100%; height: auto; margin: 16px 0; border-radius: 8px;" />`;
+
+        const newContent =
+          noticeForm.content.substring(0, start) +
+          imageTag +
+          noticeForm.content.substring(start);
+
+        setNoticeForm({ ...noticeForm, content: newContent });
+        alert('이미지가 삽입되었습니다!');
+      } catch (error) {
+        console.error('이미지 업로드 실패:', error);
+        alert('이미지 업로드에 실패했습니다.');
+      }
+    };
+    input.click();
+  };
+
   // 공지사항 작성
   const handleNoticeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -220,11 +263,19 @@ export default function AdminPage() {
     setNoticeLoading(true);
     try {
       let imageUrl = '';
+
+      // 썸네일 이미지 처리
       if (noticeImage) {
         const timestamp = Date.now();
         const storageRef = ref(storage, `notices/${timestamp}_${noticeImage.name}`);
         await uploadBytes(storageRef, noticeImage);
         imageUrl = await getDownloadURL(storageRef);
+      } else {
+        // 썸네일이 없으면 본문에서 첫 이미지 추출
+        const imgMatch = noticeForm.content.match(/<img[^>]+src="([^">]+)"/);
+        if (imgMatch) {
+          imageUrl = imgMatch[1];
+        }
       }
 
       await addDoc(collection(db, 'notices'), {
@@ -874,6 +925,46 @@ export default function AdminPage() {
                       title={color}
                     />
                   ))}
+
+                  <div style={{ borderLeft: '1px solid #CBD5E1', margin: '0 4px' }}></div>
+
+                  <button
+                    type="button"
+                    onClick={() => insertFormatting('link')}
+                    style={{
+                      padding: '6px 12px',
+                      background: 'white',
+                      border: '1px solid #CBD5E1',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                    title="링크 삽입"
+                  >
+                    🔗 링크
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={insertImageToContent}
+                    style={{
+                      padding: '6px 12px',
+                      background: 'white',
+                      border: '1px solid #CBD5E1',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                    title="본문에 이미지 삽입"
+                  >
+                    🖼️ 이미지
+                  </button>
                 </div>
 
                 <textarea
@@ -896,8 +987,11 @@ export default function AdminPage() {
 
               <div>
                 <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569' }}>
-                  이미지 (선택)
+                  썸네일 이미지 (선택)
                 </label>
+                <p style={{ fontSize: '12px', color: '#64748B', marginBottom: '8px' }}>
+                  💡 썸네일을 등록하지 않으면 본문의 첫 이미지가 자동으로 썸네일이 됩니다
+                </p>
                 <input
                   type="file"
                   accept="image/*"
