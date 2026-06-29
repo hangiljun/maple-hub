@@ -389,7 +389,7 @@ export default function FAQPage() {
             카카오톡 또는 디스코드로 문의주시면 친절하게 답변해드립니다.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="https://open.kakao.com/o/sfxfJyAi" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+            <a href="https://open.kakao.com/o/szxJKLBi" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
               <button style={{
                 padding: '14px 28px',
                 background: '#FEE500',
