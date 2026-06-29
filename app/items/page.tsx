@@ -222,7 +222,7 @@ export default function ItemsPage() {
         {/* 아이템 목록 */}
         {filteredItems.length === 0 ? (
           <a
-            href="https://open.kakao.com/o/sx49Xazi"
+            href="https://open.kakao.com/o/szxJKLBi"
             target="_blank"
             rel="noopener noreferrer"
             style={{
