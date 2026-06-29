@@ -217,6 +217,33 @@ export default function ReviewsPage() {
 
   return (
     <div style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', fontFamily: "'Noto Sans KR', sans-serif", color: '#1E293B' }}>
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .reviews-header {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 16px !important;
+          }
+          .reviews-table-header {
+            display: none !important;
+          }
+          .reviews-table-row > div:nth-child(1),
+          .reviews-table-row > div:nth-child(4),
+          .reviews-table-row > div:nth-child(5) {
+            display: none !important;
+          }
+          .reviews-table-row > div:nth-child(2) {
+            width: 70% !important;
+          }
+          .reviews-table-row > div:nth-child(3) {
+            width: 30% !important;
+          }
+          .reviews-search-input {
+            width: 100% !important;
+            max-width: 350px !important;
+          }
+        }
+      `}</style>
       <Navigation currentPage="reviews" />
 
       {/* 배너 영역 */}
@@ -234,7 +261,7 @@ export default function ReviewsPage() {
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '40px 20px' }}>
 
         {/* 헤더 */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
+        <div className="reviews-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
           <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#1E293B', margin: 0 }}>이용후기 ({reviews.length})</h2>
           <button
             onClick={() => setShowForm(true)}
@@ -294,6 +321,7 @@ export default function ReviewsPage() {
             <Link
               key={review.id}
               href={`/reviews/${review.id}`}
+              className="reviews-table-row"
               style={{
                 display: 'flex',
                 padding: '18px 0',
@@ -325,6 +353,7 @@ export default function ReviewsPage() {
             placeholder="제목 및 작성자 검색"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            className="reviews-search-input"
             style={{
               padding: '12px 20px',
               border: '1px solid #E2E8F0',
