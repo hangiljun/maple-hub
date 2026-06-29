@@ -253,7 +253,7 @@ export default function Home() {
               transition: 'all 0.3s'
             }}>
               <img
-                src="/메이플 디스코드 메인 페이지.png"
+                src="/discord-main.png"
                 alt="메이플스토리 디스코드 커뮤니티"
                 style={{
                   width: '100%',
