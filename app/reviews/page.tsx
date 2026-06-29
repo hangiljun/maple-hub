@@ -281,7 +281,7 @@ export default function ReviewsPage() {
         </div>
 
         {/* 테이블 헤더 */}
-        <div style={{
+        <div className="reviews-table-header" style={{
           borderTop: '2px solid #667eea',
           borderBottom: '1px solid #E2E8F0',
           padding: '15px 0',
