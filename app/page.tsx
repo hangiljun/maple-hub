@@ -690,6 +690,107 @@ export default function Home() {
           </div>
         </div>
 
+        {/* SEO 텍스트 섹션 1: 메이플 급처템 및 전 서버 통매입 안내 */}
+        <div style={{
+          marginTop: '80px',
+          marginBottom: '60px',
+          padding: '48px',
+          background: 'white',
+          borderRadius: '24px',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.06)'
+        }}>
+          <h2 style={{
+            fontSize: '28px',
+            fontWeight: '900',
+            color: '#1E293B',
+            marginBottom: '24px',
+            textAlign: 'center'
+          }}>
+            🎮 메이플 급처템 및 전 서버 통매입 안내
+          </h2>
+          <div style={{
+            fontSize: '15px',
+            color: '#475569',
+            lineHeight: 1.9,
+            textAlign: 'left'
+          }}>
+            <p style={{ marginBottom: '20px' }}>
+              메이플스토리를 떠나며 정들었던 캐릭터와 장비를 정리할 때, 가장 고민되는 것은 '안전하고 합리적인 가치 인정'입니다.
+              인게임 경매장에 하나씩 올려두고 마냥 기다리기에는 시간도 오래 걸리고 비효율적인 수수료 부담이 뒤따릅니다.
+              그렇다고 고성능 확성기(고확)나 검증되지 않은 개인 장사꾼에게 메이플 급처템을 넘기다 보면,
+              터무니없는 후려치기나 위험천만한 아이템 사기 피해를 입기 십상입니다.
+            </p>
+            <p style={{ marginBottom: '20px' }}>
+              메이플허브는 유저분들의 소중한 노력과 추억이 담긴 메이플스토리 급처템을 전 서버 최고가 기준으로 정밀하게 시세 분석하여 안전하게 통매입합니다.
+              챌린저스, 크로아, 엘리시움, 루나, 스카니아, 베라 등 전 서버의 고가 장비, 귀찮은 처분 과정을 단 한 번에 신속하게 해결해 드립니다.
+              실시간 아이템 시세 비교를 통해 가장 투명하고 합리적인 단가를 보장하며, 복잡한 절차 없이 당일 즉시 구매 시스템으로 가장 깔끔한 템처분을 도와드립니다.
+            </p>
+          </div>
+        </div>
+
+        {/* SEO 텍스트 섹션 2: 메이플허브 연계 디스코드 */}
+        <div style={{
+          marginBottom: '60px',
+          padding: '48px',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          borderRadius: '24px',
+          color: 'white',
+          boxShadow: '0 8px 24px rgba(102, 126, 234, 0.25)'
+        }}>
+          <h2 style={{
+            fontSize: '28px',
+            fontWeight: '900',
+            marginBottom: '24px',
+            textAlign: 'center'
+          }}>
+            💬 메이플허브 연계 디스코드 및 실시간 상담 커뮤니티
+          </h2>
+          <div style={{
+            fontSize: '15px',
+            lineHeight: 1.9,
+            textAlign: 'left',
+            color: 'rgba(255, 255, 255, 0.95)'
+          }}>
+            <p style={{ marginBottom: '20px' }}>
+              메이플에서 가장 중요한 것은 '실시간 소통'과 '안전성'입니다. 인게임의 한계를 넘어 더 신속하고 투명한 거래 환경을 제공하기 위해 메이플허브 연계 메이플 디스코드 채널을 이용해보세요.
+              메이플스토리 디코 커뮤니티에서는 실시간으로 유저들 소통, 길드가입, 사냥터공유, 아이템 정보 공유, 이벤트 내용 등 확인하실 수 있으며, 복잡한 메이플 시스템을
+              유저들과 소통하면서 함께 하실 수 있습니다.
+            </p>
+            <p style={{ marginBottom: '24px' }}>
+              메이플 디스코드 채널은 3자 사기나 신용 사기를 원천 차단하기 위해 엄격한 인증 절차와 가이드라인을 준수합니다.
+              24시간 언제든 열려 있는 1:1 실시간 상담을 실시간 게임 인증을 할 수가 있으며, 디코 내 유저들과 메이플스토리 아이템 거래, 유저간의 거래가 투명하게 이루어지고 있습니다.
+              지금 메이플 디스코드에 입장하셔서 소통하세요!
+            </p>
+            <div style={{ textAlign: 'center' }}>
+              <Link href="/discord" style={{ textDecoration: 'none' }}>
+                <button style={{
+                  padding: '16px 40px',
+                  background: 'white',
+                  color: '#667eea',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+                  transition: 'all 0.3s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.15)';
+                }}>
+                  디스코드 참여하기 →
+                </button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       {/* 푸터 */}
