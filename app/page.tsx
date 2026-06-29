@@ -206,14 +206,14 @@ export default function Home() {
             marginBottom: '20px',
             lineHeight: 1.2
           }}>
-            메이플스토리 거래를 한곳에서
+            메이플스토리 모든것을 한곳에서
           </h1>
           <p style={{
             fontSize: 'clamp(16px, 2vw, 20px)',
             color: '#64748B',
             marginBottom: '40px'
           }}>
-            카카오톡 기반 거래 중개 플랫폼
+            메이플 급처 , 메이플 디스코드
           </p>
         </div>
 
