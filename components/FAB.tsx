@@ -9,7 +9,7 @@ interface FABProps {
 
 export default function FAB({ type, href }: FABProps) {
   const defaultLinks = {
-    kakao: 'https://open.kakao.com/o/sfxfJyAi',
+    kakao: 'https://open.kakao.com/o/szxJKLBi',
     discord: 'https://discord.gg/2UwBw8dnSv'
   };
 
