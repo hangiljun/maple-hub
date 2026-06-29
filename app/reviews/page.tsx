@@ -248,11 +248,11 @@ export default function ReviewsPage() {
 
       {/* 배너 영역 */}
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-        <div style={{ width: '100%', maxWidth: '1200px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ width: '100%', maxWidth: '1200px', height: '300px', position: 'relative', overflow: 'hidden' }}>
           <img
             src="/reviews-banner.png"
             alt="메이플 허브 이용후기 - 실제 고객 거래 후기"
-            style={{ width: '100%', height: 'auto', display: 'block' }}
+            style={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover' }}
           />
         </div>
       </div>
