@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 
 interface NavigationProps {
@@ -9,6 +9,24 @@ interface NavigationProps {
 
 export default function Navigation({ currentPage }: NavigationProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // 외부 클릭 감지
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMobileMenuOpen(false);
+      }
+    }
+
+    if (mobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [mobileMenuOpen]);
 
   const menuItems = [
     { key: 'home', label: '홈', href: '/' },
@@ -32,7 +50,7 @@ export default function Navigation({ currentPage }: NavigationProps) {
         }
       `}</style>
 
-      <nav style={{
+      <nav ref={menuRef} style={{
         position: 'sticky',
         top: 0,
         zIndex: 100,

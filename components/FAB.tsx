@@ -37,6 +37,14 @@ export default function FAB({ type, href }: FABProps) {
   return (
     <>
       <style jsx global>{`
+        /* 데스크톱: 레이블 표시 */
+        @media (min-width: 769px) {
+          .fab-label {
+            display: block !important;
+          }
+        }
+
+        /* 모바일: 레이블 숨김, 버튼 크기 조정 */
         @media (max-width: 768px) {
           .fab-container {
             bottom: 20px !important;
