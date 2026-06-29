@@ -17,7 +17,7 @@ export default function FAB({ type, href }: FABProps) {
 
   const config = {
     kakao: {
-      label: '카카오톡 ID : han8246',
+      label: '카카오톡 연결하기 >',
       icon: '💬',
       background: 'linear-gradient(135deg, #FEE500 0%, #FFD400 100%)',
       shadowColor: 'rgba(254, 229, 0, 0.4)',
