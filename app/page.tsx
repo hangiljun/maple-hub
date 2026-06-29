@@ -326,7 +326,7 @@ export default function Home() {
               lineHeight: 1.8,
               marginBottom: '32px'
             }}>
-              메이플스토리 급처템 전문 매입 플랫폼입니다.<br />
+              메이플스토리 급처템 구매 문의를 전문적으로 다룹니다.<br />
               전 서버 아이템을 실시간 시세 분석을 통해 최고가에 신속하게 구매합니다.
             </p>
 
