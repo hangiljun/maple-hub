@@ -147,6 +147,29 @@ export default function Home() {
         .card-hover:hover {
           transform: translateY(-12px) scale(1.02);
         }
+
+        /* 모바일 최적화 */
+        @media (max-width: 768px) {
+          .card-hover:hover {
+            transform: none;
+          }
+
+          .mobile-text-small {
+            font-size: 14px !important;
+          }
+
+          .mobile-padding-reduce {
+            padding: 32px 24px !important;
+          }
+
+          .mobile-margin-reduce {
+            margin-bottom: 40px !important;
+          }
+
+          .mobile-hide-overflow {
+            overflow-x: hidden !important;
+          }
+        }
       `}</style>
 
       <Navigation currentPage="home" />
@@ -229,7 +252,7 @@ export default function Home() {
                 <a href="https://open.kakao.com/o/szxJKLBi" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', width: '100%', display: 'block' }}>
                   <button style={{
                     width: '100%',
-                    padding: '12px 24px',
+                    padding: '14px 24px',
                     background: '#FEE500',
                     color: '#000000',
                     border: 'none',
@@ -282,7 +305,7 @@ export default function Home() {
                 <a href="https://discord.gg/2UwBw8dnSv" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', width: '100%', display: 'block' }}>
                   <button style={{
                     width: '100%',
-                    padding: '12px 24px',
+                    padding: '14px 24px',
                     background: '#5865F2',
                     color: 'white',
                     border: 'none',
@@ -400,7 +423,7 @@ export default function Home() {
         {/* 공지사항 + 거래방법 2분할 섹션 */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(min(400px, 100%), 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))',
           gap: '32px',
           marginBottom: '60px'
         }}>
@@ -631,8 +654,9 @@ export default function Home() {
                     display: 'flex',
                     flexDirection: 'column',
                     height: '400px',
-                    minWidth: 'calc(25% - 15px)',
-                    maxWidth: 'calc(25% - 15px)',
+                    minWidth: '280px',
+                    maxWidth: '400px',
+                    width: 'calc(25% - 15px)',
                     flexShrink: 0,
                     overflow: 'hidden'
                   }}
