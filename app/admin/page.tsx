@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { firebaseConfig } from '@/lib/firebase-config';
 import { collection, addDoc } from 'firebase/firestore';
@@ -54,6 +54,7 @@ export default function AdminPage() {
   const [itemForm, setItemForm] = useState({ server: '스카니아', itemName: '', price: '', seller: '', contact: '카카오톡', contactId: '', description: '' });
   const [itemImage, setItemImage] = useState<File | null>(null);
   const [itemLoading, setItemLoading] = useState(false);
+  const noticeTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     const savedAuth = localStorage.getItem('admin_auth');
@@ -173,6 +174,40 @@ export default function AdminPage() {
     } catch (error) {
       console.error('공지사항 로드 실패:', error);
     }
+  };
+
+  // 텍스트 포맷팅 함수
+  const insertFormatting = (tag: string, value?: string) => {
+    const textarea = noticeTextareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = noticeForm.content.substring(start, end);
+
+    let formattedText = '';
+
+    if (tag === 'bold') {
+      formattedText = `<strong>${selectedText || '굵은 텍스트'}</strong>`;
+    } else if (tag === 'color') {
+      formattedText = `<span style="color: ${value}">${selectedText || '색상 텍스트'}</span>`;
+    } else if (tag === 'size') {
+      formattedText = `<span style="font-size: ${value}">${selectedText || '크기 텍스트'}</span>`;
+    }
+
+    const newContent =
+      noticeForm.content.substring(0, start) +
+      formattedText +
+      noticeForm.content.substring(end);
+
+    setNoticeForm({ ...noticeForm, content: newContent });
+
+    // 포커스 및 커서 위치 조정
+    setTimeout(() => {
+      textarea.focus();
+      const newPos = start + formattedText.length;
+      textarea.setSelectionRange(newPos, newPos);
+    }, 0);
   };
 
   // 공지사항 작성
@@ -744,10 +779,108 @@ export default function AdminPage() {
                 <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569' }}>
                   내용
                 </label>
+
+                {/* 텍스트 편집 툴바 */}
+                <div style={{
+                  display: 'flex',
+                  gap: '8px',
+                  marginBottom: '8px',
+                  padding: '8px',
+                  background: '#F8FAFC',
+                  borderRadius: '8px',
+                  border: '1px solid #E2E8F0',
+                  flexWrap: 'wrap'
+                }}>
+                  <button
+                    type="button"
+                    onClick={() => insertFormatting('bold')}
+                    style={{
+                      padding: '6px 12px',
+                      background: 'white',
+                      border: '1px solid #CBD5E1',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      fontWeight: 'bold',
+                      cursor: 'pointer'
+                    }}
+                    title="굵게"
+                  >
+                    <strong>B</strong>
+                  </button>
+
+                  <div style={{ borderLeft: '1px solid #CBD5E1', margin: '0 4px' }}></div>
+
+                  <span style={{ fontSize: '12px', color: '#64748B', alignSelf: 'center', marginRight: '4px' }}>크기:</span>
+                  <button
+                    type="button"
+                    onClick={() => insertFormatting('size', '14px')}
+                    style={{
+                      padding: '6px 12px',
+                      background: 'white',
+                      border: '1px solid #CBD5E1',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    작게
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => insertFormatting('size', '16px')}
+                    style={{
+                      padding: '6px 12px',
+                      background: 'white',
+                      border: '1px solid #CBD5E1',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    보통
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => insertFormatting('size', '20px')}
+                    style={{
+                      padding: '6px 12px',
+                      background: 'white',
+                      border: '1px solid #CBD5E1',
+                      borderRadius: '4px',
+                      fontSize: '16px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    크게
+                  </button>
+
+                  <div style={{ borderLeft: '1px solid #CBD5E1', margin: '0 4px' }}></div>
+
+                  <span style={{ fontSize: '12px', color: '#64748B', alignSelf: 'center', marginRight: '4px' }}>색상:</span>
+                  {['#000000', '#EF4444', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6'].map(color => (
+                    <button
+                      key={color}
+                      type="button"
+                      onClick={() => insertFormatting('color', color)}
+                      style={{
+                        width: '32px',
+                        height: '32px',
+                        background: color,
+                        border: '2px solid white',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        boxShadow: '0 0 0 1px #CBD5E1'
+                      }}
+                      title={color}
+                    />
+                  ))}
+                </div>
+
                 <textarea
+                  ref={noticeTextareaRef}
                   value={noticeForm.content}
                   onChange={(e) => setNoticeForm({ ...noticeForm, content: e.target.value })}
-                  placeholder="공지사항 내용을 입력하세요"
+                  placeholder="공지사항 내용을 입력하세요&#10;&#10;💡 텍스트를 선택한 후 위 버튼을 클릭하면 포맷이 적용됩니다"
                   rows={8}
                   style={{
                     width: '100%',
