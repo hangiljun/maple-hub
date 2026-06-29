@@ -7,18 +7,6 @@ import { collection, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase';
 
-interface PriceTier {
-  label: string;
-  maxQty: number | null;
-  price: number;
-  hot: boolean;
-}
-
-interface PriceTable {
-  buy: PriceTier[];
-  sell: PriceTier[];
-}
-
 interface Review {
   id: string;
   title: string;
@@ -56,7 +44,7 @@ export default function AdminPage() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [password, setPassword] = useState('');
-  const [activeTab, setActiveTab] = useState<'price' | 'reviews' | 'notices' | 'items'>('price');
+  const [activeTab, setActiveTab] = useState<'reviews' | 'notices' | 'items'>('reviews');
   const [reviews, setReviews] = useState<Review[]>([]);
   const [notices, setNotices] = useState<Notice[]>([]);
   const [items, setItems] = useState<Item[]>([]);
@@ -66,26 +54,8 @@ export default function AdminPage() {
   const [itemForm, setItemForm] = useState({ server: '스카니아', itemName: '', price: '', seller: '', contact: '카카오톡', contactId: '', description: '' });
   const [itemImage, setItemImage] = useState<File | null>(null);
   const [itemLoading, setItemLoading] = useState(false);
-  const [priceTable, setPriceTable] = useState<PriceTable>({
-    buy: [
-      { label: '1 ~ 100억', maxQty: 100, price: 1300, hot: false },
-      { label: '101 ~ 300억', maxQty: 300, price: 1350, hot: false },
-      { label: '301억 이상', maxQty: null, price: 1370, hot: true }
-    ],
-    sell: [
-      { label: '1 ~ 100억', maxQty: 100, price: 1550, hot: true },
-      { label: '101 ~ 300억', maxQty: 300, price: 1530, hot: false },
-      { label: '301억 이상', maxQty: null, price: 1520, hot: false }
-    ]
-  });
 
-  // 파일에서 가격 불러오기
   useEffect(() => {
-    fetch('/api/meso-prices')
-      .then(res => res.json())
-      .then(data => setPriceTable(data))
-      .catch(err => console.error('가격 로드 실패:', err));
-
     const savedAuth = localStorage.getItem('admin_auth');
     if (savedAuth === 'true') {
       setIsLoggedIn(true);
@@ -402,62 +372,6 @@ export default function AdminPage() {
     setPassword('');
   };
 
-  // 가격 변경
-  const handlePriceChange = (type: 'buy' | 'sell', index: number, newPrice: number) => {
-    const newTable = { ...priceTable };
-    newTable[type][index].price = newPrice;
-    setPriceTable(newTable);
-  };
-
-  // 저장
-  const handleSave = async () => {
-    try {
-      const response = await fetch('/api/meso-prices', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(priceTable)
-      });
-
-      if (response.ok) {
-        alert('가격이 저장되었습니다!');
-      } else {
-        alert('저장 실패!');
-      }
-    } catch (error) {
-      alert('저장 중 오류 발생!');
-    }
-  };
-
-  // 초기화
-  const handleReset = async () => {
-    if (confirm('정말 초기화하시겠습니까?')) {
-      const defaultTable: PriceTable = {
-        buy: [
-          { label: '1 ~ 100억', maxQty: 100, price: 1300, hot: false },
-          { label: '101 ~ 300억', maxQty: 300, price: 1350, hot: false },
-          { label: '301억 이상', maxQty: null, price: 1370, hot: true }
-        ],
-        sell: [
-          { label: '1 ~ 100억', maxQty: 100, price: 1550, hot: true },
-          { label: '101 ~ 300억', maxQty: 300, price: 1530, hot: false },
-          { label: '301억 이상', maxQty: null, price: 1520, hot: false }
-        ]
-      };
-      setPriceTable(defaultTable);
-
-      try {
-        await fetch('/api/meso-prices', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(defaultTable)
-        });
-        alert('초기화되었습니다!');
-      } catch (error) {
-        alert('초기화 중 오류 발생!');
-      }
-    }
-  };
-
   if (!isLoggedIn) {
     return (
       <div style={{
@@ -490,7 +404,7 @@ export default function AdminPage() {
             marginBottom: '32px',
             textAlign: 'center'
           }}>
-            메소 가격 관리
+            컨텐츠 관리
           </p>
 
           <div style={{ marginBottom: '24px' }}>
@@ -572,7 +486,7 @@ export default function AdminPage() {
                 🎛️ 관리자 페이지
               </h1>
               <p style={{ fontSize: '14px', color: '#666' }}>
-                메소 가격 및 후기를 관리합니다
+                후기, 공지사항, 급처템을 관리합니다
               </p>
             </div>
             <div style={{ display: 'flex', gap: '12px' }}>
@@ -611,22 +525,6 @@ export default function AdminPage() {
 
           {/* 탭 */}
           <div style={{ display: 'flex', gap: '8px', borderBottom: '2px solid #f1f5f9' }}>
-            <button
-              onClick={() => setActiveTab('price')}
-              style={{
-                padding: '12px 24px',
-                background: activeTab === 'price' ? '#667eea' : 'transparent',
-                color: activeTab === 'price' ? 'white' : '#666',
-                border: 'none',
-                borderRadius: '8px 8px 0 0',
-                fontSize: '15px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}
-            >
-              💰 메소 가격 관리
-            </button>
             <button
               onClick={() => setActiveTab('reviews')}
               style={{
@@ -677,170 +575,6 @@ export default function AdminPage() {
             </button>
           </div>
         </div>
-
-        {activeTab === 'price' && (
-          <>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '32px', marginBottom: '32px' }}>
-
-          {/* 메소 구매가 (유저가 메소를 살 때) */}
-          <div style={{
-            background: 'white',
-            padding: '32px',
-            borderRadius: '20px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
-          }}>
-            <h2 style={{
-              fontSize: '24px',
-              fontWeight: '900',
-              color: '#0066CC',
-              marginBottom: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              💰 메소 구매가 (유저가 살 때)
-            </h2>
-            <p style={{ fontSize: '13px', color: '#666', marginBottom: '24px' }}>
-              유저가 메소를 구매할 때 지불하는 가격
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {priceTable.buy.map((tier, index) => (
-                <div key={index} style={{
-                  padding: '20px',
-                  background: '#F3E8FF',
-                  borderRadius: '12px',
-                  border: '1px solid #E4D1FF'
-                }}>
-                  <div style={{ fontSize: '14px', fontWeight: '700', color: '#0066CC', marginBottom: '12px' }}>
-                    {tier.label}
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <span style={{ fontSize: '13px', color: '#666', fontWeight: '600' }}>1억당</span>
-                    <input
-                      type="number"
-                      value={tier.price}
-                      onChange={(e) => handlePriceChange('buy', index, parseInt(e.target.value))}
-                      style={{
-                        flex: 1,
-                        padding: '12px',
-                        borderRadius: '8px',
-                        border: '1px solid #B3D9FF',
-                        fontSize: '16px',
-                        fontWeight: '700',
-                        color: '#0066CC'
-                      }}
-                    />
-                    <span style={{ fontSize: '13px', color: '#666', fontWeight: '600' }}>원</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* 메소 판매가 (유저가 메소를 팔 때) */}
-          <div style={{
-            background: 'white',
-            padding: '32px',
-            borderRadius: '20px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
-          }}>
-            <h2 style={{
-              fontSize: '24px',
-              fontWeight: '900',
-              color: '#7C3AED',
-              marginBottom: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              🪙 메소 판매가 (유저가 팔 때)
-            </h2>
-            <p style={{ fontSize: '13px', color: '#666', marginBottom: '24px' }}>
-              유저가 메소를 판매할 때 받는 가격
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {priceTable.sell.map((tier, index) => (
-                <div key={index} style={{
-                  padding: '20px',
-                  background: '#E6F3FF',
-                  borderRadius: '12px',
-                  border: '1px solid #B3D9FF'
-                }}>
-                  <div style={{ fontSize: '14px', fontWeight: '700', color: '#0066CC', marginBottom: '12px' }}>
-                    {tier.label}
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <span style={{ fontSize: '13px', color: '#666', fontWeight: '600' }}>1억당</span>
-                    <input
-                      type="number"
-                      value={tier.price}
-                      onChange={(e) => handlePriceChange('sell', index, parseInt(e.target.value))}
-                      style={{
-                        flex: 1,
-                        padding: '12px',
-                        borderRadius: '8px',
-                        border: '1px solid #B3D9FF',
-                        fontSize: '16px',
-                        fontWeight: '700',
-                        color: '#0066CC'
-                      }}
-                    />
-                    <span style={{ fontSize: '13px', color: '#666', fontWeight: '600' }}>원</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-        </div>
-
-        {/* 하단 버튼 */}
-        <div style={{
-          background: 'white',
-          padding: '32px',
-          borderRadius: '20px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-          display: 'flex',
-          gap: '16px',
-          justifyContent: 'center'
-        }}>
-          <button
-            onClick={handleSave}
-            style={{
-              padding: '16px 48px',
-              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              fontSize: '16px',
-              fontWeight: '900',
-              cursor: 'pointer',
-              boxShadow: '0 4px 16px rgba(16, 185, 129, 0.4)'
-            }}
-          >
-            💾 저장하기
-          </button>
-          <button
-            onClick={handleReset}
-            style={{
-              padding: '16px 48px',
-              background: '#ef4444',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              fontSize: '16px',
-              fontWeight: '900',
-              cursor: 'pointer',
-              boxShadow: '0 4px 16px rgba(239, 68, 68, 0.4)'
-            }}
-          >
-            🔄 초기화
-          </button>
-        </div>
-        </>
-        )}
 
         {activeTab === 'reviews' && (
           <div style={{

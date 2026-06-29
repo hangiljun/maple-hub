@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 
 interface NavigationProps {
-  currentPage: 'home' | 'items' | 'meso' | 'discord' | 'reviews' | 'notice' | 'faq' | 'safety-guide';
+  currentPage: 'home' | 'items' | 'discord' | 'reviews' | 'notice' | 'faq' | 'safety-guide';
 }
 
 export default function Navigation({ currentPage }: NavigationProps) {
