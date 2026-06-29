@@ -155,13 +155,30 @@ export default function ItemsPage() {
 
   return (
     <div style={{ backgroundColor: '#FAFBFC', minHeight: '100vh' }}>
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .items-title {
+            font-size: 28px !important;
+          }
+          .items-grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+          }
+          .items-guide-grid {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+          }
+          .items-padding {
+            padding: 24px !important;
+          }
+        }
+      `}</style>
       <Navigation currentPage="items" />
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 20px' }}>
 
         {/* 페이지 제목 */}
         <div style={{ marginBottom: '40px' }}>
-          <h1 style={{ fontSize: '36px', fontWeight: '900', color: '#1E293B', marginBottom: '12px' }}>
+          <h1 className="items-title" style={{ fontSize: '36px', fontWeight: '900', color: '#1E293B', marginBottom: '12px' }}>
             ⚡ 급처템 문의
           </h1>
           <p style={{ fontSize: '16px', color: '#64748B' }}>
@@ -170,7 +187,7 @@ export default function ItemsPage() {
         </div>
 
         {/* 거래 방법 안내 */}
-        <div style={{
+        <div className="items-padding" style={{
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           padding: '40px',
           borderRadius: '20px',
@@ -180,7 +197,7 @@ export default function ItemsPage() {
           <h2 style={{ fontSize: '24px', fontWeight: '900', marginBottom: '24px' }}>
             💡 안전 거래 방법
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px' }}>
+          <div className="items-guide-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
             <div>
               <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '12px' }}>1</div>
               <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>원하는 아이템 찾기</h3>
