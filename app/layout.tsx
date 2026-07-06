@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     description: '메이플급처, 메이플스토리 급처템, 아이템 전 서버 최고가 구매. 24시간 상담 및 검증된 경매장 분석을 통해 안전하게 메이플급처 거래하세요.',
     images: [
       {
-        url: '/kakao.jpg',
+        url: '/maple hub.png',
         width: 1200,
         height: 630,
         alt: 'MAPLE HUB - 메이플급처 & 메이플스토리 아이템 거래',
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '메이플스토리 급처템 | 메이플스토리 아이템 - 전 서버 최고가 구매 및 시세 비교',
     description: '메이플급처, 메이플스토리 급처템, 아이템 전 서버 최고가 구매. 24시간 상담 및 검증된 경매장 분석을 통해 안전하게 메이플급처 거래하세요.',
-    images: ['/kakao.jpg'],
+    images: ['/maple hub.png'],
   },
 };
 
