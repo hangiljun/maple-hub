@@ -307,15 +307,26 @@ export default function AdminPage() {
     setNoticeLoading(true);
     try {
       // 마크다운을 HTML로 변환 (기존 HTML은 유지)
-      marked.setOptions({
-        breaks: true, // 줄바꿈을 <br>로 변환
-        gfm: true, // GitHub Flavored Markdown 지원 (표 포함)
-      } as any);
-
       let htmlContent = '';
       try {
-        const parsed = await marked.parse(noticeForm.content);
-        htmlContent = typeof parsed === 'string' ? parsed : String(parsed);
+        // HTML 태그가 있는지 확인
+        const hasHtmlTags = /<(h1|h2|h3|p|table|div|span)[^>]*>/i.test(noticeForm.content);
+
+        if (!hasHtmlTags) {
+          // HTML 태그가 없으면 마크다운으로 간주하고 변환
+          marked.setOptions({
+            breaks: true,
+            gfm: true,
+          } as any);
+
+          const parsed = await marked.parse(noticeForm.content);
+          htmlContent = typeof parsed === 'string' ? parsed : String(parsed);
+          console.log('마크다운 변환 완료:', htmlContent.substring(0, 200));
+        } else {
+          // 이미 HTML이면 그대로 사용
+          htmlContent = noticeForm.content;
+          console.log('HTML 콘텐츠 그대로 사용');
+        }
       } catch (error) {
         console.error('마크다운 변환 실패:', error);
         htmlContent = noticeForm.content;
