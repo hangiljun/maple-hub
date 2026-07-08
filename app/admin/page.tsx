@@ -6,6 +6,7 @@ import { firebaseConfig } from '@/lib/firebase-config';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase';
+import { marked } from 'marked';
 
 interface Review {
   id: string;
@@ -201,6 +202,28 @@ export default function AdminPage() {
       } else {
         return;
       }
+    } else if (tag === 'table') {
+      formattedText = `<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #F1F5F9;">
+      <th style="border: 1px solid #CBD5E1; padding: 12px; text-align: left; font-weight: 700;">헤더1</th>
+      <th style="border: 1px solid #CBD5E1; padding: 12px; text-align: left; font-weight: 700;">헤더2</th>
+      <th style="border: 1px solid #CBD5E1; padding: 12px; text-align: left; font-weight: 700;">헤더3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="border: 1px solid #CBD5E1; padding: 12px;">내용1</td>
+      <td style="border: 1px solid #CBD5E1; padding: 12px;">내용2</td>
+      <td style="border: 1px solid #CBD5E1; padding: 12px;">내용3</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #CBD5E1; padding: 12px;">내용4</td>
+      <td style="border: 1px solid #CBD5E1; padding: 12px;">내용5</td>
+      <td style="border: 1px solid #CBD5E1; padding: 12px;">내용6</td>
+    </tr>
+  </tbody>
+</table>`;
     }
 
     const newContent =
@@ -283,6 +306,26 @@ export default function AdminPage() {
 
     setNoticeLoading(true);
     try {
+      // 마크다운을 HTML로 변환 (기존 HTML은 유지)
+      marked.setOptions({
+        breaks: true, // 줄바꿈을 <br>로 변환
+        gfm: true, // GitHub Flavored Markdown 지원 (표 포함)
+      });
+
+      marked.use({
+        mangle: false,
+        headerIds: false
+      });
+
+      let htmlContent = '';
+      try {
+        const parsed = await marked.parse(noticeForm.content);
+        htmlContent = typeof parsed === 'string' ? parsed : String(parsed);
+      } catch (error) {
+        console.error('마크다운 변환 실패:', error);
+        htmlContent = noticeForm.content;
+      }
+
       let imageUrl = '';
 
       // 썸네일 이미지 처리
@@ -293,7 +336,7 @@ export default function AdminPage() {
         imageUrl = await getDownloadURL(storageRef);
       } else if (!editingNoticeId) {
         // 신규 작성 시: 썸네일이 없으면 본문에서 첫 이미지 추출
-        const imgMatch = noticeForm.content.match(/<img[^>]+src="([^">]+)"/);
+        const imgMatch = htmlContent.match(/<img[^>]+src="([^">]+)"/);
         if (imgMatch) {
           imageUrl = imgMatch[1];
         }
@@ -303,7 +346,7 @@ export default function AdminPage() {
         // 수정 모드
         const updateData: any = {
           title: noticeForm.title,
-          content: noticeForm.content,
+          content: htmlContent,
           category: noticeForm.category,
           isPinned: noticeForm.isPinned
         };
@@ -313,7 +356,7 @@ export default function AdminPage() {
           updateData.imageUrl = imageUrl;
         } else {
           // 새 이미지가 없으면 본문에서 추출
-          const imgMatch = noticeForm.content.match(/<img[^>]+src="([^">]+)"/);
+          const imgMatch = htmlContent.match(/<img[^>]+src="([^">]+)"/);
           if (imgMatch) {
             updateData.imageUrl = imgMatch[1];
           }
@@ -326,7 +369,7 @@ export default function AdminPage() {
         // 신규 작성 모드
         await addDoc(collection(db, 'notices'), {
           title: noticeForm.title,
-          content: noticeForm.content,
+          content: htmlContent,
           category: noticeForm.category,
           imageUrl,
           isPinned: noticeForm.isPinned,
@@ -1042,6 +1085,25 @@ export default function AdminPage() {
                     title="본문에 이미지 삽입"
                   >
                     🖼️ 이미지
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => insertFormatting('table')}
+                    style={{
+                      padding: '6px 12px',
+                      background: 'white',
+                      border: '1px solid #CBD5E1',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                    title="표 삽입"
+                  >
+                    📊 표
                   </button>
                 </div>
 
