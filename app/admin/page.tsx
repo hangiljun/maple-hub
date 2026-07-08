@@ -314,14 +314,19 @@ export default function AdminPage() {
 
       let htmlContent = '';
       try {
-        // HTML 태그가 있는지 확인
-        const hasHtmlTags = /<(h1|h2|h3|p|table|div|span)[^>]*>/i.test(noticeForm.content);
+        // HTML로 변환된 콘텐츠인지 더 정확하게 확인
+        // 1. <p>...</p> 또는 <h1>...</h1> 같은 완전한 태그 쌍이 있는지
+        // 2. 또는 <table> 태그가 있는지 확인
+        const hasCompleteHtmlTags =
+          /<(p|h[1-6]|div|table|ul|ol)>[\s\S]*?<\/\1>/.test(noticeForm.content) ||
+          noticeForm.content.includes('<table>') ||
+          noticeForm.content.includes('</table>');
 
         console.log('=== 마크다운 변환 디버깅 ===');
         console.log('원본 콘텐츠 앞 100자:', noticeForm.content.substring(0, 100));
-        console.log('HTML 태그 감지:', hasHtmlTags);
+        console.log('HTML 태그 감지:', hasCompleteHtmlTags);
 
-        if (!hasHtmlTags) {
+        if (!hasCompleteHtmlTags) {
           // HTML 태그가 없으면 마크다운으로 간주하고 변환
           const parsed = await marked.parse(noticeForm.content);
           htmlContent = typeof parsed === 'string' ? parsed : String(parsed);

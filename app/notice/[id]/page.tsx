@@ -41,10 +41,13 @@ export default function NoticeDetailPage() {
         const data = docSnap.data();
         let content = data.content;
 
-        // HTML 태그가 없으면 마크다운으로 간주하고 변환
-        const hasHtmlTags = /<(h1|h2|h3|p|table|div|span)[^>]*>/i.test(content);
+        // HTML로 변환된 콘텐츠인지 더 정확하게 확인
+        const hasCompleteHtmlTags =
+          /<(p|h[1-6]|div|table|ul|ol)>[\s\S]*?<\/\1>/.test(content) ||
+          content.includes('<table>') ||
+          content.includes('</table>');
 
-        if (!hasHtmlTags) {
+        if (!hasCompleteHtmlTags) {
           try {
             marked.setOptions({
               breaks: true,
