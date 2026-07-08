@@ -310,12 +310,7 @@ export default function AdminPage() {
       marked.setOptions({
         breaks: true, // 줄바꿈을 <br>로 변환
         gfm: true, // GitHub Flavored Markdown 지원 (표 포함)
-      });
-
-      marked.use({
-        mangle: false,
-        headerIds: false
-      });
+      } as any);
 
       let htmlContent = '';
       try {
