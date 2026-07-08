@@ -257,6 +257,55 @@ export default function NoticeDetailPage() {
           />
           <style dangerouslySetInnerHTML={{
             __html: `
+              .notice-content p {
+                margin: 16px 0;
+                line-height: 1.8;
+              }
+              .notice-content p:first-child {
+                margin-top: 0;
+              }
+              .notice-content p:last-child {
+                margin-bottom: 0;
+              }
+              .notice-content h1,
+              .notice-content h2,
+              .notice-content h3,
+              .notice-content h4 {
+                margin: 24px 0 16px 0;
+                font-weight: 700;
+              }
+              .notice-content h1 {
+                font-size: 28px;
+                border-bottom: 2px solid #E2E8F0;
+                padding-bottom: 8px;
+              }
+              .notice-content h2 {
+                font-size: 24px;
+              }
+              .notice-content h3 {
+                font-size: 20px;
+              }
+              .notice-content ul,
+              .notice-content ol {
+                margin: 16px 0;
+                padding-left: 24px;
+              }
+              .notice-content li {
+                margin: 8px 0;
+                line-height: 1.8;
+              }
+              .notice-content hr {
+                margin: 32px 0;
+                border: none;
+                border-top: 2px solid #E2E8F0;
+              }
+              .notice-content blockquote {
+                margin: 16px 0;
+                padding: 12px 16px;
+                border-left: 4px solid #667eea;
+                background: #F8FAFC;
+                color: #475569;
+              }
               .notice-content table {
                 width: 100%;
                 border-collapse: collapse;
@@ -287,6 +336,30 @@ export default function NoticeDetailPage() {
               }
               .notice-content tbody tr:hover {
                 background: #F8FAFC;
+              }
+              .notice-content strong {
+                font-weight: 700;
+                color: #1E293B;
+              }
+              .notice-content code {
+                padding: 2px 6px;
+                background: #F1F5F9;
+                border-radius: 4px;
+                font-family: monospace;
+                font-size: 14px;
+              }
+              .notice-content a {
+                color: #667eea;
+                text-decoration: underline;
+              }
+              .notice-content a:hover {
+                color: #764ba2;
+              }
+              .notice-content img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 8px;
+                margin: 16px 0;
               }
             `
           }} />
