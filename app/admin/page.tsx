@@ -317,10 +317,16 @@ export default function AdminPage() {
         // HTML 태그가 있는지 확인
         const hasHtmlTags = /<(h1|h2|h3|p|table|div|span)[^>]*>/i.test(noticeForm.content);
 
+        console.log('=== 마크다운 변환 디버깅 ===');
+        console.log('원본 콘텐츠 앞 100자:', noticeForm.content.substring(0, 100));
+        console.log('HTML 태그 감지:', hasHtmlTags);
+
         if (!hasHtmlTags) {
           // HTML 태그가 없으면 마크다운으로 간주하고 변환
           const parsed = await marked.parse(noticeForm.content);
           htmlContent = typeof parsed === 'string' ? parsed : String(parsed);
+
+          console.log('변환된 HTML 앞 200자:', htmlContent.substring(0, 200));
 
           // 빈 태그 및 불필요한 공백 제거
           htmlContent = htmlContent
@@ -333,11 +339,12 @@ export default function AdminPage() {
             .replace(/(<\/table>)\s*<br\s*\/?>/g, '$1') // 표 바로 뒤의 br 태그 제거
             .trim();
 
-          console.log('마크다운 변환 완료');
+          console.log('정리 후 HTML 앞 200자:', htmlContent.substring(0, 200));
+          console.log('마크다운 변환 완료 ✅');
         } else {
           // 이미 HTML이면 그대로 사용
           htmlContent = noticeForm.content;
-          console.log('HTML 콘텐츠 그대로 사용');
+          console.log('HTML 콘텐츠 그대로 사용 (변환 안 함)');
         }
       } catch (error) {
         console.error('마크다운 변환 실패:', error);
