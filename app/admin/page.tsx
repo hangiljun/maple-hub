@@ -307,6 +307,11 @@ export default function AdminPage() {
     setNoticeLoading(true);
     try {
       // 마크다운을 HTML로 변환 (기존 HTML은 유지)
+      marked.setOptions({
+        breaks: true,
+        gfm: true,
+      } as any);
+
       let htmlContent = '';
       try {
         // HTML 태그가 있는지 확인
@@ -314,14 +319,21 @@ export default function AdminPage() {
 
         if (!hasHtmlTags) {
           // HTML 태그가 없으면 마크다운으로 간주하고 변환
-          marked.setOptions({
-            breaks: true,
-            gfm: true,
-          } as any);
-
           const parsed = await marked.parse(noticeForm.content);
           htmlContent = typeof parsed === 'string' ? parsed : String(parsed);
-          console.log('마크다운 변환 완료:', htmlContent.substring(0, 200));
+
+          // 빈 태그 및 불필요한 공백 제거
+          htmlContent = htmlContent
+            .replace(/<p>\s*<\/p>/g, '') // 빈 p 태그 제거
+            .replace(/<p><\/p>/g, '') // 완전히 빈 p 태그 제거
+            .replace(/(<\/p>)\s*(<p>\s*<\/p>\s*)+/g, '$1') // 연속된 빈 p 태그들 제거
+            .replace(/(<p>\s*<\/p>\s*)+(<table)/g, '$2') // 표 바로 앞의 빈 p 태그 제거
+            .replace(/(<\/table>)\s*(<p>\s*<\/p>\s*)+/g, '$1') // 표 바로 뒤의 빈 p 태그 제거
+            .replace(/<br\s*\/?>\s*(<table)/g, '$1') // 표 바로 앞의 br 태그 제거
+            .replace(/(<\/table>)\s*<br\s*\/?>/g, '$1') // 표 바로 뒤의 br 태그 제거
+            .trim();
+
+          console.log('마크다운 변환 완료');
         } else {
           // 이미 HTML이면 그대로 사용
           htmlContent = noticeForm.content;
