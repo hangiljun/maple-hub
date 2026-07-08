@@ -105,9 +105,38 @@ export default function NoticeDetailPage() {
     return null;
   }
 
+  // 구조화된 데이터 (JSON-LD) for SEO
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": notice.title,
+    "datePublished": notice.createdAt?.toDate ? notice.createdAt.toDate().toISOString() : new Date(notice.createdAt).toISOString(),
+    "dateModified": notice.createdAt?.toDate ? notice.createdAt.toDate().toISOString() : new Date(notice.createdAt).toISOString(),
+    "author": {
+      "@type": "Organization",
+      "name": "메이플 허브"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "메이플 허브",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.maplehub.co.kr/maple hub.png"
+      }
+    },
+    "image": notice.imageUrl || "https://www.maplehub.co.kr/maple hub.png",
+    "articleSection": notice.category,
+    "description": notice.content.replace(/<[^>]*>/g, '').substring(0, 160)
+  };
+
   return (
-    <div style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', fontFamily: "'Noto Sans KR', sans-serif" }}>
-      <Navigation currentPage="notice" />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', fontFamily: "'Noto Sans KR', sans-serif" }}>
+        <Navigation currentPage="notice" />
 
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '60px 20px' }}>
         {/* 뒤로가기 버튼 */}
@@ -283,6 +312,7 @@ export default function NoticeDetailPage() {
       </div>
 
       <FAB type="kakao" />
-    </div>
+      </div>
+    </>
   );
 }
