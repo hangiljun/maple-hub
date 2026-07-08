@@ -1,12 +1,13 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import Navigation from '@/components/Navigation';
 import FAB from '@/components/FAB';
 import { marked } from 'marked';
-import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
 
 interface Notice {
   id: string;
@@ -19,94 +20,86 @@ interface Notice {
   createdAt: any;
 }
 
-async function getNotice(id: string): Promise<Notice | null> {
-  try {
-    const docRef = doc(db, 'notices', id);
-    const docSnap = await getDoc(docRef);
+export default function NoticeDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const [notice, setNotice] = useState<Notice | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    if (!docSnap.exists()) {
-      return null;
+  useEffect(() => {
+    if (params.id) {
+      fetchNotice(params.id as string);
     }
+  }, [params.id]);
 
-    const data = docSnap.data();
-    let content = data.content;
+  const fetchNotice = async (id: string) => {
+    try {
+      const docRef = doc(db, 'notices', id);
+      const docSnap = await getDoc(docRef);
 
-    // HTML 태그가 없으면 마크다운으로 간주하고 변환
-    const hasHtmlTags = /<(h1|h2|h3|p|table|div|span)[^>]*>/i.test(content);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        let content = data.content;
 
-    if (!hasHtmlTags) {
-      try {
-        marked.setOptions({
-          breaks: true,
-          gfm: true,
-        } as any);
+        // HTML 태그가 없으면 마크다운으로 간주하고 변환
+        const hasHtmlTags = /<(h1|h2|h3|p|table|div|span)[^>]*>/i.test(content);
 
-        const parsed = await marked.parse(content);
-        content = typeof parsed === 'string' ? parsed : String(parsed);
+        if (!hasHtmlTags) {
+          try {
+            marked.setOptions({
+              breaks: true,
+              gfm: true,
+            } as any);
 
-        // 빈 태그 및 불필요한 공백 제거
-        content = content
-          .replace(/<p>\s*<\/p>/g, '')
-          .replace(/<p><\/p>/g, '')
-          .replace(/(<\/p>)\s*(<p>\s*<\/p>\s*)+/g, '$1')
-          .replace(/(<p>\s*<\/p>\s*)+(<table)/g, '$2')
-          .replace(/(<\/table>)\s*(<p>\s*<\/p>\s*)+/g, '$1')
-          .replace(/<br\s*\/?>\s*(<table)/g, '$1')
-          .replace(/(<\/table>)\s*<br\s*\/?>/g, '$1')
-          .trim();
-      } catch (error) {
-        console.error('마크다운 변환 실패:', error);
+            const parsed = await marked.parse(content);
+            content = typeof parsed === 'string' ? parsed : String(parsed);
+
+            // 빈 태그 및 불필요한 공백 제거
+            content = content
+              .replace(/<p>\s*<\/p>/g, '')
+              .replace(/<p><\/p>/g, '')
+              .replace(/(<\/p>)\s*(<p>\s*<\/p>\s*)+/g, '$1')
+              .replace(/(<p>\s*<\/p>\s*)+(<table)/g, '$2')
+              .replace(/(<\/table>)\s*(<p>\s*<\/p>\s*)+/g, '$1')
+              .replace(/<br\s*\/?>\s*(<table)/g, '$1')
+              .replace(/(<\/table>)\s*<br\s*\/?>/g, '$1')
+              .trim();
+          } catch (error) {
+            console.error('마크다운 변환 실패:', error);
+          }
+        }
+
+        setNotice({
+          id: docSnap.id,
+          ...data,
+          content
+        } as Notice);
+      } else {
+        alert('공지사항을 찾을 수 없습니다.');
+        router.push('/notice');
       }
+
+      setLoading(false);
+    } catch (error) {
+      console.error('공지사항 불러오기 실패:', error);
+      alert('공지사항을 불러올 수 없습니다.');
+      router.push('/notice');
     }
-
-    return {
-      id: docSnap.id,
-      ...data,
-      content
-    } as Notice;
-  } catch (error) {
-    console.error('공지사항 불러오기 실패:', error);
-    return null;
-  }
-}
-
-// 동적 메타데이터 생성
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const notice = await getNotice(params.id);
-
-  if (!notice) {
-    return {
-      title: '공지사항을 찾을 수 없습니다 - 메이플 허브',
-    };
-  }
-
-  // HTML 태그 제거하여 순수 텍스트 추출 (description용)
-  const plainText = notice.content.replace(/<[^>]*>/g, '').substring(0, 160);
-
-  return {
-    title: `${notice.title} - 메이플 허브`,
-    description: plainText,
-    openGraph: {
-      title: notice.title,
-      description: plainText,
-      images: notice.imageUrl ? [notice.imageUrl] : ['/maple hub.png'],
-      type: 'article',
-      siteName: '메이플 허브',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: notice.title,
-      description: plainText,
-      images: notice.imageUrl ? [notice.imageUrl] : ['/maple hub.png'],
-    },
   };
-}
 
-export default async function NoticeDetailPage({ params }: { params: { id: string } }) {
-  const notice = await getNotice(params.id);
+  if (loading) {
+    return (
+      <div style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', fontFamily: "'Noto Sans KR', sans-serif" }}>
+        <Navigation currentPage="notice" />
+        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '60px 20px', textAlign: 'center' }}>
+          <p style={{ fontSize: '16px', color: '#64748B' }}>불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!notice) {
-    notFound();
+    return null;
   }
 
   return (
