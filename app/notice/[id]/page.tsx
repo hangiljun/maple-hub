@@ -7,6 +7,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import Navigation from '@/components/Navigation';
 import FAB from '@/components/FAB';
+import { marked } from 'marked';
 
 interface Notice {
   id: string;
@@ -37,9 +38,41 @@ export default function NoticeDetailPage() {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
+        const data = docSnap.data();
+        let content = data.content;
+
+        // HTML 태그가 없으면 마크다운으로 간주하고 변환
+        const hasHtmlTags = /<(h1|h2|h3|p|table|div|span)[^>]*>/i.test(content);
+
+        if (!hasHtmlTags) {
+          try {
+            marked.setOptions({
+              breaks: true,
+              gfm: true,
+            } as any);
+
+            const parsed = await marked.parse(content);
+            content = typeof parsed === 'string' ? parsed : String(parsed);
+
+            // 빈 태그 및 불필요한 공백 제거
+            content = content
+              .replace(/<p>\s*<\/p>/g, '')
+              .replace(/<p><\/p>/g, '')
+              .replace(/(<\/p>)\s*(<p>\s*<\/p>\s*)+/g, '$1')
+              .replace(/(<p>\s*<\/p>\s*)+(<table)/g, '$2')
+              .replace(/(<\/table>)\s*(<p>\s*<\/p>\s*)+/g, '$1')
+              .replace(/<br\s*\/?>\s*(<table)/g, '$1')
+              .replace(/(<\/table>)\s*<br\s*\/?>/g, '$1')
+              .trim();
+          } catch (error) {
+            console.error('마크다운 변환 실패:', error);
+          }
+        }
+
         setNotice({
           id: docSnap.id,
-          ...docSnap.data()
+          ...data,
+          content
         } as Notice);
       } else {
         alert('공지사항을 찾을 수 없습니다.');
