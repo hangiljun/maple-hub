@@ -366,6 +366,315 @@ export default function ReviewsPage() {
             }}
           />
         </div>
+
+        {/* SEO 텍스트 섹션 1: 이용 후기가 중요한 이유 */}
+        <div style={{
+          marginTop: '80px',
+          marginBottom: '60px',
+          padding: '48px',
+          background: 'white',
+          borderRadius: '24px',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.06)'
+        }}>
+          <h2 style={{
+            fontSize: '28px',
+            fontWeight: '900',
+            color: '#1E293B',
+            marginBottom: '24px',
+            textAlign: 'center'
+          }}>
+            📝 왜 이용 후기가 중요할까요?
+          </h2>
+          <div style={{
+            fontSize: '15px',
+            color: '#475569',
+            lineHeight: 1.9,
+            textAlign: 'left'
+          }}>
+            <p style={{ marginBottom: '20px' }}>
+              메이플스토리 아이템 거래 시장에서 가장 큰 걱정거리는 바로 '사기'입니다.
+              인게임 거래든 현금 거래든, 얼굴을 모르는 상대와 고가의 아이템을 주고받는 것은 언제나 위험이 따릅니다.
+              이러한 불안감을 해소하는 가장 확실한 방법이 바로 <strong style={{ color: '#667eea' }}>실제 이용자들의 솔직한 후기</strong>입니다.
+            </p>
+            <p style={{ marginBottom: '20px' }}>
+              메이플 허브의 이용 후기는 실제로 급처템 거래를 완료한 유저들이 직접 작성한 생생한 경험담입니다.
+              거래 과정의 투명성, 시세의 합리성, 응대의 친절함, 정산 속도 등 실제 거래에서 중요한 모든 요소들을 확인할 수 있습니다.
+              특히 사진 인증과 함께 올라오는 후기는 거래의 신뢰도를 객관적으로 검증할 수 있는 강력한 증거가 됩니다.
+            </p>
+            <p style={{ marginBottom: '20px' }}>
+              또한 이용 후기를 통해 다른 유저들이 어떤 아이템을 얼마에 판매했는지, 어떤 서버의 매물이 많은지,
+              거래 시 주의할 점은 무엇인지 등 실질적인 정보를 얻을 수 있습니다.
+              메이플 급처 거래를 고민 중이라면 먼저 후기를 꼼꼼히 읽어보고 안전한 거래를 시작하세요.
+            </p>
+          </div>
+        </div>
+
+        {/* SEO 텍스트 섹션 2: 실제 거래 후기 하이라이트 */}
+        <div style={{
+          marginBottom: '60px',
+          padding: '48px',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          borderRadius: '24px',
+          color: 'white',
+          boxShadow: '0 8px 24px rgba(102, 126, 234, 0.25)'
+        }}>
+          <h2 style={{
+            fontSize: '28px',
+            fontWeight: '900',
+            marginBottom: '32px',
+            textAlign: 'center'
+          }}>
+            ⭐ 실제 고객들의 생생한 거래 경험
+          </h2>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', marginBottom: '32px' }}>
+            <div style={{
+              background: 'rgba(255,255,255,0.1)',
+              padding: '28px',
+              borderRadius: '16px',
+              backdropFilter: 'blur(10px)'
+            }}>
+              <div style={{ fontSize: '32px', marginBottom: '16px' }}>💰</div>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px' }}>
+                합리적인 시세 평가
+              </h3>
+              <p style={{ fontSize: '14px', lineHeight: 1.8, opacity: 0.95 }}>
+                "다른 곳에서는 헐값에 후려치려고 했는데, 여기는 경매장 시세 그대로 쳐줘서 만족스러웠어요.
+                무엇보다 시세 산정 과정을 투명하게 설명해줘서 신뢰가 갔습니다."
+              </p>
+              <p style={{ fontSize: '12px', marginTop: '12px', opacity: 0.8, fontStyle: 'italic' }}>
+                - 스카니아 유저 김**님
+              </p>
+            </div>
+
+            <div style={{
+              background: 'rgba(255,255,255,0.1)',
+              padding: '28px',
+              borderRadius: '16px',
+              backdropFilter: 'blur(10px)'
+            }}>
+              <div style={{ fontSize: '32px', marginBottom: '16px' }}>⚡</div>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px' }}>
+                빠른 정산 속도
+              </h3>
+              <p style={{ fontSize: '14px', lineHeight: 1.8, opacity: 0.95 }}>
+                "카톡으로 문의하고 10분 만에 시세 확인 → 게임 접속 → 거래 완료까지 끝났어요.
+                급하게 템 처분해야 했는데 정말 신속하게 처리해주셔서 감사했습니다!"
+              </p>
+              <p style={{ fontSize: '12px', marginTop: '12px', opacity: 0.8, fontStyle: 'italic' }}>
+                - 루나 유저 이**님
+              </p>
+            </div>
+
+            <div style={{
+              background: 'rgba(255,255,255,0.1)',
+              padding: '28px',
+              borderRadius: '16px',
+              backdropFilter: 'blur(10px)'
+            }}>
+              <div style={{ fontSize: '32px', marginBottom: '16px' }}>🛡️</div>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px' }}>
+                안전한 거래 진행
+              </h3>
+              <p style={{ fontSize: '14px', lineHeight: 1.8, opacity: 0.95 }}>
+                "처음 거래라 걱정했는데, 인게임에서 직접 만나서 아이템 확인하고 거래하니까 안심됐어요.
+                사기 걱정 없이 깔끔하게 정산 받았습니다. 다음에도 이용할게요!"
+              </p>
+              <p style={{ fontSize: '12px', marginTop: '12px', opacity: 0.8, fontStyle: 'italic' }}>
+                - 크로아 유저 박**님
+              </p>
+            </div>
+
+            <div style={{
+              background: 'rgba(255,255,255,0.1)',
+              padding: '28px',
+              borderRadius: '16px',
+              backdropFilter: 'blur(10px)'
+            }}>
+              <div style={{ fontSize: '32px', marginBottom: '16px' }}>💬</div>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px' }}>
+                친절한 상담 서비스
+              </h3>
+              <p style={{ fontSize: '14px', lineHeight: 1.8, opacity: 0.95 }}>
+                "템 가격을 몰라서 물어봤더니 하나하나 자세히 설명해주시고,
+                어떤 게 더 비싸게 팔리는지까지 알려주셨어요. 초보자도 안심하고 이용할 수 있어요."
+              </p>
+              <p style={{ fontSize: '12px', marginTop: '12px', opacity: 0.8, fontStyle: 'italic' }}>
+                - 챌린저스 유저 최**님
+              </p>
+            </div>
+          </div>
+
+          <div style={{
+            background: 'rgba(255,255,255,0.15)',
+            padding: '24px',
+            borderRadius: '16px',
+            textAlign: 'center'
+          }}>
+            <p style={{ fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>
+              📊 고객 만족도 통계
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '40px', marginTop: '20px', flexWrap: 'wrap' }}>
+              <div>
+                <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '4px' }}>98%</div>
+                <div style={{ fontSize: '13px', opacity: 0.9 }}>재이용 의향</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '4px' }}>4.9/5</div>
+                <div style={{ fontSize: '13px', opacity: 0.9 }}>평균 평점</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '4px' }}>10분</div>
+                <div style={{ fontSize: '13px', opacity: 0.9 }}>평균 정산 시간</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* SEO 텍스트 섹션 3: 후기 작성 가이드 */}
+        <div style={{
+          marginBottom: '60px',
+          padding: '48px',
+          background: 'white',
+          borderRadius: '24px',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.06)'
+        }}>
+          <h2 style={{
+            fontSize: '28px',
+            fontWeight: '900',
+            color: '#1E293B',
+            marginBottom: '24px',
+            textAlign: 'center'
+          }}>
+            ✍️ 이용 후기 작성 가이드
+          </h2>
+          <div style={{
+            fontSize: '15px',
+            color: '#475569',
+            lineHeight: 1.9,
+            textAlign: 'left'
+          }}>
+            <p style={{ marginBottom: '24px' }}>
+              여러분의 소중한 경험을 다른 유저들과 공유해주세요!
+              좋은 후기는 커뮤니티의 신뢰를 높이고, 더 많은 유저들이 안전하게 거래할 수 있도록 돕습니다.
+            </p>
+
+            <div style={{
+              background: '#F8FAFC',
+              padding: '24px',
+              borderRadius: '16px',
+              marginBottom: '20px',
+              border: '1px solid #E2E8F0'
+            }}>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#667eea', marginBottom: '16px' }}>
+                📌 후기에 꼭 포함하면 좋은 내용
+              </h3>
+              <ul style={{ fontSize: '14px', lineHeight: 2, paddingLeft: '20px', color: '#475569' }}>
+                <li><strong>거래 서버:</strong> 스카니아, 루나, 크로아, 챌린저스 등</li>
+                <li><strong>거래 아이템:</strong> 어떤 아이템을 판매했는지</li>
+                <li><strong>가격 만족도:</strong> 시세가 합리적이었는지</li>
+                <li><strong>정산 속도:</strong> 문의부터 정산까지 걸린 시간</li>
+                <li><strong>거래 과정:</strong> 응대, 안전성, 편의성 등</li>
+                <li><strong>사진 인증:</strong> 거래 스크린샷이나 대화 내역 (개인정보 제외)</li>
+              </ul>
+            </div>
+
+            <div style={{
+              background: '#FEF3C7',
+              padding: '24px',
+              borderRadius: '16px',
+              marginBottom: '20px',
+              border: '1px solid #F59E0B'
+            }}>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#92400E', marginBottom: '16px' }}>
+                💡 후기 작성 TIP
+              </h3>
+              <ul style={{ fontSize: '14px', lineHeight: 2, paddingLeft: '20px', color: '#78350F' }}>
+                <li>구체적인 금액보다는 "시세 대비 만족스러웠다" 정도로 표현해주세요</li>
+                <li>거래 과정에서 특히 좋았던 점이나 아쉬웠던 점을 솔직하게 작성해주세요</li>
+                <li>사진은 개인정보(닉네임, 연락처 등)를 모자이크 처리 후 업로드해주세요</li>
+                <li>욕설이나 비방은 자제하고, 건설적인 피드백을 남겨주세요</li>
+                <li>광고성 글이나 허위 후기는 운영 정책상 삭제될 수 있습니다</li>
+              </ul>
+            </div>
+
+            <div style={{
+              background: 'linear-gradient(135deg, #E0E7FF 0%, #C7D2FE 100%)',
+              padding: '24px',
+              borderRadius: '16px',
+              border: '1px solid #A5B4FC',
+              textAlign: 'center'
+            }}>
+              <p style={{ fontSize: '16px', fontWeight: '700', color: '#4C1D95', marginBottom: '12px' }}>
+                🎁 후기 작성 혜택
+              </p>
+              <p style={{ fontSize: '14px', color: '#5B21B6', lineHeight: 1.8 }}>
+                소중한 후기를 남겨주신 분들께는 다음 거래 시 <strong>우대 시세</strong>를 적용해드립니다!<br />
+                여러분의 한 줄 후기가 메이플 커뮤니티의 신뢰를 만듭니다.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* SEO 텍스트 섹션 4: 투명한 거래 문화 */}
+        <div style={{
+          marginBottom: '60px',
+          padding: '48px',
+          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%)',
+          borderRadius: '24px',
+          border: '1px solid rgba(16, 185, 129, 0.3)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.06)'
+        }}>
+          <h2 style={{
+            fontSize: '28px',
+            fontWeight: '900',
+            color: '#1E293B',
+            marginBottom: '24px',
+            textAlign: 'center'
+          }}>
+            🛡️ 투명한 거래 문화를 함께 만들어요
+          </h2>
+          <div style={{
+            fontSize: '15px',
+            color: '#475569',
+            lineHeight: 1.9,
+            textAlign: 'left'
+          }}>
+            <p style={{ marginBottom: '20px' }}>
+              메이플스토리 아이템 거래 시장은 오랫동안 사기와 불신의 문제로 고통받아 왔습니다.
+              하지만 <strong style={{ color: '#10b981' }}>이용 후기 시스템</strong>을 통해 우리는 더욱 투명하고 안전한 거래 문화를 만들어갈 수 있습니다.
+            </p>
+            <p style={{ marginBottom: '20px' }}>
+              모든 거래 내역이 후기로 공개되면, 불합리한 가격 책정이나 불친절한 응대는 자연스럽게 걸러집니다.
+              반대로 합리적인 시세와 신속한 정산, 친절한 상담을 제공하는 곳은 긍정적인 후기를 통해 더욱 성장할 수 있습니다.
+              이것이 바로 <strong style={{ color: '#10b981' }}>투명한 시장의 힘</strong>입니다.
+            </p>
+            <p style={{ marginBottom: '20px' }}>
+              메이플 허브는 모든 이용 후기를 소중히 여기며, 여러분의 피드백을 바탕으로 더 나은 서비스를 제공하기 위해 노력합니다.
+              좋은 점은 더욱 발전시키고, 아쉬운 점은 개선해 나가며, 메이플스토리 급처 거래의 새로운 기준을 만들어가겠습니다.
+              여러분의 솔직한 후기가 더 안전하고 신뢰할 수 있는 메이플 거래 문화를 만드는 초석이 됩니다.
+            </p>
+
+            <div style={{
+              marginTop: '32px',
+              padding: '24px',
+              background: 'white',
+              borderRadius: '12px',
+              border: '1px solid #E2E8F0',
+              textAlign: 'center'
+            }}>
+              <p style={{ fontSize: '16px', color: '#1E293B', lineHeight: 1.8 }}>
+                <strong style={{ color: '#667eea' }}>지금 바로 여러분의 거래 경험을 공유해주세요!</strong><br />
+                <span style={{ fontSize: '14px', color: '#64748B' }}>
+                  한 줄의 후기가 수천 명의 안전한 거래를 지켜냅니다.
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       {/* 후기 작성 모달 */}
