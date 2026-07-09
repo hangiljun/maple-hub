@@ -186,53 +186,262 @@ export default function ItemsPage() {
           </p>
         </div>
 
-        {/* 거래 방법 안내 */}
+        {/* 거래 방법 안내 - 사진 스타일 */}
         <div className="items-padding" style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #F0F4FF 0%, #E8EEFF 100%)',
           padding: '40px',
           borderRadius: '20px',
           marginBottom: '40px',
-          color: 'white'
+          border: '2px solid #D4DDFF'
         }}>
-          <h2 style={{ fontSize: '24px', fontWeight: '900', marginBottom: '24px' }}>
-            💡 안전 거래 방법
-          </h2>
-          <div className="items-guide-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
-            <div>
-              <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '12px' }}>1</div>
-              <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>원하는 아이템 찾기</h3>
-              <p style={{ fontSize: '14px', opacity: 0.9 }}>서버별로 필터링하여 원하는 아이템을 검색합니다</p>
+          <div style={{
+            textAlign: 'center',
+            marginBottom: '32px'
+          }}>
+            <div style={{
+              display: 'inline-block',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+              padding: '8px 20px',
+              borderRadius: '20px',
+              fontSize: '13px',
+              fontWeight: '700',
+              marginBottom: '16px'
+            }}>
+              🌸 메이플 급처 매입 안내
             </div>
-            <div>
-              <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '12px' }}>2</div>
-              <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>판매자 연락</h3>
-              <p style={{ fontSize: '14px', opacity: 0.9 }}>카톡 또는 디스코드로 판매자에게 연락합니다</p>
-            </div>
-            <div>
-              <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '12px' }}>3</div>
-              <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>가격 협의</h3>
-              <p style={{ fontSize: '14px', opacity: 0.9 }}>판매자와 가격 및 거래 방법을 협의합니다</p>
-            </div>
-            <div>
-              <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '12px' }}>4</div>
-              <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>게임 내 거래</h3>
-              <p style={{ fontSize: '14px', opacity: 0.9 }}>약속한 시간에 게임 접속 후 안전하게 거래합니다</p>
-            </div>
+            <h2 style={{
+              fontSize: '32px',
+              fontWeight: '900',
+              marginBottom: '12px',
+              color: '#1E293B'
+            }}>
+              급처 아이템, 이렇게 거래해요
+            </h2>
+            <p style={{
+              fontSize: '15px',
+              color: '#64748B',
+              lineHeight: 1.6
+            }}>
+              복잡한 절차 없이 문의 한 번이면 정산까지 끝나요 😊
+            </p>
           </div>
 
-          <div style={{
-            marginTop: '32px',
-            padding: '20px',
-            background: 'rgba(255,255,255,0.1)',
-            borderRadius: '12px',
-            fontSize: '14px',
-            lineHeight: 1.8
+          <div className="items-guide-grid" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '20px',
+            marginBottom: '32px'
           }}>
-            <strong>⚠️ 안전 거래 팁:</strong><br />
-            • 선입금은 절대 하지 마세요<br />
-            • 게임 내에서 직접 거래하세요<br />
-            • 거래 전 판매자 캐릭터를 확인하세요<br />
-            • 의심스러운 거래는 피하세요
+            <div style={{
+              background: 'white',
+              padding: '28px 24px',
+              borderRadius: '16px',
+              textAlign: 'center',
+              boxShadow: '0 4px 12px rgba(102, 126, 234, 0.1)',
+              border: '1px solid #E0E7FF'
+            }}>
+              <div style={{
+                width: '56px',
+                height: '56px',
+                background: 'linear-gradient(135deg, #E0E7FF 0%, #C7D2FE 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 16px',
+                fontSize: '28px'
+              }}>💬</div>
+              <div style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                marginBottom: '8px',
+                color: '#667eea'
+              }}>문의하기</div>
+              <div style={{
+                fontSize: '13px',
+                color: '#4C1D95',
+                lineHeight: 1.6
+              }}>
+                <strong>1분만 충분</strong>
+              </div>
+              <p style={{
+                fontSize: '13px',
+                color: '#64748B',
+                marginTop: '8px',
+                lineHeight: 1.5
+              }}>
+                필요 쓸 아이템이나 메소를 디스코드 또는 카카오톡으로 문의해요. 서버·아이템 정보만 알려주시면 끝!
+              </p>
+            </div>
+
+            <div style={{
+              background: 'white',
+              padding: '28px 24px',
+              borderRadius: '16px',
+              textAlign: 'center',
+              boxShadow: '0 4px 12px rgba(102, 126, 234, 0.1)',
+              border: '1px solid #E0E7FF'
+            }}>
+              <div style={{
+                width: '56px',
+                height: '56px',
+                background: 'linear-gradient(135deg, #E0E7FF 0%, #C7D2FE 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 16px',
+                fontSize: '28px'
+              }}>📋</div>
+              <div style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                marginBottom: '8px',
+                color: '#667eea'
+              }}>실시간 시세 검색</div>
+              <div style={{
+                fontSize: '13px',
+                color: '#4C1D95',
+                lineHeight: 1.6
+              }}>
+                <strong>무료 견적</strong>
+              </div>
+              <p style={{
+                fontSize: '13px',
+                color: '#64748B',
+                marginTop: '8px',
+                lineHeight: 1.5
+              }}>
+                경매장 실시간 시세로 기반으로 정확한 견적을 바로 안내해 드려요. 전작 확인 후 즉시 통보!
+              </p>
+            </div>
+
+            <div style={{
+              background: 'white',
+              padding: '28px 24px',
+              borderRadius: '16px',
+              textAlign: 'center',
+              boxShadow: '0 4px 12px rgba(102, 126, 234, 0.1)',
+              border: '1px solid #E0E7FF'
+            }}>
+              <div style={{
+                width: '56px',
+                height: '56px',
+                background: 'linear-gradient(135deg, #E0E7FF 0%, #C7D2FE 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 16px',
+                fontSize: '28px'
+              }}>🔒</div>
+              <div style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                marginBottom: '8px',
+                color: '#667eea'
+              }}>본인 확인</div>
+              <div style={{
+                fontSize: '13px',
+                color: '#4C1D95',
+                lineHeight: 1.6
+              }}>
+                <strong>3차 서기 배제</strong>
+              </div>
+              <p style={{
+                fontSize: '13px',
+                color: '#64748B',
+                marginTop: '8px',
+                lineHeight: 1.5
+              }}>
+                안전 거래를 위해 간단한 본인 확인을 거친 뒤, 인게임 거래 방식을 안내해 드려요.
+              </p>
+            </div>
+
+            <div style={{
+              background: 'white',
+              padding: '28px 24px',
+              borderRadius: '16px',
+              textAlign: 'center',
+              boxShadow: '0 4px 12px rgba(102, 126, 234, 0.1)',
+              border: '1px solid #E0E7FF'
+            }}>
+              <div style={{
+                width: '56px',
+                height: '56px',
+                background: 'linear-gradient(135deg, #E0E7FF 0%, #C7D2FE 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 16px',
+                fontSize: '28px'
+              }}>🎮</div>
+              <div style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                marginBottom: '8px',
+                color: '#667eea'
+              }}>인게임 거래</div>
+              <div style={{
+                fontSize: '13px',
+                color: '#4C1D95',
+                lineHeight: 1.6
+              }}>
+                <strong>안전 동행</strong>
+              </div>
+              <p style={{
+                fontSize: '13px',
+                color: '#64748B',
+                marginTop: '8px',
+                lineHeight: 1.5
+              }}>
+                약속한 채널에 캐릭터가 만나 아이템을 전달해요. 딥당자 클까지 끝까지 관리해요.
+              </p>
+            </div>
+
+            <div style={{
+              background: 'white',
+              padding: '28px 24px',
+              borderRadius: '16px',
+              textAlign: 'center',
+              boxShadow: '0 4px 12px rgba(102, 126, 234, 0.1)',
+              border: '1px solid #E0E7FF'
+            }}>
+              <div style={{
+                width: '56px',
+                height: '56px',
+                background: 'linear-gradient(135deg, #E0E7FF 0%, #C7D2FE 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 16px',
+                fontSize: '28px'
+              }}>✅</div>
+              <div style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                marginBottom: '8px',
+                color: '#667eea'
+              }}>정산 완료</div>
+              <div style={{
+                fontSize: '13px',
+                color: '#4C1D95',
+                lineHeight: 1.6
+              }}>
+                <strong>즉시 정산</strong>
+              </div>
+              <p style={{
+                fontSize: '13px',
+                color: '#64748B',
+                marginTop: '8px',
+                lineHeight: 1.5
+              }}>
+              거래가 확인되면 즉시 정산! 24시간 안제는 거래 가능해요. 마음편한 끝내요.
+              </p>
+            </div>
           </div>
         </div>
 
