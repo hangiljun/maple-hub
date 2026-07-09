@@ -450,7 +450,7 @@ export default function NoticeListClient({ initialNotices }: NoticeListClientPro
               <p style={{ fontSize: '16px', color: '#1E293B', lineHeight: 1.8 }}>
                 <strong style={{ color: '#667eea' }}>메이플 허브는 항상 유저와 함께 성장합니다</strong><br />
                 <span style={{ fontSize: '14px', color: '#64748B' }}>
-                  공지사항을 통해 더 나은 서비스로 발전하는 메이플 허브를 지켜봐 주세요!
+                  공지사항을 통해 더 나은 서비스로 발전하는 메이플 허브를 지켜봐주세요!
                 </span>
               </p>
             </div>
