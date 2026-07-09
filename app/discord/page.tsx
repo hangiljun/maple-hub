@@ -431,7 +431,8 @@ export default function DiscordPage() {
           padding: '40px',
           borderRadius: '20px',
           border: '1px solid rgba(102, 126, 234, 0.2)',
-          textAlign: 'center'
+          textAlign: 'center',
+          marginBottom: '80px'
         }}>
           <h2 style={{ fontSize: '24px', fontWeight: '900', color: '#1E293B', marginBottom: '16px' }}>
             💬 메이플 디스코드 인증 문의
@@ -442,6 +443,291 @@ export default function DiscordPage() {
           <p style={{ fontSize: '16px', color: '#64748B' }}>
             - 메랜/클래닉 채널 이동: #✅|통합-공지사항 (수정됨)
           </p>
+        </div>
+
+        {/* SEO 텍스트 섹션 1: 메이플 디스코드란? */}
+        <div style={{
+          marginBottom: '60px',
+          padding: '48px',
+          background: 'white',
+          borderRadius: '24px',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.06)'
+        }}>
+          <h2 style={{
+            fontSize: '28px',
+            fontWeight: '900',
+            color: '#1E293B',
+            marginBottom: '24px',
+            textAlign: 'center'
+          }}>
+            🎮 메이플 디스코드, 왜 필요할까요?
+          </h2>
+          <div style={{
+            fontSize: '15px',
+            color: '#475569',
+            lineHeight: 1.9,
+            textAlign: 'left'
+          }}>
+            <p style={{ marginBottom: '20px' }}>
+              메이플스토리는 단순히 게임을 넘어 하나의 거대한 커뮤니티입니다. 인게임에서는 제한적인 소통만 가능하지만,
+              메이플 디스코드를 통해 전국의 메이플 유저들과 실시간으로 자유롭게 소통할 수 있습니다.
+              보스 파티 구인, 길드 모집, 아이템 거래, 사냥터 정보 공유, 메이플 꿀팁까지 모든 것이 이곳에서 이루어집니다.
+            </p>
+            <p style={{ marginBottom: '20px' }}>
+              특히 메이플스토리 디스코드는 서버별(스카니아, 루나, 크로아, 챌린저스, 메이플랜드 등) 전용 채널이 세분화되어 있어,
+              자신의 서버에 맞는 정보만 빠르게 확인할 수 있습니다. 또한 음성 채팅 기능을 통해 보스 레이드나 파티 플레이를 더욱 효율적으로 진행할 수 있으며,
+              메이플 관련 최신 패치 정보와 이벤트 소식을 가장 먼저 접할 수 있습니다.
+            </p>
+            <p style={{ marginBottom: '20px' }}>
+              현재 47,000명 이상의 메이플 유저가 활동 중인 국내 최대 메이플스토리 디스코드 커뮤니티에서
+              혼자가 아닌 함께하는 메이플의 재미를 느껴보세요. 메이플 디코, 메이플 디스코드 서버 중 가장 활성화된 커뮤니티로
+              24시간 언제나 누군가와 대화하고 정보를 나눌 수 있습니다.
+            </p>
+          </div>
+        </div>
+
+        {/* SEO 텍스트 섹션 2: 디스코드 주요 기능 */}
+        <div style={{
+          marginBottom: '60px',
+          padding: '48px',
+          background: 'linear-gradient(135deg, #5865F2 0%, #7289DA 100%)',
+          borderRadius: '24px',
+          color: 'white',
+          boxShadow: '0 8px 24px rgba(88, 101, 242, 0.25)'
+        }}>
+          <h2 style={{
+            fontSize: '28px',
+            fontWeight: '900',
+            marginBottom: '32px',
+            textAlign: 'center'
+          }}>
+            💎 메이플 디스코드에서 할 수 있는 것들
+          </h2>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', marginBottom: '32px' }}>
+            <div style={{
+              background: 'rgba(255,255,255,0.1)',
+              padding: '24px',
+              borderRadius: '16px',
+              backdropFilter: 'blur(10px)'
+            }}>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🤝 보스 파티 구인/구직
+              </h3>
+              <p style={{ fontSize: '14px', lineHeight: 1.8, opacity: 0.95 }}>
+                카링, 카오스 벨룸, 하드 루시드 등 고난이도 보스 파티를 빠르게 구할 수 있습니다.
+                무릉 층수와 주스탯을 확인하며 실력에 맞는 파티원을 찾을 수 있어 인게임보다 훨씬 효율적입니다.
+              </p>
+            </div>
+
+            <div style={{
+              background: 'rgba(255,255,255,0.1)',
+              padding: '24px',
+              borderRadius: '16px',
+              backdropFilter: 'blur(10px)'
+            }}>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🏰 길드 모집 & 홍보
+              </h3>
+              <p style={{ fontSize: '14px', lineHeight: 1.8, opacity: 0.95 }}>
+                서버별 길드 모집 채널에서 자신에게 맞는 길드를 찾거나, 길드 마스터라면 효과적으로 길드원을 모집할 수 있습니다.
+                길드 컨텐츠(수로, 노블레스 등) 정보도 공유됩니다.
+              </p>
+            </div>
+
+            <div style={{
+              background: 'rgba(255,255,255,0.1)',
+              padding: '24px',
+              borderRadius: '16px',
+              backdropFilter: 'blur(10px)'
+            }}>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                💰 아이템 실시간 거래
+              </h3>
+              <p style={{ fontSize: '14px', lineHeight: 1.8, opacity: 0.95 }}>
+                경매장 수수료 없이 유저 간 직거래가 가능합니다. 급처 매물, 고가 장비, 큐브, 강화권 등
+                다양한 아이템을 실시간 시세로 안전하게 거래할 수 있습니다.
+              </p>
+            </div>
+
+            <div style={{
+              background: 'rgba(255,255,255,0.1)',
+              padding: '24px',
+              borderRadius: '16px',
+              backdropFilter: 'blur(10px)'
+            }}>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                📰 패치 & 이벤트 정보
+              </h3>
+              <p style={{ fontSize: '14px', lineHeight: 1.8, opacity: 0.95 }}>
+                메이플스토리 공식 패치노트, 신규 이벤트, 업데이트 소식을 가장 빠르게 확인할 수 있습니다.
+                유저들의 패치 분석과 꿀팁도 실시간으로 공유됩니다.
+              </p>
+            </div>
+
+            <div style={{
+              background: 'rgba(255,255,255,0.1)',
+              padding: '24px',
+              borderRadius: '16px',
+              backdropFilter: 'blur(10px)'
+            }}>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🎯 사냥터 & 스펙업 정보
+              </h3>
+              <p style={{ fontSize: '14px', lineHeight: 1.8, opacity: 0.95 }}>
+                구간별 추천 사냥터, 효율적인 스펙업 루트, 육성 가이드를 공유받을 수 있습니다.
+                초보자부터 고스펙 유저까지 모두에게 유용한 정보가 가득합니다.
+              </p>
+            </div>
+
+            <div style={{
+              background: 'rgba(255,255,255,0.1)',
+              padding: '24px',
+              borderRadius: '16px',
+              backdropFilter: 'blur(10px)'
+            }}>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🎨 커미션 & 작업 의뢰
+              </h3>
+              <p style={{ fontSize: '14px', lineHeight: 1.8, opacity: 0.95 }}>
+                부캐 육성 대행, 보스 작업, 낙엽 거래, 인기도 작업 등 다양한 의뢰를 주고받을 수 있습니다.
+                안전한 거래 인증 시스템으로 사기 걱정 없이 이용 가능합니다.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* SEO 텍스트 섹션 3: 안전한 커뮤니티 */}
+        <div style={{
+          marginBottom: '60px',
+          padding: '48px',
+          background: 'white',
+          borderRadius: '24px',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.06)'
+        }}>
+          <h2 style={{
+            fontSize: '28px',
+            fontWeight: '900',
+            color: '#1E293B',
+            marginBottom: '24px',
+            textAlign: 'center'
+          }}>
+            🛡️ 안전하고 검증된 메이플 디스코드 커뮤니티
+          </h2>
+          <div style={{
+            fontSize: '15px',
+            color: '#475569',
+            lineHeight: 1.9,
+            textAlign: 'left'
+          }}>
+            <p style={{ marginBottom: '20px' }}>
+              메이플 디스코드 중에서도 사기나 악성 유저로부터 안전하게 보호받을 수 있는 커뮤니티는 많지 않습니다.
+              저희 메이플 디스코드는 <strong style={{ color: '#667eea' }}>게임 내 인증 시스템</strong>을 통해 실제 메이플스토리 유저만 입장할 수 있도록 철저히 관리합니다.
+              인증 절차는 간단하지만 효과적이어서, 봇이나 광고 계정, 사기꾼들의 유입을 원천 차단합니다.
+            </p>
+            <p style={{ marginBottom: '20px' }}>
+              또한 전담 관리자가 24시간 모니터링하며 부적절한 행동(욕설, 사기, 스팸 등)을 즉시 제재합니다.
+              거래 관련 분쟁이 발생하면 중재 시스템을 통해 공정하게 해결하며, 신고 접수 시 증빙 자료를 바탕으로 신속하게 조치합니다.
+              이러한 체계적인 관리 덕분에 47,000명 이상의 대규모 커뮤니티임에도 불구하고 안전하고 건전한 분위기가 유지되고 있습니다.
+            </p>
+            <p style={{ marginBottom: '20px' }}>
+              특히 메이플 디스코드 거래 채널에서는 거래 전후 스크린샷 인증을 권장하며,
+              의심스러운 거래나 유저는 즉시 제재 대상이 됩니다. 메이플 디코 추천 커뮤니티를 찾고 계신다면,
+              안전성과 활성도를 모두 갖춘 이곳에서 안심하고 메이플을 즐기세요.
+            </p>
+          </div>
+        </div>
+
+        {/* SEO 텍스트 섹션 4: 참여 방법 */}
+        <div style={{
+          marginBottom: '60px',
+          padding: '48px',
+          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%)',
+          borderRadius: '24px',
+          border: '1px solid rgba(16, 185, 129, 0.3)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.06)'
+        }}>
+          <h2 style={{
+            fontSize: '28px',
+            fontWeight: '900',
+            color: '#1E293B',
+            marginBottom: '24px',
+            textAlign: 'center'
+          }}>
+            🚀 메이플 디스코드 참여 방법 (초간단 3단계)
+          </h2>
+          <div style={{
+            fontSize: '15px',
+            color: '#475569',
+            lineHeight: 1.9,
+            textAlign: 'left'
+          }}>
+            <div style={{
+              background: 'white',
+              padding: '24px',
+              borderRadius: '16px',
+              marginBottom: '16px',
+              border: '1px solid #E2E8F0'
+            }}>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#10b981', marginBottom: '12px' }}>
+                1단계: 디스코드 서버 입장
+              </h3>
+              <p>
+                페이지 상단의 "디스코드 참가하기" 버튼을 클릭하여 서버에 입장합니다.
+                디스코드 계정이 없다면 무료로 1분 안에 간편하게 회원가입할 수 있습니다.
+              </p>
+            </div>
+
+            <div style={{
+              background: 'white',
+              padding: '24px',
+              borderRadius: '16px',
+              marginBottom: '16px',
+              border: '1px solid #E2E8F0'
+            }}>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#10b981', marginBottom: '12px' }}>
+                2단계: 메이플 게임 내 인증
+              </h3>
+              <p>
+                메이플스토리에 접속하여 현재 시간이 보이는 스크린샷을 찍습니다.
+                디스코드 📸|인증안내 채널에서 해당 이미지를 1:1 메시지로 전송하고, ⭐인증 신청⭐ 버튼을 클릭하면 됩니다.
+              </p>
+            </div>
+
+            <div style={{
+              background: 'white',
+              padding: '24px',
+              borderRadius: '16px',
+              border: '1px solid #E2E8F0'
+            }}>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#10b981', marginBottom: '12px' }}>
+                3단계: 인증 완료 후 자유롭게 활동
+              </h3>
+              <p>
+                관리자가 인증을 승인하면 모든 채널에 접근할 수 있습니다.
+                서버별 채널, 거래 채널, 길드 모집 채널 등 원하는 곳에서 자유롭게 활동하며 메이플 유저들과 소통하세요!
+              </p>
+            </div>
+
+            <div style={{
+              marginTop: '32px',
+              padding: '24px',
+              background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
+              borderRadius: '12px',
+              border: '1px solid #F59E0B'
+            }}>
+              <p style={{ fontSize: '15px', color: '#92400E', lineHeight: 1.8, marginBottom: '12px' }}>
+                <strong>💡 인증 TIP:</strong>
+              </p>
+              <ul style={{ fontSize: '14px', color: '#78350F', lineHeight: 1.9, paddingLeft: '20px' }}>
+                <li>메이플랜드/클래식 유저는 #✅|통합-공지사항 채널을 먼저 확인하세요</li>
+                <li>인증이 안 될 경우 관리자(@IMS.DJ)에게 친구 추가 요청을 보내주세요</li>
+                <li>인증 승인은 평균 5~10분 내에 완료됩니다 (24시간 대응)</li>
+              </ul>
+            </div>
+          </div>
         </div>
 
       </div>
