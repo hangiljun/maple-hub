@@ -513,20 +513,16 @@ export default function ReviewsPage() {
             textAlign: 'center'
           }}>
             <p style={{ fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>
-              📊 고객 만족도 통계
+              📊 거래 신뢰 정보
             </p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '40px', marginTop: '20px', flexWrap: 'wrap' }}>
               <div>
-                <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '4px' }}>98%</div>
-                <div style={{ fontSize: '13px', opacity: 0.9 }}>재이용 의향</div>
-              </div>
-              <div>
-                <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '4px' }}>4.9/5</div>
-                <div style={{ fontSize: '13px', opacity: 0.9 }}>평균 평점</div>
-              </div>
-              <div>
-                <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '4px' }}>10분</div>
+                <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '4px' }}>15분</div>
                 <div style={{ fontSize: '13px', opacity: 0.9 }}>평균 정산 시간</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '4px' }}>✓</div>
+                <div style={{ fontSize: '13px', opacity: 0.9 }}>사업자 등록증 보유</div>
               </div>
             </div>
           </div>
