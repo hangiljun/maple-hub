@@ -254,7 +254,7 @@ export default function ItemsPage() {
                 fontWeight: '700',
                 marginBottom: '8px',
                 color: '#667eea'
-              }}>문의하기</div>
+              }}>1단계: 문의하기</div>
               <p style={{
                 fontSize: '13px',
                 color: '#64748B',
@@ -289,7 +289,7 @@ export default function ItemsPage() {
                 fontWeight: '700',
                 marginBottom: '8px',
                 color: '#667eea'
-              }}>실시간 시세 검색</div>
+              }}>2단계: 실시간 시세 검색</div>
               <p style={{
                 fontSize: '13px',
                 color: '#64748B',
@@ -324,7 +324,7 @@ export default function ItemsPage() {
                 fontWeight: '700',
                 marginBottom: '8px',
                 color: '#667eea'
-              }}>가격 협의</div>
+              }}>3단계: 가격 협의</div>
               <p style={{
                 fontSize: '13px',
                 color: '#64748B',
@@ -359,7 +359,7 @@ export default function ItemsPage() {
                 fontWeight: '700',
                 marginBottom: '8px',
                 color: '#667eea'
-              }}>정산 완료</div>
+              }}>4단계: 정산 완료</div>
               <p style={{
                 fontSize: '13px',
                 color: '#64748B',
