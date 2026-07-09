@@ -508,21 +508,29 @@ export default function ReviewsPage() {
 
           <div style={{
             background: 'rgba(255,255,255,0.15)',
-            padding: '24px',
+            padding: '28px',
             borderRadius: '16px',
             textAlign: 'center'
           }}>
-            <p style={{ fontSize: '16px', fontWeight: '700', marginBottom: '8px' }}>
-              📊 거래 신뢰 정보
-            </p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '40px', marginTop: '20px', flexWrap: 'wrap' }}>
-              <div>
-                <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '4px' }}>15분</div>
-                <div style={{ fontSize: '13px', opacity: 0.9 }}>평균 정산 시간</div>
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ fontSize: '18px', fontWeight: '700', marginBottom: '12px' }}>
+                ⚡ 평균 정산 시간: <span style={{ fontSize: '28px', fontWeight: '900' }}>15분</span>
               </div>
-              <div>
-                <div style={{ fontSize: '32px', fontWeight: '900', marginBottom: '4px' }}>✓</div>
-                <div style={{ fontSize: '13px', opacity: 0.9 }}>사업자 등록증 보유</div>
+              <div style={{ fontSize: '14px', opacity: 0.9 }}>
+                문의부터 정산까지 빠르게 처리됩니다
+              </div>
+            </div>
+            <div style={{
+              padding: '16px 24px',
+              background: 'rgba(255,255,255,0.2)',
+              borderRadius: '12px',
+              border: '2px solid rgba(255,255,255,0.3)'
+            }}>
+              <div style={{ fontSize: '16px', fontWeight: '700', lineHeight: 1.6 }}>
+                ✅ 사업자 등록증도 가지고 있어요
+              </div>
+              <div style={{ fontSize: '13px', opacity: 0.95, marginTop: '4px' }}>
+                정식 사업자로 안전하게 거래하세요
               </div>
             </div>
           </div>
