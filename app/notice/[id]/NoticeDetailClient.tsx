@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Navigation from '@/components/Navigation';
 import FAB from '@/components/FAB';
@@ -21,6 +21,21 @@ interface NoticeDetailClientProps {
 }
 
 export default function NoticeDetailClient({ notice }: NoticeDetailClientProps) {
+  // 조회수 증가
+  useEffect(() => {
+    const incrementViews = async () => {
+      try {
+        await fetch(`/api/notice/${notice.id}/view`, {
+          method: 'POST',
+        });
+      } catch (error) {
+        console.error('조회수 업데이트 실패:', error);
+      }
+    };
+
+    incrementViews();
+  }, [notice.id]);
+
   return (
     <div style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', fontFamily: "'Noto Sans KR', sans-serif" }}>
       <Navigation currentPage="notice" />
