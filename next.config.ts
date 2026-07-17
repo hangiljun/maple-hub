@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 
+// Force rebuild - 2026-07-18
 const nextConfig: NextConfig = {
   // 이미지 최적화
   images: {
