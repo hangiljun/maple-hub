@@ -384,6 +384,7 @@ export default function AdminPage() {
           category: noticeForm.category,
           imageUrl,
           isPinned: noticeForm.isPinned,
+          views: 0,
           createdAt: new Date()
         });
         alert('공지사항이 등록되었습니다!');
