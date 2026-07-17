@@ -1,19 +1,24 @@
 // Server-side Firebase REST API for SSR (No Admin SDK required)
 export async function getNoticeById(id: string) {
-  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'maple-hub-e1e33';
+
+  console.log('🔍 getNoticeById 호출:', { id, projectId, env: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID });
 
   try {
-    const response = await fetch(
-      `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/notices/${id}`,
-      {
-        cache: 'no-store',
-        headers: {
-          'Content-Type': 'application/json',
-        }
+    const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/notices/${id}`;
+    console.log('📡 Firebase URL:', url);
+
+    const response = await fetch(url, {
+      cache: 'no-store',
+      headers: {
+        'Content-Type': 'application/json',
       }
-    );
+    });
+
+    console.log('📥 응답 상태:', response.status, response.statusText);
 
     if (!response.ok) {
+      console.error('❌ 응답 실패:', response.status);
       return null;
     }
 
@@ -37,7 +42,7 @@ export async function getNoticeById(id: string) {
 }
 
 export async function getAllNotices() {
-  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'maple-hub-e1e33';
 
   try {
     const response = await fetch(
