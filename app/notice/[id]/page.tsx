@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import NoticeDetailClient from './NoticeDetailClient';
 import { getNoticeById } from '@/lib/firebase-admin';
 
-// 동적 렌더링 설정
+// 동적 렌더링 설정 (SSR)
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
