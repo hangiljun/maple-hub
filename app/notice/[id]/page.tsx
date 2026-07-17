@@ -8,12 +8,13 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 // 동적 메타데이터 생성 (SSR) - 크롤러가 수집할 수 있음
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const notice = await getNoticeById(params.id);
+  const { id } = await params;
+  const notice = await getNoticeById(id);
 
   if (!notice) {
     return {
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .substring(0, 160);
 
   const title = `${notice.title} | 메이플 허브 공지사항`;
-  const url = `https://www.maplehub.co.kr/notice/${params.id}`;
+  const url = `https://www.maplehub.co.kr/notice/${id}`;
   const imageUrl = notice.imageUrl || 'https://www.maplehub.co.kr/maple hub.png';
 
   return {
@@ -78,7 +79,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function NoticeDetailPage({ params }: Props) {
-  const notice = await getNoticeById(params.id);
+  const { id } = await params;
+  const notice = await getNoticeById(id);
 
   if (!notice) {
     notFound();
@@ -108,7 +110,7 @@ export default async function NoticeDetailPage({ params }: Props) {
     description: notice.content.replace(/<[^>]*>/g, '').substring(0, 160),
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://www.maplehub.co.kr/notice/${params.id}`,
+      '@id': `https://www.maplehub.co.kr/notice/${id}`,
     },
   };
 
