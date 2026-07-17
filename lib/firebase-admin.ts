@@ -21,14 +21,14 @@ export async function getNoticeById(id: string) {
 
     // Firestore REST API 응답을 일반 객체로 변환
     return {
-      id: doc.name.split('/').pop(),
-      title: doc.fields.title?.stringValue || '',
-      content: doc.fields.content?.stringValue || '',
-      category: doc.fields.category?.stringValue || '',
-      imageUrl: doc.fields.imageUrl?.stringValue || '',
-      isPinned: doc.fields.isPinned?.booleanValue || false,
-      views: doc.fields.views?.integerValue ? parseInt(doc.fields.views.integerValue) : 0,
-      createdAt: doc.fields.createdAt?.timestampValue || doc.createTime,
+      id: doc.name.split('/').pop() || '',
+      title: doc.fields?.title?.stringValue || '',
+      content: doc.fields?.content?.stringValue || '',
+      category: doc.fields?.category?.stringValue || '공지사항',
+      imageUrl: doc.fields?.imageUrl?.stringValue || '',
+      isPinned: doc.fields?.isPinned?.booleanValue || false,
+      views: doc.fields?.views?.integerValue ? parseInt(doc.fields.views.integerValue) : 0,
+      createdAt: doc.fields?.createdAt?.timestampValue || doc.createTime || new Date().toISOString(),
     };
   } catch (error) {
     console.error('공지사항 조회 실패:', error);
@@ -59,14 +59,14 @@ export async function getAllNotices() {
     if (!data.documents) return [];
 
     const notices = data.documents.map((doc: any) => ({
-      id: doc.name.split('/').pop(),
-      title: doc.fields.title?.stringValue || '',
-      content: doc.fields.content?.stringValue || '',
-      category: doc.fields.category?.stringValue || '',
-      imageUrl: doc.fields.imageUrl?.stringValue || '',
-      isPinned: doc.fields.isPinned?.booleanValue || false,
-      views: doc.fields.views?.integerValue ? parseInt(doc.fields.views.integerValue) : 0,
-      createdAt: doc.fields.createdAt?.timestampValue || doc.createTime,
+      id: doc.name.split('/').pop() || '',
+      title: doc.fields?.title?.stringValue || '',
+      content: doc.fields?.content?.stringValue || '',
+      category: doc.fields?.category?.stringValue || '공지사항',
+      imageUrl: doc.fields?.imageUrl?.stringValue || '',
+      isPinned: doc.fields?.isPinned?.booleanValue || false,
+      views: doc.fields?.views?.integerValue ? parseInt(doc.fields.views.integerValue) : 0,
+      createdAt: doc.fields?.createdAt?.timestampValue || doc.createTime || new Date().toISOString(),
     }));
 
     // 고정된 공지를 맨 위로
